@@ -59,7 +59,7 @@ export function ModelSelector({ selected, onChange }: ModelSelectorProps) {
                 <h4 className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                   {categoryNames[category]}
                 </h4>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                   {models.map((model) => (
                     <ModelCard
                       key={model.id}
@@ -107,18 +107,22 @@ function ModelCard({ model, selected, onClick, compact }: ModelCardProps) {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
+      title={model.name} // Tooltip for full name
       className={cn(
         'relative p-3 rounded-xl border text-left transition-all duration-200',
         selected
           ? 'bg-violet-600/20 border-violet-500 ring-2 ring-violet-500/20'
           : 'bg-slate-800 border-slate-700 hover:border-slate-600',
-        compact && 'p-2'
+        compact && 'p-2.5'
       )}
     >
-      <div className={cn('flex items-start gap-2', compact && 'items-center')}>
-        <span className={cn('text-2xl', compact && 'text-xl')}>{model.icon}</span>
+      <div className={cn('flex items-start gap-2', compact && 'items-center gap-1.5')}>
+        <span className={cn('text-2xl flex-shrink-0', compact && 'text-lg')}>{model.icon}</span>
         <div className="min-w-0 flex-1">
-          <h4 className={cn('font-semibold text-white truncate', compact && 'text-sm')}>
+          <h4 className={cn(
+            'font-semibold text-white',
+            compact ? 'text-xs leading-tight' : 'text-sm'
+          )}>
             {model.name}
           </h4>
           {!compact && (
@@ -131,7 +135,7 @@ function ModelCard({ model, selected, onClick, compact }: ModelCardProps) {
       {selected && (
         <motion.div
           layoutId="model-indicator"
-          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-violet-500"
+          className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-violet-500"
           initial={false}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         />
