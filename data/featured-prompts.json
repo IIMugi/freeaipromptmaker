@@ -1,0 +1,133 @@
+{
+  "prompts": [
+    {
+      "id": "1",
+      "title": "Cyberpunk City at Night",
+      "prompt": "A sprawling cyberpunk metropolis at night, neon signs reflecting on wet streets, flying cars in the distance, cinematic lighting, 8k, ultra detailed --ar 16:9 --s 250",
+      "model": "midjourney-v7",
+      "category": "sci-fi",
+      "imageUrl": "/gallery/cyberpunk-city.jpg",
+      "author": "Community",
+      "likes": 342
+    },
+    {
+      "id": "2",
+      "title": "Ethereal Forest Spirit",
+      "prompt": "An ethereal forest spirit made of glowing particles and light, standing in an ancient forest, soft volumetric lighting, magical atmosphere, fantasy art style --ar 9:16 --s 500",
+      "model": "flux",
+      "category": "fantasy",
+      "imageUrl": "/gallery/forest-spirit.jpg",
+      "author": "Community",
+      "likes": 287
+    },
+    {
+      "id": "3",
+      "title": "Vintage Coffee Shop",
+      "prompt": "Cozy vintage coffee shop interior, morning light streaming through windows, steam rising from cups, warm color palette, nostalgic atmosphere, shot on 35mm film",
+      "model": "dall-e",
+      "category": "lifestyle",
+      "imageUrl": "/gallery/coffee-shop.jpg",
+      "author": "Community",
+      "likes": 256
+    },
+    {
+      "id": "4",
+      "title": "Japanese Garden in Autumn",
+      "prompt": "Serene Japanese garden in autumn, red maple leaves floating on still pond, traditional stone lantern, morning mist, peaceful atmosphere, watercolor style",
+      "model": "nano-banana",
+      "category": "nature",
+      "imageUrl": "/gallery/japanese-garden.jpg",
+      "author": "Community",
+      "likes": 234
+    },
+    {
+      "id": "5",
+      "title": "Steampunk Inventor",
+      "prompt": "Portrait of a steampunk inventor in her workshop, brass goggles, mechanical arm, surrounded by gears and inventions, warm candlelight, oil painting style --ar 3:2",
+      "model": "midjourney",
+      "category": "character",
+      "imageUrl": "/gallery/steampunk-inventor.jpg",
+      "author": "Community",
+      "likes": 198
+    },
+    {
+      "id": "6",
+      "title": "Underwater Temple",
+      "prompt": "Ancient underwater temple ruins, bioluminescent sea creatures, light rays penetrating water surface, mysterious atmosphere, cinematic lighting, 8k detailed",
+      "model": "flux-pro",
+      "category": "fantasy",
+      "imageUrl": "/gallery/underwater-temple.jpg",
+      "author": "Community",
+      "likes": 189
+    },
+    {
+      "id": "7",
+      "title": "Space Station View",
+      "prompt": "View from a space station window, Earth below with city lights visible, stars in background, astronaut reflection in glass, photorealistic, NASA style",
+      "model": "stable-diffusion",
+      "category": "sci-fi",
+      "imageUrl": "/gallery/space-station.jpg",
+      "author": "Community",
+      "likes": 176
+    },
+    {
+      "id": "8",
+      "title": "Magical Bookshop",
+      "prompt": "Enchanted bookshop with floating books, spiral staircase, warm golden light, magical dust particles, cozy fantasy atmosphere, Studio Ghibli inspired",
+      "model": "leonardo",
+      "category": "fantasy",
+      "imageUrl": "/gallery/magical-bookshop.jpg",
+      "author": "Community",
+      "likes": 165
+    },
+    {
+      "id": "9",
+      "title": "Street Food Market",
+      "prompt": "Bustling Asian street food market at dusk, steam rising from food stalls, colorful lanterns, busy vendors and customers, street photography style, vibrant colors",
+      "model": "flux",
+      "category": "lifestyle",
+      "imageUrl": "/gallery/street-food.jpg",
+      "author": "Community",
+      "likes": 154
+    },
+    {
+      "id": "10",
+      "title": "Crystal Dragon",
+      "prompt": "Majestic crystal dragon perched on mountain peak, body made of translucent gems, aurora borealis in background, epic fantasy scene, highly detailed, 4k",
+      "model": "midjourney-v7",
+      "category": "fantasy",
+      "imageUrl": "/gallery/crystal-dragon.jpg",
+      "author": "Community",
+      "likes": 312
+    },
+    {
+      "id": "11",
+      "title": "Retro Gaming Room",
+      "prompt": "1980s retro gaming room, CRT television, neon lights, vintage posters, synthwave aesthetic, vaporwave colors, nostalgic atmosphere",
+      "model": "ideogram",
+      "category": "lifestyle",
+      "imageUrl": "/gallery/retro-gaming.jpg",
+      "author": "Community",
+      "likes": 143
+    },
+    {
+      "id": "12",
+      "title": "Samurai in Rain",
+      "prompt": "Lone samurai standing in heavy rain, katana drawn, cherry blossoms falling, dramatic lighting, cinematic composition, anime style, detailed illustration",
+      "model": "leonardo",
+      "category": "character",
+      "imageUrl": "/gallery/samurai-rain.jpg",
+      "author": "Community",
+      "likes": 267
+    }
+  ],
+  "categories": [
+    { "id": "all", "name": "All", "icon": "✨" },
+    { "id": "fantasy", "name": "Fantasy", "icon": "🧙" },
+    { "id": "sci-fi", "name": "Sci-Fi", "icon": "🚀" },
+    { "id": "character", "name": "Character", "icon": "👤" },
+    { "id": "nature", "name": "Nature", "icon": "🌿" },
+    { "id": "lifestyle", "name": "Lifestyle", "icon": "☕" }
+  ]
+}
+
