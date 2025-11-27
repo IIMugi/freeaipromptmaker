@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+/* PromptMaster AI - Dark Mode Only Theme */
+:root {
+  /* Ana Renkler */
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  
+  /* Slate Palette */
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  
+  /* Violet Accent */
+  --violet-700: #6d28d9;
+  --violet-600: #7c3aed;
+  --violet-500: #8b5cf6;
+  --violet-400: #a78bfa;
+  
+  /* Neon Green Accent */
+  --neon-green: #39ff14;
+  
+  /* Semantic Colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-slate-900: var(--slate-900);
+  --color-slate-800: var(--slate-800);
+  --color-slate-700: var(--slate-700);
+  --color-slate-600: var(--slate-600);
+  --color-slate-500: var(--slate-500);
+  --color-slate-400: var(--slate-400);
+  --color-slate-300: var(--slate-300);
+  --color-violet-700: var(--violet-700);
+  --color-violet-600: var(--violet-600);
+  --color-violet-500: var(--violet-500);
+  --color-violet-400: var(--violet-400);
+  --color-neon-green: var(--neon-green);
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--slate-800);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--slate-600);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate-500);
+}
+
+/* Selection */
+::selection {
+  background: var(--violet-600);
+  color: white;
+}
+
+/* Focus Ring */
+*:focus-visible {
+  outline: 2px solid var(--violet-500);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--violet-400) 0%, var(--neon-green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+/* ============================================
+   MARKDOWN / PROSE STYLES
+   ============================================ */
+
+.prose-custom .markdown-content {
+  color: var(--slate-300);
+  line-height: 1.8;
+}
+
+.prose-custom .heading-1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.prose-custom .heading-2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--slate-700);
+}
+
+.prose-custom .heading-3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-custom .paragraph {
+  margin-bottom: 1rem;
+}
+
+.prose-custom .link {
+  color: var(--violet-400);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.prose-custom .link:hover {
+  color: var(--violet-300);
+  text-decoration: underline;
+}
+
+.prose-custom .code-block {
+  background: var(--slate-800);
+  border: 1px solid var(--slate-700);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.prose-custom .code-block code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--slate-300);
+  white-space: pre;
+}
+
+.prose-custom .inline-code {
+  background: var(--slate-800);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--violet-400);
+}
+
+.prose-custom .unordered-list,
+.prose-custom .ordered-list {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose-custom .list-item,
+.prose-custom .list-item-ordered {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.prose-custom .unordered-list {
+  list-style-type: disc;
+}
+
+.prose-custom .ordered-list {
+  list-style-type: decimal;
+}
+
+.prose-custom .blockquote {
+  border-left: 3px solid var(--violet-500);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--slate-400);
+  font-style: italic;
+}
+
+.prose-custom .divider {
+  border: none;
+  border-top: 1px solid var(--slate-700);
+  margin: 2rem 0;
+}
+
+.prose-custom strong {
+  color: white;
+  font-weight: 600;
+}
+
+.prose-custom em {
+  font-style: italic;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

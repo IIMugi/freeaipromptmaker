@@ -1,0 +1,72 @@
+{
+  "categories": [
+    {
+      "name": "Art Styles",
+      "styles": [
+        { "id": "cyberpunk", "name": "Cyberpunk", "value": "cyberpunk style, neon lights, futuristic city", "icon": "🌃" },
+        { "id": "oil-painting", "name": "Oil Painting", "value": "oil painting style, textured brushstrokes, classical art", "icon": "🎨" },
+        { "id": "watercolor", "name": "Watercolor", "value": "watercolor painting, soft edges, fluid colors", "icon": "💧" },
+        { "id": "3d-render", "name": "3D Render", "value": "3D render, octane render, realistic lighting", "icon": "🎮" },
+        { "id": "anime", "name": "Anime", "value": "anime style, studio ghibli, detailed illustration", "icon": "🗾" },
+        { "id": "pixel-art", "name": "Pixel Art", "value": "pixel art style, 16-bit, retro gaming", "icon": "👾" },
+        { "id": "pop-art", "name": "Pop Art", "value": "pop art style, bold colors, comic book dots", "icon": "🎪" },
+        { "id": "surrealism", "name": "Surrealism", "value": "surrealist art, dreamlike, Salvador Dali inspired", "icon": "🌀" },
+        { "id": "minimalist", "name": "Minimalist", "value": "minimalist design, clean lines, simple shapes", "icon": "⬜" },
+        { "id": "steampunk", "name": "Steampunk", "value": "steampunk aesthetic, victorian, brass gears, mechanical", "icon": "⚙️" },
+        { "id": "vaporwave", "name": "Vaporwave", "value": "vaporwave aesthetic, 80s, pink and blue, retro", "icon": "🌴" },
+        { "id": "gothic", "name": "Gothic", "value": "gothic art style, dark, medieval, mysterious", "icon": "🦇" }
+      ]
+    },
+    {
+      "name": "Photography Styles",
+      "styles": [
+        { "id": "portrait", "name": "Portrait", "value": "professional portrait photography, shallow depth of field", "icon": "📸" },
+        { "id": "landscape", "name": "Landscape", "value": "landscape photography, golden hour, panoramic", "icon": "🏞️" },
+        { "id": "macro", "name": "Macro", "value": "macro photography, extreme close-up, detailed", "icon": "🔬" },
+        { "id": "street", "name": "Street Photography", "value": "street photography, candid, urban life", "icon": "🏙️" },
+        { "id": "fashion", "name": "Fashion", "value": "fashion photography, editorial, high-end magazine", "icon": "👗" },
+        { "id": "product", "name": "Product Shot", "value": "product photography, studio lighting, white background", "icon": "📦" }
+      ]
+    },
+    {
+      "name": "Moods & Atmospheres",
+      "styles": [
+        { "id": "dramatic", "name": "Dramatic", "value": "dramatic atmosphere, high contrast, moody", "icon": "🎭" },
+        { "id": "ethereal", "name": "Ethereal", "value": "ethereal, dreamy, soft glow, magical", "icon": "✨" },
+        { "id": "dark", "name": "Dark & Moody", "value": "dark atmosphere, shadows, mysterious", "icon": "🌑" },
+        { "id": "vibrant", "name": "Vibrant", "value": "vibrant colors, energetic, bold", "icon": "🌈" },
+        { "id": "nostalgic", "name": "Nostalgic", "value": "nostalgic feel, vintage, warm tones", "icon": "📻" },
+        { "id": "peaceful", "name": "Peaceful", "value": "peaceful, serene, calm atmosphere", "icon": "🕊️" }
+      ]
+    }
+  ],
+  "lighting": [
+    { "id": "cinematic", "name": "Cinematic Lighting", "value": "cinematic lighting" },
+    { "id": "golden-hour", "name": "Golden Hour", "value": "golden hour lighting, warm sunlight" },
+    { "id": "studio", "name": "Studio Lighting", "value": "professional studio lighting" },
+    { "id": "neon", "name": "Neon Glow", "value": "neon lighting, colorful glow" },
+    { "id": "dramatic", "name": "Dramatic Shadows", "value": "dramatic shadows, chiaroscuro" },
+    { "id": "soft", "name": "Soft & Diffused", "value": "soft diffused lighting" },
+    { "id": "backlit", "name": "Backlit", "value": "backlit, rim lighting, silhouette" },
+    { "id": "volumetric", "name": "Volumetric", "value": "volumetric lighting, god rays" }
+  ],
+  "cameras": [
+    { "id": "35mm", "name": "35mm Lens", "value": "shot on 35mm lens" },
+    { "id": "50mm", "name": "50mm Portrait", "value": "50mm lens, f/1.4, bokeh" },
+    { "id": "85mm", "name": "85mm Telephoto", "value": "85mm lens, shallow depth of field" },
+    { "id": "wide", "name": "Wide Angle", "value": "wide angle lens, 24mm" },
+    { "id": "macro-lens", "name": "Macro Lens", "value": "100mm macro lens, extreme detail" },
+    { "id": "fisheye", "name": "Fisheye", "value": "fisheye lens, distorted perspective" },
+    { "id": "tilt-shift", "name": "Tilt-Shift", "value": "tilt-shift lens, miniature effect" },
+    { "id": "drone", "name": "Drone Shot", "value": "aerial drone photography, bird's eye view" }
+  ],
+  "aspectRatios": [
+    { "id": "1:1", "name": "Square", "value": "1:1" },
+    { "id": "16:9", "name": "Widescreen", "value": "16:9" },
+    { "id": "9:16", "name": "Portrait", "value": "9:16" },
+    { "id": "4:3", "name": "Standard", "value": "4:3" },
+    { "id": "3:2", "name": "Classic Photo", "value": "3:2" },
+    { "id": "21:9", "name": "Ultrawide", "value": "21:9" }
+  ]
+}
+

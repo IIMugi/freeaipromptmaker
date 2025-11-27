@@ -1,0 +1,109 @@
+---
+description: Gemini Bot ve GitHub Actions otomasyon kuralları
+globs: scripts/**/*.js, .github/**/*.yml
+alwaysApply: false
+---
+
+# Otomasyon Kuralları (Auto-Blogger Bot)
+
+## 🤖 Gemini API Kullanımı
+
+### SDK Kurulumu
+```javascript
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+```
+
+### Chain of Thought Yapısı
+1. **Topic Selection:** `content-planner.json`'dan seç
+2. **Drafting:** SEO uyumlu taslak yaz
+3. **Humanizing:** Doğal dile çevir
+4. **Publishing:** MDX dosyası oluştur
+
+### Humanizing Prompt (Önemli!)
+```javascript
+const humanizePrompt = `
+Bu metni, AI tarafından yazıldığı belli olmayacak şekilde yeniden yaz:
+- Kişisel deneyimler ve görüşler ekle
+- "In conclusion", "unleash", "delve into" gibi robotik kelimeler KULLANMA
+- Samimi bir uzman diliyle yaz
+- Paragrafları doğal geçişlerle bağla
+`;
+```
+
+---
+
+## 📅 GitHub Actions Cron Job
+
+### scheduler.yml Yapısı
+```yaml
+name: Auto Blog Generator
+
+on:
+  schedule:
+    # Her 2 günde bir UTC 08:00'da çalış
+    - cron: '0 8 */2 * *'
+  workflow_dispatch: # Manuel tetikleme
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Generate Post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/generate-post.js
+        
+      - name: Commit and Push
+        run: |
+          git config user.name "Auto Blogger Bot"
+          git config user.email "bot@promptmaster.ai"
+          git add posts/
+          git commit -m "📝 Auto-generated blog post" || exit 0
+          git push
+```
+
+---
+
+## 📝 MDX Çıktı Formatı
+
+```mdx
+---
+title: "Blog Yazısı Başlığı"
+date: "2025-11-27"
+description: "SEO açıklaması"
+tags: ["midjourney", "prompt", "ai-art"]
+---
+
+# Blog Yazısı Başlığı
+
+İçerik buraya...
+
+## Alt Başlık
+
+Daha fazla içerik...
+
+<PromptExample prompt="örnek prompt --ar 16:9" />
+
+Try our [Visual Prompt Generator](/) to create your own prompts!
+```
+
+---
+
+## 🔐 Güvenlik
+
+- API key'leri **ASLA** koda gömme
+- GitHub Secrets kullan
+- `.env.local` dosyası `.gitignore`'da olmalı

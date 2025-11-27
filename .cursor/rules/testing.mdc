@@ -1,0 +1,106 @@
+---
+description: Test ve kalite kontrol kuralları
+globs:
+alwaysApply: true
+---
+
+# Test & Kalite Kontrol Kuralları
+
+## 🧪 Browser Test Protokolü (ZORUNLU)
+
+### Her Özellik Sonrası Test Akışı
+
+1. **Navigate:** Sayfaya git
+```
+mcp_cursor-browser-extension_browser_navigate → localhost:3000
+```
+
+2. **Snapshot:** Sayfa elementlerini al
+```
+mcp_cursor-browser-extension_browser_snapshot
+```
+
+3. **Interact:** UI ile etkileşim
+```
+mcp_cursor-browser-extension_browser_click
+mcp_cursor-browser-extension_browser_type
+```
+
+4. **Verify:** Sonuçları doğrula
+```
+mcp_cursor-browser-extension_browser_snapshot (tekrar)
+```
+
+5. **Console Check:** Hata kontrolü
+```
+mcp_cursor-browser-extension_browser_console_messages
+```
+
+---
+
+## ✅ Test Edilecek Kritik Noktalar
+
+### Prompt Generator
+- [ ] Model seçimi değişince output güncelleniyor mu?
+- [ ] Style kartları tıklanabiliyor mu?
+- [ ] Slider'lar düzgün çalışıyor mu?
+- [ ] "Copy Prompt" butonu çalışıyor mu?
+- [ ] History LocalStorage'a kaydediliyor mu?
+
+### Blog Sayfası
+- [ ] MDX dosyaları render oluyor mu?
+- [ ] Internal linkler çalışıyor mu?
+- [ ] Schema markup doğru mu?
+
+### Responsive
+- [ ] Mobile görünüm düzgün mü?
+- [ ] Tablet görünüm düzgün mü?
+- [ ] Desktop görünüm düzgün mü?
+
+### AdSense
+- [ ] Reklam alanları görünüyor mu?
+- [ ] Layout kayması (CLS) var mı?
+
+---
+
+## 🔍 Kod Kalite Kontrolleri
+
+### TypeScript
+```bash
+# Type check
+npx tsc --noEmit
+```
+
+### Lint
+```bash
+# ESLint kontrolü
+npm run lint
+```
+
+### Build Test
+```bash
+# Production build testi
+npm run build
+```
+
+---
+
+## 🐛 Hata Ayıklama
+
+### Console Hataları
+```typescript
+// Development ortamında detaylı log
+if (process.env.NODE_ENV === 'development') {
+  console.log('[Debug]', data);
+}
+```
+
+### Network İstekleri
+```
+mcp_cursor-browser-extension_browser_network_requests
+```
+
+### Screenshot (Görsel Debug)
+```
+mcp_cursor-browser-extension_browser_take_screenshot
+```

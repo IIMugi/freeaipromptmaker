@@ -1,0 +1,102 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+
+interface AdUnitProps {
+  slot: string;
+  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle';
+  className?: string;
+  style?: React.CSSProperties;
+  // SEO: Reklam yüklenmeden önce placeholder göster (CLS önleme)
+  minHeight?: number;
+}
+
+// AdSense client ID - .env'den alınacak
+const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-XXXXXXXXXXXXXXXX';
+
+export function AdUnit({
+  slot,
+  format = 'auto',
+  className,
+  style,
+  minHeight = 100,
+}: AdUnitProps) {
+  const adRef = useRef<HTMLModElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // AdSense script yüklenmiş mi kontrol et
+    const loadAd = () => {
+      try {
+        // @ts-expect-error - AdSense global
+        if (window.adsbygoogle && adRef.current) {
+          // @ts-expect-error - AdSense push
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          setIsLoaded(true);
+        }
+      } catch (error) {
+        console.error('[AdUnit] Failed to load ad:', error);
+      }
+    };
+
+    // Script yüklendiyse hemen çalıştır, yoksa bekle
+    // @ts-expect-error - AdSense global
+    if (window.adsbygoogle) {
+      loadAd();
+    } else {
+      // Script yüklenene kadar bekle
+      const checkInterval = setInterval(() => {
+        // @ts-expect-error - AdSense global
+        if (window.adsbygoogle) {
+          loadAd();
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      // 5 saniye sonra vazgeç
+      setTimeout(() => clearInterval(checkInterval), 5000);
+    }
+  }, [slot]);
+
+  return (
+    <div
+      className={cn(
+        'ad-container relative overflow-hidden',
+        // SEO: CLS önlemek için sabit minimum yükseklik
+        !isLoaded && 'bg-slate-800/30',
+        className
+      )}
+      style={{
+        minHeight: `${minHeight}px`,
+        ...style,
+      }}
+      // SEO: Reklam alanını işaretle
+      data-ad-status={isLoaded ? 'loaded' : 'loading'}
+      aria-label="Advertisement"
+      role="complementary"
+    >
+      <ins
+        ref={adRef}
+        className="adsbygoogle"
+        style={{
+          display: 'block',
+          width: '100%',
+          height: '100%',
+        }}
+        data-ad-client={AD_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive="true"
+      />
+      
+      {/* SEO: Placeholder - CLS önleme */}
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs text-slate-600">Ad</span>
+        </div>
+      )}
+    </div>
+  );
+}
+

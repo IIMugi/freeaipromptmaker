@@ -1,0 +1,87 @@
+---
+description: PromptMaster AI projesinin ana kuralları - Her zaman uygulanır
+globs:
+alwaysApply: true
+---
+
+# PromptMaster AI - Ana Proje Kuralları
+
+## 🚨 ZORUNLU KURALLAR (KRİTİK)
+
+### 1. Context7 Kullanımı (ZORUNLU)
+- **HER KOD YAZIMINDA** önce Context7 MCP tool'unu kullanarak güncel dokümantasyon çek
+- Kütüphane/framework kullanmadan önce `mcp_context7_resolve-library-id` ile library ID al
+- Sonra `mcp_context7_get-library-docs` ile güncel API referanslarını oku
+- **ASLA** eski bilgilerle kod yazma, her zaman güncel docs kontrol et
+
+### 2. Browser Test (ZORUNLU)
+- Her özellik implementasyonu sonrası **@Browser** ile test yap
+- `mcp_cursor-browser-extension_browser_snapshot` ile sayfa durumunu kontrol et
+- UI değişikliklerini görsel olarak doğrula
+- Console hatalarını `mcp_cursor-browser-extension_browser_console_messages` ile kontrol et
+
+### 3. Maksimum Verimlilik
+- **Bir session'da yazabileceğin kadar çok kod yaz**
+- Gereksiz onay bekleme, direkt implementasyona geç
+- Paralel tool calls kullan, bağımsız işlemleri aynı anda yap
+- Tüm dosyaları tek seferde oluştur
+
+---
+
+## 📋 Proje Bilgileri
+
+- **Proje:** PromptMaster AI
+- **Platform:** Web (Next.js 14+ App Router)
+- **Dil:** TypeScript (strict mode)
+- **Stil:** Tailwind CSS (Dark Mode Varsayılan)
+- **Hosting:** Vercel
+- **AI Provider:** Gemini API (Free Tier)
+
+---
+
+## 🎨 Tasarım Standartları
+
+### Renk Paleti
+```
+Arka Plan: #0f172a (Slate 900)
+Aksan Rengi: #8b5cf6 (Violet 500)
+Alternatif Aksan: Neon Green (#39ff14)
+```
+
+### UI Prensipleri
+- Dark Mode zorunlu, light mode yok
+- Mobile-first yaklaşım
+- Minimum JavaScript, maksimum performans
+- Framer Motion ile animasyonlar
+
+---
+
+## 📁 Dosya Yapısı Standartları
+
+```
+app/                    # Next.js App Router sayfaları
+├── blog/              # Blog sayfaları
+├── layout.tsx         # Ana layout
+└── page.tsx           # Ana sayfa (Prompt Generator)
+components/
+├── Generator/         # Prompt Builder bileşenleri
+├── Ads/               # AdSense bileşenleri
+└── UI/                # Genel UI bileşenleri
+data/
+├── styles.json        # Prompt stilleri
+└── content-planner.json
+posts/                 # MDX blog yazıları
+scripts/
+└── generate-post.js   # Gemini Bot
+```
+
+---
+
+## ✅ Kod Yazım Kuralları
+
+1. **TypeScript** - Strict mode, any kullanma
+2. **Fonksiyonel Bileşenler** - Class component yok
+3. **Named Exports** - Default export yerine named export tercih et
+4. **Tailwind** - Inline style kullanma
+5. **Error Handling** - Try-catch ile hata yönetimi
+6. **Yorum** - Karmaşık mantık için Türkçe yorum yaz

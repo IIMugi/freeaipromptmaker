@@ -1,0 +1,200 @@
+{
+  "topics": [
+    {
+      "id": "mj-v6-guide",
+      "title": "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
+      "slug": "midjourney-v6-complete-prompt-guide",
+      "status": "published",
+      "keywords": [
+        "midjourney v6",
+        "midjourney prompts",
+        "midjourney parameters",
+        "ai art guide"
+      ],
+      "outline": [
+        "Introduction to Midjourney V6",
+        "Basic prompt structure",
+        "Style parameters (--s, --stylize)",
+        "Aspect ratios (--ar)",
+        "Chaos and variation (--chaos)",
+        "Quality settings (--q)",
+        "Advanced techniques"
+      ],
+      "publishedAt": "2025-11-27T07:11:24.620Z"
+    },
+    {
+      "id": "sd-negative-prompts",
+      "title": "Stable Diffusion Negative Prompts: The Ultimate Collection",
+      "slug": "stable-diffusion-negative-prompts-guide",
+      "status": "pending",
+      "keywords": [
+        "stable diffusion",
+        "negative prompts",
+        "sdxl",
+        "ai image generation"
+      ],
+      "outline": [
+        "What are negative prompts?",
+        "Why negative prompts matter",
+        "Essential negative prompt templates",
+        "Category-specific negatives",
+        "Common mistakes to avoid"
+      ]
+    },
+    {
+      "id": "dalle3-tips",
+      "title": "DALL-E 3 Prompting Secrets: Get Better Results Every Time",
+      "slug": "dalle-3-prompting-tips-secrets",
+      "status": "pending",
+      "keywords": [
+        "dall-e 3",
+        "dalle prompts",
+        "chatgpt images",
+        "openai art"
+      ],
+      "outline": [
+        "Understanding DALL-E 3's capabilities",
+        "Natural language vs technical prompts",
+        "Style keywords that work",
+        "Composition tips",
+        "Common pitfalls"
+      ]
+    },
+    {
+      "id": "cyberpunk-prompts",
+      "title": "50 Stunning Cyberpunk Prompts for AI Art Generators",
+      "slug": "cyberpunk-ai-art-prompts-collection",
+      "status": "pending",
+      "keywords": [
+        "cyberpunk prompts",
+        "neon city",
+        "futuristic art",
+        "ai art prompts"
+      ],
+      "outline": [
+        "What defines cyberpunk aesthetic",
+        "Essential cyberpunk keywords",
+        "Character prompts",
+        "Cityscape prompts",
+        "Vehicle and tech prompts"
+      ]
+    },
+    {
+      "id": "portrait-prompts",
+      "title": "AI Portrait Prompts: Create Stunning Character Art",
+      "slug": "ai-portrait-character-prompts-guide",
+      "status": "pending",
+      "keywords": [
+        "ai portrait",
+        "character art",
+        "portrait prompts",
+        "ai character design"
+      ],
+      "outline": [
+        "Anatomy of a portrait prompt",
+        "Lighting for portraits",
+        "Expression and emotion",
+        "Style variations",
+        "Post-processing tips"
+      ]
+    },
+    {
+      "id": "landscape-prompts",
+      "title": "Breathtaking AI Landscape Prompts for Every Style",
+      "slug": "ai-landscape-prompts-nature-fantasy",
+      "status": "pending",
+      "keywords": [
+        "landscape prompts",
+        "ai nature art",
+        "fantasy landscapes",
+        "environment art"
+      ],
+      "outline": [
+        "Natural landscape techniques",
+        "Fantasy world building",
+        "Atmospheric effects",
+        "Time of day settings",
+        "Scale and composition"
+      ]
+    },
+    {
+      "id": "art-style-keywords",
+      "title": "100+ Art Style Keywords for AI Image Generators",
+      "slug": "art-style-keywords-ai-generators",
+      "status": "pending",
+      "keywords": [
+        "art styles",
+        "ai art keywords",
+        "prompt engineering",
+        "style modifiers"
+      ],
+      "outline": [
+        "Classical art styles",
+        "Modern and contemporary",
+        "Digital art styles",
+        "Photography styles",
+        "Cultural and regional styles"
+      ]
+    },
+    {
+      "id": "prompt-structure",
+      "title": "The Perfect AI Art Prompt Structure: A Formula That Works",
+      "slug": "perfect-ai-art-prompt-structure-formula",
+      "status": "pending",
+      "keywords": [
+        "prompt structure",
+        "prompt formula",
+        "ai art tips",
+        "prompt engineering"
+      ],
+      "outline": [
+        "The basic formula",
+        "Subject description",
+        "Style and medium",
+        "Lighting and atmosphere",
+        "Technical parameters",
+        "Examples and variations"
+      ]
+    },
+    {
+      "id": "common-mistakes",
+      "title": "10 AI Prompt Mistakes Killing Your Image Quality",
+      "slug": "ai-prompt-mistakes-image-quality",
+      "status": "pending",
+      "keywords": [
+        "prompt mistakes",
+        "ai art tips",
+        "better prompts",
+        "image quality"
+      ],
+      "outline": [
+        "Vague descriptions",
+        "Conflicting styles",
+        "Wrong aspect ratios",
+        "Overcomplicated prompts",
+        "Ignoring model strengths"
+      ]
+    },
+    {
+      "id": "photorealistic-prompts",
+      "title": "Photorealistic AI Art: Prompts That Look Like Real Photos",
+      "slug": "photorealistic-ai-art-prompts",
+      "status": "pending",
+      "keywords": [
+        "photorealistic",
+        "realistic ai art",
+        "photo-like images",
+        "hyperrealistic"
+      ],
+      "outline": [
+        "What makes an image photorealistic",
+        "Camera and lens keywords",
+        "Lighting for realism",
+        "Detail and texture",
+        "Post-processing look"
+      ]
+    }
+  ],
+  "lastUpdated": "2025-11-27",
+  "autoPostFrequency": "every_2_days"
+}

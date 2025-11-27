@@ -1,0 +1,84 @@
+name: Daily Content Generator
+
+on:
+  # Her gün UTC 06:00'da çalış (TR saat 09:00)
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Manuel tetikleme
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  generate-daily-post:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🤖 Generate daily content
+        env:
+          GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+          GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
+          GEMINI_API_KEY_4: ${{ secrets.GEMINI_API_KEY_4 }}
+          GEMINI_API_KEY_5: ${{ secrets.GEMINI_API_KEY_5 }}
+          GEMINI_API_KEY_6: ${{ secrets.GEMINI_API_KEY_6 }}
+          GEMINI_API_KEY_7: ${{ secrets.GEMINI_API_KEY_7 }}
+          GEMINI_API_KEY_8: ${{ secrets.GEMINI_API_KEY_8 }}
+          GEMINI_API_KEY_9: ${{ secrets.GEMINI_API_KEY_9 }}
+          GEMINI_API_KEY_10: ${{ secrets.GEMINI_API_KEY_10 }}
+        run: node scripts/content-manager.js
+
+      - name: 📊 Check for changes
+        id: git-check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "New content generated!"
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No new content (already posted today or error)"
+          fi
+
+      - name: 📤 Commit and push
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config user.name "PromptMaster Bot"
+          git config user.email "bot@promptmaster.ai"
+          git add posts/ data/
+          git commit -m "📝 Daily post: $(date +%Y-%m-%d) [skip ci]"
+          git push
+
+      - name: 📈 Summary
+        run: |
+          echo "### 🤖 Daily Content Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.git-check.outputs.changes }}" == "true" ]; then
+            echo "✅ New blog post generated and published!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Check the posts/ directory for the new content." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No new post today (already published or skipped)" >> $GITHUB_STEP_SUMMARY
+          fi
+
