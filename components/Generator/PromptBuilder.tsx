@@ -9,13 +9,13 @@ import { StyleCards, getStyleValues } from './StyleCards';
 import { LightingCamera } from './LightingCamera';
 import { ParameterSliders } from './ParameterSliders';
 import { LivePreview } from './LivePreview';
-import { buildPrompt, getModelDefaults, type AIModel, type PromptHistory } from '@/lib/prompt-builder';
+import { buildPrompt, getModelDefaults, getModelInfo, type AIModel, type PromptHistory } from '@/lib/prompt-builder';
 import { useLocalStorage } from '@/lib/hooks';
 import { generateId } from '@/lib/utils';
 
 export function PromptBuilder() {
-  // Model state
-  const [model, setModel] = useState<AIModel>('midjourney');
+  // Model state - default to flux (most popular in 2025)
+  const [model, setModel] = useState<AIModel>('flux');
   
   // Prompt content state
   const [mainConcept, setMainConcept] = useState('');
@@ -31,6 +31,9 @@ export function PromptBuilder() {
   
   // History (persisted to localStorage)
   const [history, setHistory] = useLocalStorage<PromptHistory[]>('prompt-history', []);
+
+  // Get current model info
+  const modelInfo = getModelInfo(model);
 
   // Model değiştiğinde varsayılan değerleri ayarla
   const handleModelChange = (newModel: AIModel) => {
@@ -91,6 +94,9 @@ export function PromptBuilder() {
     setMainConcept(prompt);
   };
 
+  // Check if model supports negative prompts
+  const supportsNegativePrompt = modelInfo?.supportsNegative ?? false;
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
@@ -107,6 +113,9 @@ export function PromptBuilder() {
         </div>
         <p className="text-slate-400 text-lg">
           Create stunning AI art prompts visually - 100% free!
+        </p>
+        <p className="text-slate-500 text-sm mt-2">
+          Supporting {12} AI models including Flux, Midjourney v7, DALL-E 3, and more
         </p>
       </motion.div>
 
@@ -159,8 +168,8 @@ export function PromptBuilder() {
             onChaosChange={setChaos}
           />
 
-          {/* Negative Prompt (for SD) */}
-          {model === 'stable-diffusion' && (
+          {/* Negative Prompt (for models that support it) */}
+          {supportsNegativePrompt && (
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                 Negative Prompt
@@ -168,9 +177,12 @@ export function PromptBuilder() {
               <TextArea
                 value={negativePrompt}
                 onChange={(e) => setNegativePrompt(e.target.value)}
-                placeholder="What to avoid... e.g., blurry, low quality, distorted"
+                placeholder="What to avoid... e.g., blurry, low quality, distorted, extra fingers"
                 rows={2}
               />
+              <p className="text-xs text-slate-500">
+                Specify what you don&apos;t want in the image
+              </p>
             </div>
           )}
         </motion.div>
@@ -196,4 +208,3 @@ export function PromptBuilder() {
     </div>
   );
 }
-
