@@ -1,118 +1,186 @@
-# Progress Log: PromptMaster AI
+# Progress Log: Free AI Prompt Maker
 
 ## 📊 Genel İlerleme
 
 ```
-Planlama    ████████████████████ 100%
-Kurulum     ████████████████████ 100%
-Frontend    ████████████████████ 100%
-AdSense     ████████████████████ 100%
-Otomasyon   ████████████████████ 100%
-SEO         ████████████████████ 100%
-Deploy      ░░░░░░░░░░░░░░░░░░░░   0%
+Planlama      ████████████████████ 100%
+Kurulum       ████████████████████ 100%
+Frontend      ████████████████████ 100%
+Backend/API   ████████████████████ 100%
+AdSense Comp  ████████████████████ 100%
+Otomasyon     ████████████████████ 100%
+SEO           ████████████████████ 100%
+Deploy        ████████████████████ 100%
+GitHub        ████████████████████ 100%
+Yeni Modeller ░░░░░░░░░░░░░░░░░░░░   0% ← SONRAKİ GÖREV
+AdSense Onay  ░░░░░░░░░░░░░░░░░░░░   0% (2 hafta bekle)
 ```
 
 ---
 
-## ✅ Tamamlanan İşler
+## 🌐 CANLI SİTE BİLGİLERİ
 
-### 2025-11-27 (Session 2 - Part 2)
-
-#### AdSense Bileşenleri (SEO Uyumlu)
-- [x] `AdUnit.tsx` - Ana reklam bileşeni (CLS-free, placeholder)
-- [x] `HeaderAd.tsx` - Header banner (90px sabit)
-- [x] `ResultAd.tsx` - Copy sonrası reklam (EN DEĞERLİ ALAN)
-- [x] `SidebarAd.tsx` - Blog sidebar (sticky)
-- [x] `InArticleAd.tsx` - Makale içi reklamlar
-- [x] `AdSenseScript.tsx` - afterInteractive yükleme
-
-#### Gemini Auto-Blogger Bot
-- [x] `scripts/generate-post.js` - Tam otomasyon scripti
-  - Topic selection
-  - SEO-optimized drafting
-  - Humanizing (AI-ish dil kaldırma)
-  - MDX dosya oluşturma
-  - Content planner güncelleme
-- [x] `@google/genai` SDK entegrasyonu
-
-#### GitHub Actions
-- [x] `.github/workflows/auto-blogger.yml`
-  - 2 günde bir cron job
-  - Manuel tetikleme desteği
-  - Otomatik commit & push
-  - Vercel auto-deploy tetikleme
-
-#### SEO Optimizasyonları
-- [x] `app/sitemap.ts` - Dinamik sitemap (7 sayfa)
-- [x] `app/robots.txt` - Arama motoru kuralları
-- [x] `app/layout.tsx` güncellemesi:
-  - metadataBase eklendi
-  - Organization schema
-  - SoftwareApplication schema (rating dahil)
-  - Preconnect headers
-  - Twitter/OG meta tags
-- [x] `.env.example` - Environment variables dokümantasyonu
-
-#### Browser Test Sonuçları ✅
-- [x] Ana sayfa çalışıyor
-- [x] Prompt generator tam fonksiyonel
-- [x] `/sitemap.xml` - 7 URL, doğru formatda
-- [x] `/robots.txt` - AdSense bot izinli
-- [x] Console'da kritik hata yok
+| Bilgi | Değer |
+|-------|-------|
+| **Ana URL** | https://freeaipromptmaker.com |
+| **www URL** | https://www.freeaipromptmaker.com |
+| **Vercel URL** | https://n1sche.vercel.app |
+| **GitHub Repo** | https://github.com/IIMugi/freeaipromptmaker |
+| **SSL** | ✅ Aktif |
+| **Search Console** | ✅ Doğrulanmış |
+| **Sitemap** | ✅ Gönderildi |
 
 ---
 
-## 📈 Proje Metrikleri
+## ✅ TAMAMLANAN TÜM İŞLER
+
+### Session 1: Proje Kurulumu (2025-11-27)
+- [x] PRD okundu ve analiz edildi
+- [x] Cursor Rules oluşturuldu (5 dosya)
+- [x] Memory Bank kuruldu (6 dosya)
+- [x] Next.js 16.0.5 + React 19 projesi
+- [x] Tailwind CSS 4 yapılandırması
+- [x] TypeScript strict mode
+
+### Session 2: Frontend Geliştirme
+- [x] UI Bileşenleri: Button, Card, Slider, Select, Input, TextArea
+- [x] Generator: PromptBuilder, ModelSelector, StyleCards
+- [x] Generator: LightingCamera, ParameterSliders, LivePreview
+- [x] Layout: Header, Footer
+- [x] Sayfalar: Ana sayfa, Blog, Legal (5), 404, Error, Loading
+- [x] LocalStorage history sistemi
+
+### Session 3: AdSense & Otomasyon
+- [x] AdSense bileşenleri (6 adet, SEO uyumlu)
+- [x] Gemini Auto-Blogger scripti
+- [x] 10 API key rotation sistemi
+- [x] GitHub Actions workflow
+- [x] content-history.json takip sistemi
+
+### Session 4: SEO & Deploy
+- [x] sitemap.ts (dinamik)
+- [x] robots.ts
+- [x] Schema.org markup
+- [x] Meta tags (OG, Twitter)
+- [x] Vercel deploy
+- [x] Custom domain bağlama
+- [x] SSL sertifikası
+
+### Session 5: GitHub & Final (2025-11-27 Son)
+- [x] Git init + ilk commit (84 dosya)
+- [x] GitHub repo oluşturuldu
+- [x] Kod push edildi
+- [x] GitHub Secrets eklendi (10 API key)
+- [x] Google Search Console doğrulandı
+- [x] Sitemap gönderildi
+- [x] Memory Bank güncellendi
+- [x] Auto-blogger test edildi (2 post oluştu)
+
+---
+
+## 🎯 SONRAKİ GÖREV: YENİ AI MODELLERİ
+
+### Problem:
+Sitedeki modeller eski (sadece 3 tane):
+- Midjourney v6
+- Stable Diffusion SDXL  
+- DALL-E 3
+
+### Çözüm:
+Yeni 2025 modellerini ekle:
+
+| Model | Özellik | Öncelik |
+|-------|---------|---------|
+| **Flux** | En popüler yeni model | 🔴 Yüksek |
+| **Midjourney v7** | Güncel versiyon | 🔴 Yüksek |
+| **Ideogram 2.0** | Metin/tipografi | 🟡 Orta |
+| **Leonardo.ai** | Oyun/karakter | 🟡 Orta |
+| **Adobe Firefly 3** | Profesyonel | 🟡 Orta |
+| **Recraft V3** | Vektör/ikon | 🟢 Düşük |
+| **GPT-4o** | ChatGPT native | 🟢 Düşük |
+| **Imagen 3** | Google | 🟢 Düşük |
+
+### Güncellenecek Dosyalar:
+1. `data/styles.json` - Model tanımları
+2. `components/Generator/ModelSelector.tsx` - UI kartları
+3. `lib/prompt-builder.ts` - Prompt syntax'ları
+4. `components/Generator/ParameterSliders.tsx` - Model özel parametreler
+
+---
+
+## ⏳ BEKLEYEN GÖREVLER
+
+### Kısa Vadeli (Bu Hafta):
+- [ ] Yeni AI modelleri ekle
+- [ ] Model başına özel parametreler
+- [ ] Vercel'e deploy et
+
+### Orta Vadeli (2 Hafta):
+- [ ] 15+ blog post biriktir
+- [ ] AdSense başvurusu yap
+- [ ] Reklam kodlarını entegre et
+
+### Uzun Vadeli:
+- [ ] Google Analytics ekle
+- [ ] Performance optimizasyonu
+- [ ] Kullanıcı geri bildirimleri
+
+---
+
+## 📈 METRİKLER
 
 | Metrik | Değer |
 |--------|-------|
-| Toplam Bileşen | 20 |
-| Toplam Sayfa | 8 |
-| AdSense Bileşen | 6 |
-| Toplam Dosya | ~55 |
-| SEO Score | Tam yapılandırılmış |
-| CLS Risk | Minimize edildi |
+| Toplam Bileşen | 25+ |
+| Toplam Sayfa | 12 |
+| Blog Post | 2 |
+| API Key | 10 |
+| GitHub Commit | 1 |
+| Dosya Sayısı | 84 |
 
 ---
 
-## 🔜 Bekleyen İşler
+## 📋 DOSYA YAPISI
 
-### Deploy Öncesi
-1. [ ] GEMINI_API_KEY al (Google AI Studio)
-2. [ ] Vercel hesabı oluştur/bağla
-3. [ ] Environment variables ekle
-4. [ ] Domain bağla (opsiyonel)
-5. [ ] AdSense başvurusu (içerik sonrası)
-
-### Deploy Sonrası
-6. [ ] Google Search Console ekle
-7. [ ] İlk blog yazısı oluştur (test)
-8. [ ] Analytics ekle (opsiyonel)
-9. [ ] Performance monitoring
-
----
-
-## 📋 SEO Kontrol Listesi
-
-| Özellik | Durum |
-|---------|-------|
-| Meta Title & Description | ✅ |
-| Open Graph Tags | ✅ |
-| Twitter Cards | ✅ |
-| Schema.org (SoftwareApplication) | ✅ |
-| Schema.org (Organization) | ✅ |
-| Sitemap.xml | ✅ |
-| Robots.txt | ✅ |
-| Canonical URLs | ✅ |
-| Mobile Responsive | ✅ |
-| Dark Mode | ✅ |
-| CLS Optimization | ✅ |
+```
+freeaipromptmaker/
+├── app/                    # Next.js pages
+│   ├── page.tsx           # Ana sayfa
+│   ├── blog/              # Blog
+│   ├── (legal)/           # Legal sayfalar
+│   ├── sitemap.ts
+│   └── robots.ts
+├── components/
+│   ├── Generator/         # ← MODEL GÜNCELLEMESİ BURADA
+│   ├── Ads/
+│   ├── UI/
+│   └── Layout/
+├── data/
+│   ├── styles.json        # ← MODEL GÜNCELLEMESİ BURADA
+│   └── content-history.json
+├── lib/
+│   ├── prompt-builder.ts  # ← MODEL GÜNCELLEMESİ BURADA
+│   └── blog.ts
+├── posts/                 # MDX blog yazıları
+├── scripts/
+│   └── content-manager.js # Auto-blogger
+├── memory-bank/           # AI context
+└── .github/workflows/     # CI/CD
+```
 
 ---
 
-## 💡 Notlar
+## 💡 ÖNEMLİ NOTLAR
 
-- AdSense onayı için minimum 10-15 blog yazısı önerilir
-- İlk yazılar manuel kontrol edilmeli
-- Gemini Free Tier: ~60 request/dakika limit
-- Vercel Hobby: Ayda 100GB bandwidth ücretsiz
+1. **Auto-Blogger:** Her gün 06:00 UTC çalışıyor
+2. **AdSense:** 15+ post sonra başvur (şu an 2)
+3. **Yeni Modeller:** Flux ve Midjourney v7 öncelikli
+4. **GitHub Secrets:** 10 API key eklendi, workflow hazır
+
+---
+
+## 📅 SON GÜNCELLEME
+
+**Tarih:** 2025-11-27 ~14:00 UTC
+**Session:** 5 (Final setup + Yeni modeller planlama)
+**Sonraki Adım:** Yeni AI modellerini siteye ekle
