@@ -1,11 +1,13 @@
 {
   "publishedTopics": [
     "mj-v6-guide",
-    "auto-1764227656757"
+    "auto-1764227656757",
+    "auto-1764310977620"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
-    "Mastering Negative Prompts in Stable Diffusion: The Secret to Flawless AI Art"
+    "Mastering Negative Prompts in Stable Diffusion: The Secret to Flawless AI Art",
+    "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -15,10 +17,15 @@
     "stable diffusion negative prompts",
     "best negative prompts",
     "negative prompt examples",
-    "how to use negative prompts"
+    "how to use negative prompts",
+    "dall-e 3 photorealism",
+    "photorealistic dall-e prompts",
+    "dall-e 3 camera settings",
+    "dall-e lighting prompts",
+    "realistic ai photos"
   ],
-  "lastCategory": "stable-diffusion",
-  "totalPosts": 2,
-  "lastPublishDate": "2025-11-27T07:16:03.418Z",
-  "categoryRotation": 2
+  "lastCategory": "dall-e",
+  "totalPosts": 3,
+  "lastPublishDate": "2025-11-28T06:24:46.561Z",
+  "categoryRotation": 3
 }
