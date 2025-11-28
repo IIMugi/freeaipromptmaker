@@ -72,7 +72,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           
           git add posts/ data/ || true
-          git commit -m "📝 Daily post: $(date +%Y-%m-%d) [skip ci]"
+          git commit -m "📝 Daily post: $(date +%Y-%m-%d) "
           git push origin main
 
       - name: 📈 Summary
