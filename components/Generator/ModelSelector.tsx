@@ -19,7 +19,7 @@ const categoryNames: Record<ModelInfo['category'], string> = {
 const categoryOrder: ModelInfo['category'][] = ['popular', 'professional', 'specialized'];
 
 export function ModelSelector({ selected, onChange }: ModelSelectorProps) {
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   
   // Get popular models for initial view
   const popularModels = modelInfoList.filter(m => m.category === 'popular');
