@@ -137,6 +137,68 @@ const CONFIG = {
 };
 
 // ============================================
+// UNSPLASH RESİM SİSTEMİ
+// ============================================
+
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+
+/**
+ * Unsplash'tan konu ile ilgili resim al
+ */
+async function fetchUnsplashImage(topic) {
+  if (!UNSPLASH_ACCESS_KEY) {
+    console.log('⚠️ UNSPLASH_ACCESS_KEY bulunamadı, varsayılan resim kullanılacak');
+    return null;
+  }
+  
+  try {
+    // AI art ile ilgili arama terimleri
+    const searchTerms = [
+      'ai art',
+      'digital art',
+      'artificial intelligence',
+      'futuristic technology',
+      'creative technology',
+      'digital creativity',
+      'abstract digital',
+      'neon lights art'
+    ];
+    
+    // Rastgele bir terim seç
+    const randomTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
+    
+    const response = await fetch(
+      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(randomTerm)}&orientation=landscape`,
+      {
+        headers: {
+          'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      console.log(`⚠️ Unsplash API hatası: ${response.status}`);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    console.log(`📸 Unsplash resmi alındı: ${data.urls.regular}`);
+    console.log(`   📷 Fotoğrafçı: ${data.user.name}`);
+    
+    return {
+      url: data.urls.regular,
+      photographer: data.user.name,
+      photographerUrl: data.user.links.html,
+      unsplashUrl: data.links.html
+    };
+  } catch (error) {
+    console.error('⚠️ Unsplash hatası:', error.message);
+    return null;
+  }
+}
+
+// ============================================
 // ANA FONKSİYONLAR
 // ============================================
 
@@ -251,10 +313,16 @@ Return the rewritten post in markdown format:
 /**
  * MDX dosyası oluştur
  */
-async function createMDXFile(content, topic) {
+async function createMDXFile(content, topic, imageData) {
   const today = new Date().toISOString().split('T')[0];
   const filename = `${today}-${topic.slug}.mdx`;
   const filepath = path.join(CONFIG.postsDir, filename);
+  
+  // Image frontmatter kısmı
+  const imageFrontmatter = imageData ? `
+image: "${imageData.url}"
+imageCredit: "${imageData.photographer}"
+imageCreditUrl: "${imageData.photographerUrl}"` : '';
   
   // Frontmatter ekle
   const frontmatter = `---
@@ -262,8 +330,8 @@ title: "${topic.title}"
 date: "${today}"
 description: "${topic.keywords.slice(0, 3).join(', ')} - A comprehensive guide for AI artists"
 tags: [${topic.keywords.map(k => `"${k}"`).join(', ')}]
-author: "PromptMaster AI Team"
-readTime: "${Math.ceil(content.split(' ').length / 200)} min read"
+author: "Free AI Prompt Maker"
+readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${imageFrontmatter}
 ---
 
 `;
@@ -302,18 +370,24 @@ async function main() {
     
     console.log(`📌 Seçilen konu: ${topic.title}\n`);
     
-    // 2. Taslak oluştur (Gemini 2.5 Pro)
+    // 2. Unsplash'tan resim al
+    const imageData = await fetchUnsplashImage(topic);
+    if (imageData) {
+      console.log('✅ Featured image alındı\n');
+    }
+    
+    // 3. Taslak oluştur (Gemini 2.5 Pro)
     const draft = await generateDraft(topic);
     console.log('✅ Taslak oluşturuldu\n');
     
-    // 3. Humanize et (Gemini 2.5 Pro)
+    // 4. Humanize et (Gemini 2.5 Pro)
     const humanizedContent = await humanizeContent(draft, topic);
     console.log('✅ İçerik humanize edildi\n');
     
-    // 4. MDX dosyası oluştur
-    const filepath = await createMDXFile(humanizedContent, topic);
+    // 5. MDX dosyası oluştur (resim ile)
+    const filepath = await createMDXFile(humanizedContent, topic, imageData);
     
-    // 5. Konuyu published olarak işaretle
+    // 6. Konuyu published olarak işaretle
     await markTopicAsPublished(topic.id);
     
     console.log('\n🎉 Blog yazısı başarıyla oluşturuldu!');

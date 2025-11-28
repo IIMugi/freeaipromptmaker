@@ -37,11 +37,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
+      images: post.image ? [{ url: post.image }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.description,
+      images: post.image ? [post.image] : undefined,
     },
   };
 }
@@ -95,6 +97,32 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1 max-w-3xl">
+            {/* Featured Image */}
+            {post.image && (
+              <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+                {post.imageCredit && (
+                  <div className="absolute bottom-3 right-3 text-xs text-white/70">
+                    Photo by{' '}
+                    <a
+                      href={post.imageCreditUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-white"
+                    >
+                      {post.imageCredit}
+                    </a>
+                    {' '}on Unsplash
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Header */}
             <header className="mb-8">
               {/* Category Badge */}

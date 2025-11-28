@@ -16,6 +16,9 @@ export interface BlogPost {
   difficulty?: string;
   readTime: string;
   content: string;
+  image?: string;
+  imageCredit?: string;
+  imageCreditUrl?: string;
 }
 
 export interface BlogPostMeta {
@@ -28,6 +31,7 @@ export interface BlogPostMeta {
   category?: string;
   difficulty?: string;
   readTime: string;
+  image?: string;
 }
 
 /**
@@ -62,6 +66,7 @@ export function getAllPosts(): BlogPostMeta[] {
         category: data.category,
         difficulty: data.difficulty,
         readTime: data.readTime || stats.text,
+        image: data.image,
       };
     })
     // Tarihe göre sırala (yeniden eskiye)
@@ -102,6 +107,9 @@ export function getPostBySlug(slug: string): BlogPost | null {
     difficulty: data.difficulty,
     readTime: data.readTime || stats.text,
     content,
+    image: data.image,
+    imageCredit: data.imageCredit,
+    imageCreditUrl: data.imageCreditUrl,
   };
 }
 
