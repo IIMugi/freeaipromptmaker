@@ -2,12 +2,14 @@
   "publishedTopics": [
     "mj-v6-guide",
     "auto-1764227656757",
-    "auto-1764310977620"
+    "auto-1764310977620",
+    "auto-1764400450857"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
     "Mastering Negative Prompts in Stable Diffusion: The Secret to Flawless AI Art",
-    "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles"
+    "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles",
+    "The Ultimate Guide to Creating Consistent Characters in AI Art (Midjourney, DALL-E 3, Stable Diffusion)"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -22,10 +24,15 @@
     "photorealistic dall-e prompts",
     "dall-e 3 camera settings",
     "dall-e lighting prompts",
-    "realistic ai photos"
+    "realistic ai photos",
+    "consistent characters ai art",
+    "midjourney consistent character",
+    "ai character reference",
+    "stable diffusion character LoRA",
+    "dall-e 3 character consistency"
   ],
-  "lastCategory": "dall-e",
-  "totalPosts": 3,
-  "lastPublishDate": "2025-11-28T06:24:46.561Z",
-  "categoryRotation": 3
+  "lastCategory": "prompt-techniques",
+  "totalPosts": 4,
+  "lastPublishDate": "2025-11-29T07:15:53.881Z",
+  "categoryRotation": 4
 }
