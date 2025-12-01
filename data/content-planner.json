@@ -46,7 +46,7 @@
       "id": "dalle3-tips",
       "title": "DALL-E 3 Prompting Secrets: Get Better Results Every Time",
       "slug": "dalle-3-prompting-tips-secrets",
-      "status": "pending",
+      "status": "published",
       "keywords": [
         "dall-e 3",
         "dalle prompts",
@@ -59,7 +59,8 @@
         "Style keywords that work",
         "Composition tips",
         "Common pitfalls"
-      ]
+      ],
+      "publishedAt": "2025-12-01T08:24:43.914Z"
     },
     {
       "id": "cyberpunk-prompts",
