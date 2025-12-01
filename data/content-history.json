@@ -4,14 +4,16 @@
     "auto-1764227656757",
     "auto-1764310977620",
     "auto-1764400450857",
-    "auto-1764486852285"
+    "auto-1764486852285",
+    "auto-1764573598809"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
     "Mastering Negative Prompts in Stable Diffusion: The Secret to Flawless AI Art",
     "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles",
     "The Ultimate Guide to Creating Consistent Characters in AI Art (Midjourney, DALL-E 3, Stable Diffusion)",
-    "The AI Artist's Stylebook: 50+ Essential Art Styles to Transform Your Prompts"
+    "The AI Artist's Stylebook: 50+ Essential Art Styles to Transform Your Prompts",
+    "The Composition Code: How to Control Layout, Framing, and Angles in AI Art"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -35,10 +37,15 @@
     "ai art styles",
     "art style list",
     "midjourney art styles",
-    "stable diffusion styles"
+    "stable diffusion styles",
+    "ai art composition",
+    "prompting for composition",
+    "rule of thirds ai art",
+    "midjourney composition",
+    "ai art camera angles"
   ],
-  "lastCategory": "art-styles",
-  "totalPosts": 5,
-  "lastPublishDate": "2025-11-30T07:15:43.764Z",
-  "categoryRotation": 5
+  "lastCategory": "tutorials",
+  "totalPosts": 6,
+  "lastPublishDate": "2025-12-01T07:21:13.723Z",
+  "categoryRotation": 6
 }
