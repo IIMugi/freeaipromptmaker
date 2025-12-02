@@ -5,7 +5,8 @@
     "auto-1764310977620",
     "auto-1764400450857",
     "auto-1764486852285",
-    "auto-1764573598809"
+    "auto-1764573598809",
+    "auto-1764659919661"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
@@ -13,7 +14,8 @@
     "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles",
     "The Ultimate Guide to Creating Consistent Characters in AI Art (Midjourney, DALL-E 3, Stable Diffusion)",
     "The AI Artist's Stylebook: 50+ Essential Art Styles to Transform Your Prompts",
-    "The Composition Code: How to Control Layout, Framing, and Angles in AI Art"
+    "The Composition Code: How to Control Layout, Framing, and Angles in AI Art",
+    "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -42,10 +44,14 @@
     "prompting for composition",
     "rule of thirds ai art",
     "midjourney composition",
-    "ai art camera angles"
+    "ai art camera angles",
+    "midjourney vs dall-e 3",
+    "stable diffusion vs midjourney",
+    "best ai art generator",
+    "ai art generator comparison"
   ],
-  "lastCategory": "tutorials",
-  "totalPosts": 6,
-  "lastPublishDate": "2025-12-01T07:21:13.723Z",
-  "categoryRotation": 6
+  "lastCategory": "comparisons",
+  "totalPosts": 7,
+  "lastPublishDate": "2025-12-02T07:20:29.268Z",
+  "categoryRotation": 7
 }
