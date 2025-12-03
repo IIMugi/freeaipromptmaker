@@ -29,7 +29,7 @@ export function Footer() {
                 Free<span className="text-violet-500">AI</span>PromptMaker
               </span>
             </Link>
-            <p className="text-slate-400 text-sm max-w-md">
+            <p className="text-slate-300 text-sm max-w-md">
               Free AI prompt generator - create stunning prompts visually for 
               Midjourney, DALL-E 3, and Stable Diffusion. No memorization needed!
             </p>
@@ -38,19 +38,21 @@ export function Footer() {
                 href="https://twitter.com/FreeAIPromptMkr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-violet-400 transition-colors"
-                aria-label="Twitter"
+                className="text-slate-300 hover:text-violet-400 transition-colors"
+                aria-label="Follow us on Twitter"
               >
-                <Twitter className="w-5 h-5" />
+                <Twitter className="w-5 h-5" aria-hidden="true" />
+                <span className="sr-only">Twitter</span>
               </a>
               <a
                 href="https://github.com/freeaipromptmaker"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-violet-400 transition-colors"
-                aria-label="GitHub"
+                className="text-slate-300 hover:text-violet-400 transition-colors"
+                aria-label="View our GitHub repository"
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-5 h-5" aria-hidden="true" />
+                <span className="sr-only">GitHub</span>
               </a>
             </div>
           </div>
@@ -63,7 +65,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-slate-400 hover:text-white text-sm transition-colors"
+                    className="text-slate-300 hover:text-white text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -80,7 +82,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-slate-400 hover:text-white text-sm transition-colors"
+                    className="text-slate-300 hover:text-white text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -92,7 +94,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-slate-800">
-          <p className="text-slate-500 text-sm text-center">
+          <p className="text-slate-400 text-sm text-center">
             © {currentYear} Free AI Prompt Maker. All rights reserved.
           </p>
         </div>

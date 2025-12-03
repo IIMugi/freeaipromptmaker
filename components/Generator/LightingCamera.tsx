@@ -34,9 +34,9 @@ export function LightingCamera({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+      <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
         Lighting & Camera
-      </h3>
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Select
           label="Lighting"

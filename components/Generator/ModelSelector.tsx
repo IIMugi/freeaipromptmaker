@@ -36,12 +36,14 @@ export function ModelSelector({ selected, onChange }: ModelSelectorProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+        <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
           Select AI Model
-        </h3>
+        </h2>
         <button
           onClick={() => setShowAll(!showAll)}
           className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+          aria-expanded={showAll}
+          aria-label={showAll ? 'Show fewer AI models' : `Show all ${allModels.length} AI models`}
         >
           {showAll ? 'Show Less' : `Show All (${allModels.length})`}
         </button>
@@ -56,9 +58,9 @@ export function ModelSelector({ selected, onChange }: ModelSelectorProps) {
             
             return (
               <div key={category} className="space-y-3">
-                <h4 className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
                   {categoryNames[category]}
-                </h4>
+                </h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                   {models.map((model) => (
                     <ModelCard
@@ -107,7 +109,9 @@ function ModelCard({ model, selected, onClick, compact }: ModelCardProps) {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      title={model.name} // Tooltip for full name
+      title={model.name}
+      aria-label={`Select ${model.name} AI model${selected ? ' (currently selected)' : ''}`}
+      aria-pressed={selected}
       className={cn(
         'relative p-3 rounded-xl border text-left transition-all duration-200',
         selected
@@ -117,7 +121,7 @@ function ModelCard({ model, selected, onClick, compact }: ModelCardProps) {
       )}
     >
       <div className={cn('flex items-start gap-2', compact && 'items-center gap-1.5')}>
-        <span className={cn('text-2xl flex-shrink-0', compact && 'text-lg')}>{model.icon}</span>
+        <span className={cn('text-2xl flex-shrink-0', compact && 'text-lg')} aria-hidden="true">{model.icon}</span>
         <div className="min-w-0 flex-1">
           <h4 className={cn(
             'font-semibold text-white',

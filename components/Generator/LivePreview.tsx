@@ -40,14 +40,16 @@ export function LivePreview({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+        <h3 className="text-sm font-medium text-slate-200 uppercase tracking-wider">
           Generated Prompt
         </h3>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setShowHistory(!showHistory)}
-          icon={<History className="w-4 h-4" />}
+          icon={<History className="w-4 h-4" aria-hidden="true" />}
+          aria-label={showHistory ? 'Hide prompt history' : `Show prompt history (${history.length} items)`}
+          aria-expanded={showHistory}
         >
           History ({history.length})
         </Button>
@@ -82,7 +84,8 @@ export function LivePreview({
           className="flex-1"
           onClick={handleCopy}
           disabled={!prompt}
-          icon={copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+          icon={copied ? <Check className="w-5 h-5" aria-hidden="true" /> : <Copy className="w-5 h-5" aria-hidden="true" />}
+          aria-label={copied ? 'Prompt copied to clipboard' : 'Copy prompt to clipboard'}
         >
           {copied ? 'Copied!' : 'Copy Prompt'}
         </Button>
@@ -108,7 +111,8 @@ export function LivePreview({
                     variant="ghost"
                     size="sm"
                     onClick={onClearHistory}
-                    icon={<Trash2 className="w-4 h-4" />}
+                    icon={<Trash2 className="w-4 h-4" aria-hidden="true" />}
+                    aria-label="Clear all prompt history"
                   >
                     Clear
                   </Button>
@@ -116,20 +120,21 @@ export function LivePreview({
               </div>
 
               {history.length === 0 ? (
-                <p className="text-sm text-slate-500">No prompts saved yet</p>
+                <p className="text-sm text-slate-400">No prompts saved yet</p>
               ) : (
                 <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                  {history.map((item) => (
+                  {history.map((item, index) => (
                     <motion.button
                       key={item.id}
                       whileHover={{ scale: 1.01 }}
                       onClick={() => onLoadFromHistory(item.prompt)}
                       className="w-full text-left p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors"
+                      aria-label={`Load saved prompt ${index + 1}: ${item.prompt.slice(0, 50)}...`}
                     >
                       <p className="text-sm text-white line-clamp-2 font-mono">
                         {item.prompt}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         {new Date(item.timestamp).toLocaleString()}
                       </p>
                     </motion.button>

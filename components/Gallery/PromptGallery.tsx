@@ -97,25 +97,27 @@ export function PromptGallery() {
             Top Community Prompts
           </h2>
         </div>
-        <p className="text-slate-400">
+        <p className="text-slate-300">
           Get inspired by prompts created by our community
         </p>
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
+      <div className="flex flex-wrap justify-center gap-2 mb-8" role="group" aria-label="Filter prompts by category">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
+            aria-pressed={selectedCategory === cat.id}
+            aria-label={`Filter by ${cat.name} category`}
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               selectedCategory === cat.id
                 ? 'bg-violet-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
             )}
           >
-            <span className="mr-1.5">{cat.icon}</span>
+            <span className="mr-1.5" aria-hidden="true">{cat.icon}</span>
             {cat.name}
           </button>
         ))}
@@ -188,7 +190,7 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
         </div>
 
         {/* Prompt Preview */}
-        <p className="text-sm text-slate-400 line-clamp-3">
+        <p className="text-sm text-slate-300 line-clamp-3">
           {prompt.prompt}
         </p>
 
@@ -197,15 +199,18 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
           {/* Like Button */}
           <button
             onClick={onLike}
+            aria-label={isLiked ? `Unlike ${prompt.title}` : `Like ${prompt.title}`}
+            aria-pressed={isLiked}
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200',
               isLiked
                 ? 'bg-red-500/20 text-red-400'
-                : 'bg-slate-700/50 text-slate-400 hover:bg-slate-700'
+                : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
             )}
           >
             <Heart 
               className={cn('w-4 h-4', isLiked && 'fill-current')} 
+              aria-hidden="true"
             />
             <span className="text-sm font-medium">
               {prompt.likes + (isLiked ? 1 : 0)}
@@ -215,11 +220,12 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
           {/* Copy Button */}
           <button
             onClick={onCopy}
+            aria-label={isCopied ? 'Prompt copied!' : `Copy ${prompt.title} prompt`}
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200',
               isCopied
                 ? 'bg-green-500/20 text-green-400'
-                : 'bg-violet-600/20 text-violet-400 hover:bg-violet-600/30'
+                : 'bg-violet-600/20 text-violet-300 hover:bg-violet-600/30'
             )}
           >
             {isCopied ? (

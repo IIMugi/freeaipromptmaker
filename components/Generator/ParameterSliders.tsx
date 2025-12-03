@@ -52,9 +52,9 @@ export function ParameterSliders({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+      <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
         Parameters
-      </h3>
+      </h2>
       
       <div className="space-y-6">
         {supportsAspectRatio && (
@@ -76,7 +76,7 @@ export function ParameterSliders({
               step={50}
               onChange={onStylizeChange}
             />
-            <div className="text-xs text-slate-500 -mt-2">
+            <div className="text-xs text-slate-400 -mt-2">
               Lower = more literal, Higher = more artistic
             </div>
           </>
@@ -92,7 +92,7 @@ export function ParameterSliders({
               step={5}
               onChange={onChaosChange}
             />
-            <div className="text-xs text-slate-500 -mt-2">
+            <div className="text-xs text-slate-400 -mt-2">
               Higher values produce more varied results
             </div>
           </>
@@ -101,7 +101,7 @@ export function ParameterSliders({
         {/* Model-specific tip */}
         {modelTips[model] && (
           <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-300">
               {modelTips[model]}
             </p>
           </div>
@@ -113,7 +113,7 @@ export function ParameterSliders({
             {modelInfo.features.map((feature, i) => (
               <span
                 key={i}
-                className="text-xs px-2 py-1 bg-slate-800 text-slate-400 rounded-md"
+                className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded-md"
               >
                 ✓ {feature}
               </span>

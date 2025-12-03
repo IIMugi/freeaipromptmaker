@@ -111,10 +111,10 @@ export function PromptBuilder() {
             Free AI Prompt Maker
           </h1>
         </div>
-        <p className="text-slate-400 text-lg">
+        <p className="text-slate-300 text-lg">
           Create stunning AI art prompts visually - 100% free!
         </p>
-        <p className="text-slate-500 text-sm mt-2">
+        <p className="text-slate-400 text-sm mt-2">
           Supporting {12} AI models including Flux, Midjourney v7, DALL-E 3, and more
         </p>
       </motion.div>
@@ -132,9 +132,9 @@ export function PromptBuilder() {
 
           {/* Main Concept Input */}
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+            <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
               Main Concept
-            </h3>
+            </h2>
             <TextArea
               value={mainConcept}
               onChange={(e) => setMainConcept(e.target.value)}
@@ -171,16 +171,16 @@ export function PromptBuilder() {
           {/* Negative Prompt (for models that support it) */}
           {supportsNegativePrompt && (
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+              <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
                 Negative Prompt
-              </h3>
+              </h2>
               <TextArea
                 value={negativePrompt}
                 onChange={(e) => setNegativePrompt(e.target.value)}
                 placeholder="What to avoid... e.g., blurry, low quality, distorted, extra fingers"
                 rows={2}
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 Specify what you don&apos;t want in the image
               </p>
             </div>
