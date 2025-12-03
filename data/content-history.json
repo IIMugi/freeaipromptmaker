@@ -6,7 +6,8 @@
     "auto-1764400450857",
     "auto-1764486852285",
     "auto-1764573598809",
-    "auto-1764659919661"
+    "auto-1764659919661",
+    "auto-1764746310115"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
@@ -15,7 +16,8 @@
     "The Ultimate Guide to Creating Consistent Characters in AI Art (Midjourney, DALL-E 3, Stable Diffusion)",
     "The AI Artist's Stylebook: 50+ Essential Art Styles to Transform Your Prompts",
     "The Composition Code: How to Control Layout, Framing, and Angles in AI Art",
-    "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown"
+    "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown",
+    "Fixing the Glitches: A Practical Guide to Correcting AI Art Hands, Faces, and Text"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -48,10 +50,14 @@
     "midjourney vs dall-e 3",
     "stable diffusion vs midjourney",
     "best ai art generator",
-    "ai art generator comparison"
+    "ai art generator comparison",
+    "fix ai hands",
+    "ai art bad faces",
+    "ai generated text fix",
+    "common ai art problems"
   ],
-  "lastCategory": "comparisons",
-  "totalPosts": 7,
-  "lastPublishDate": "2025-12-02T07:20:29.268Z",
-  "categoryRotation": 7
+  "lastCategory": "tips-tricks",
+  "totalPosts": 8,
+  "lastPublishDate": "2025-12-03T07:20:04.511Z",
+  "categoryRotation": 8
 }
