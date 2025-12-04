@@ -7,7 +7,8 @@
     "auto-1764486852285",
     "auto-1764573598809",
     "auto-1764659919661",
-    "auto-1764746310115"
+    "auto-1764746310115",
+    "auto-1764832677679"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
@@ -17,7 +18,8 @@
     "The AI Artist's Stylebook: 50+ Essential Art Styles to Transform Your Prompts",
     "The Composition Code: How to Control Layout, Framing, and Angles in AI Art",
     "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown",
-    "Fixing the Glitches: A Practical Guide to Correcting AI Art Hands, Faces, and Text"
+    "Fixing the Glitches: A Practical Guide to Correcting AI Art Hands, Faces, and Text",
+    "Level Up Your Campaign: The Ultimate Guide to AI Art for D&D and TTRPGs"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -54,10 +56,15 @@
     "fix ai hands",
     "ai art bad faces",
     "ai generated text fix",
-    "common ai art problems"
+    "common ai art problems",
+    "ai ttrpg art",
+    "d&d art generator",
+    "midjourney fantasy maps",
+    "ai character portrait",
+    "rpg map maker ai"
   ],
-  "lastCategory": "tips-tricks",
-  "totalPosts": 8,
-  "lastPublishDate": "2025-12-03T07:20:04.511Z",
-  "categoryRotation": 8
+  "lastCategory": "use-cases",
+  "totalPosts": 9,
+  "lastPublishDate": "2025-12-04T07:19:23.815Z",
+  "categoryRotation": 9
 }
