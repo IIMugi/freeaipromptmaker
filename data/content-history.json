@@ -8,7 +8,8 @@
     "auto-1764573598809",
     "auto-1764659919661",
     "auto-1764746310115",
-    "auto-1764832677679"
+    "auto-1764832677679",
+    "auto-1764919052090"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
@@ -19,7 +20,8 @@
     "The Composition Code: How to Control Layout, Framing, and Angles in AI Art",
     "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown",
     "Fixing the Glitches: A Practical Guide to Correcting AI Art Hands, Faces, and Text",
-    "Level Up Your Campaign: The Ultimate Guide to AI Art for D&D and TTRPGs"
+    "Level Up Your Campaign: The Ultimate Guide to AI Art for D&D and TTRPGs",
+    "From Still to Motion: The Ultimate Guide to AI Animation & Video Prompts"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -61,10 +63,18 @@
     "d&d art generator",
     "midjourney fantasy maps",
     "ai character portrait",
-    "rpg map maker ai"
+    "rpg map maker ai",
+    "ai animation",
+    "ai video generator",
+    "pika labs prompts",
+    "runwayml prompts",
+    "stable diffusion animation",
+    "text to video ai",
+    "image to video ai",
+    "animate diff tutorial"
   ],
-  "lastCategory": "use-cases",
-  "totalPosts": 9,
-  "lastPublishDate": "2025-12-04T07:19:23.815Z",
-  "categoryRotation": 9
+  "lastCategory": "trending",
+  "totalPosts": 10,
+  "lastPublishDate": "2025-12-05T07:19:10.649Z",
+  "categoryRotation": 10
 }
