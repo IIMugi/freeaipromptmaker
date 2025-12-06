@@ -9,7 +9,8 @@
     "auto-1764659919661",
     "auto-1764746310115",
     "auto-1764832677679",
-    "auto-1764919052090"
+    "auto-1764919052090",
+    "auto-1765005256385"
   ],
   "publishedTitles": [
     "Complete Midjourney V6 Prompt Guide: Master Every Parameter",
@@ -21,7 +22,8 @@
     "Midjourney vs. DALL-E 3 vs. Stable Diffusion: The Ultimate AI Art Generator Showdown",
     "Fixing the Glitches: A Practical Guide to Correcting AI Art Hands, Faces, and Text",
     "Level Up Your Campaign: The Ultimate Guide to AI Art for D&D and TTRPGs",
-    "From Still to Motion: The Ultimate Guide to AI Animation & Video Prompts"
+    "From Still to Motion: The Ultimate Guide to AI Animation & Video Prompts",
+    "The Ultimate Guide to Midjourney Style Reference (--sref): Create a Consistent Visual Identity"
   ],
   "publishedKeywords": [
     "midjourney v6",
@@ -71,10 +73,17 @@
     "stable diffusion animation",
     "text to video ai",
     "image to video ai",
-    "animate diff tutorial"
+    "animate diff tutorial",
+    "midjourney style reference",
+    "midjourney sref",
+    "consistent style ai art",
+    "midjourney aesthetic",
+    "how to use sref",
+    "ai brand identity",
+    "visual consistency midjourney"
   ],
-  "lastCategory": "trending",
-  "totalPosts": 10,
-  "lastPublishDate": "2025-12-05T07:19:10.649Z",
-  "categoryRotation": 10
+  "lastCategory": "midjourney",
+  "totalPosts": 11,
+  "lastPublishDate": "2025-12-06T07:15:57.466Z",
+  "categoryRotation": 11
 }
