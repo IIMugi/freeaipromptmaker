@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2 } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import { MarkdownRenderer } from '@/components/Blog';
@@ -100,10 +101,13 @@ export default async function BlogPostPage({ params }: PageProps) {
             {/* Featured Image */}
             {post.image && (
               <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-                <img
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
+                  priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                 {post.imageCredit && (

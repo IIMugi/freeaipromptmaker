@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Calendar, Clock, Tag } from 'lucide-react';
 import { getAllPosts } from '@/lib/blog';
 
@@ -32,6 +33,19 @@ export default function BlogPage() {
           {/* Featured Post (first one) */}
           {posts[0] && (
             <article className="group bg-gradient-to-br from-slate-800 to-slate-800/50 rounded-2xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden">
+              {posts[0].image && (
+                <div className="relative w-full h-64 md:h-80 overflow-hidden">
+                  <Image
+                    src={posts[0].image}
+                    alt={posts[0].title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+                </div>
+              )}
               <Link href={`/blog/${posts[0].slug}`} className="block p-8">
                 <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mb-4">
                   <span className="flex items-center gap-1">
@@ -89,6 +103,18 @@ export default function BlogPage() {
                 key={post.slug}
                 className="group bg-slate-800 rounded-xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden"
               >
+                {post.image && (
+                  <div className="relative w-full h-48 overflow-hidden">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+                  </div>
+                )}
                 <Link href={`/blog/${post.slug}`} className="block p-6">
                   <div className="flex items-center gap-3 text-sm text-slate-400 mb-3">
                     <span className="flex items-center gap-1">

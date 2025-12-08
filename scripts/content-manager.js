@@ -199,6 +199,7 @@ Respond in this exact JSON format (no markdown, just JSON):
 {
   "title": "Your SEO-Optimized Title Here",
   "slug": "url-friendly-slug-here",
+  "description": "A 150-160 character SEO meta description that summarizes the post and includes the main keyword. Should entice clicks from search results.",
   "keywords": ["keyword1", "keyword2", "keyword3", "keyword4"],
   "outline": [
     "Section 1 title",
@@ -293,13 +294,42 @@ Guidelines:
 - Keep markdown formatting
 - Maintain the internal link to Prompt Generator
 
-Return the rewritten post:
+CRITICAL: 
+- Start DIRECTLY with the blog content (first heading or paragraph)
+- DO NOT include any meta text like "Here is the rewritten post" or "Of course!"
+- DO NOT add any introductory text about what you're doing
+- Just output the blog content itself, nothing else
+
+Output the rewritten blog post:
 `;
 
-  const humanized = await callGemini(humanizePrompt);
+  let humanized = await callGemini(humanizePrompt);
   console.log('✅ Humanize edildi');
   
+  // Post-process: Remove any AI artifacts
+  humanized = cleanAIArtifacts(humanized);
+  
   return humanized;
+}
+
+/**
+ * AI yapay metinlerini temizle
+ */
+function cleanAIArtifacts(content) {
+  // Common AI artifact patterns to remove
+  const artifactPatterns = [
+    /^(?:Of course!?|Sure!?|Here is|Here's|I've rewritten|I have rewritten|Below is)[^\n]*\n+/i,
+    /^(?:Here is the (?:rewritten|blog|article|post)[^\n]*)\n+/i,
+    /^\*{3}\n+/,  // *** separators at the start
+    /^---\n+/,    // --- separators at the start (not frontmatter)
+  ];
+  
+  let cleaned = content;
+  for (const pattern of artifactPatterns) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+  
+  return cleaned.trim();
 }
 
 /**
@@ -310,10 +340,14 @@ async function saveBlogPost(content, topic) {
   const filename = `${today}-${topic.slug}.mdx`;
   const filepath = path.join(POSTS_DIR, filename);
   
+  // Use proper description or generate one from title
+  const seoDescription = topic.description || 
+    `Learn ${topic.title.toLowerCase()}. Expert tips and copy-paste prompts for ${topic.keywords[0] || 'AI art'}.`;
+  
   const frontmatter = `---
 title: "${topic.title}"
 date: "${today}"
-description: "${topic.keywords.slice(0, 3).join(', ')} - A comprehensive guide"
+description: "${seoDescription}"
 tags: [${topic.keywords.map(k => `"${k}"`).join(', ')}]
 author: "Free AI Prompt Maker"
 category: "${topic.category}"
