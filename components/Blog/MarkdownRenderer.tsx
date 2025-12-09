@@ -12,6 +12,13 @@ interface MarkdownRendererProps {
  */
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   const htmlContent = useMemo(() => {
+    const slugify = (text: string) =>
+      text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-');
+
     // Basit markdown -> HTML dönüşümü
     let html = content
       // Code blocks (```code```)
@@ -21,9 +28,18 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       // Inline code (`code`)
       .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
       // Headers
-      .replace(/^### (.*$)/gm, '<h3 class="heading-3">$1</h3>')
-      .replace(/^## (.*$)/gm, '<h2 class="heading-2">$1</h2>')
-      .replace(/^# (.*$)/gm, '<h1 class="heading-1">$1</h1>')
+      .replace(/^### (.*$)/gm, (_m, title) => {
+        const id = slugify(title);
+        return `<h3 id="${id}" class="heading-3">${title}</h3>`;
+      })
+      .replace(/^## (.*$)/gm, (_m, title) => {
+        const id = slugify(title);
+        return `<h2 id="${id}" class="heading-2">${title}</h2>`;
+      })
+      .replace(/^# (.*$)/gm, (_m, title) => {
+        const id = slugify(title);
+        return `<h1 id="${id}" class="heading-1">${title}</h1>`;
+      })
       // Bold
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       // Italic

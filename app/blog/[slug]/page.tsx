@@ -59,6 +59,27 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const relatedPosts = getRelatedPosts(slug, 3);
 
+  const slugify = (text: string) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-');
+
+  // TOC: h2 başlıklarından list
+  const tocHeadings =
+    post.content
+      .match(/^## (.*)$/gm)
+      ?.map((line) => line.replace(/^##\s*/, '').trim())
+      .filter(Boolean) || [];
+
+  const tocItems = tocHeadings.map((title) => ({
+    title,
+    id: slugify(title),
+  }));
+
+  const keyTakeaways = tocHeadings.slice(0, 4);
+
   // Article Schema
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -177,6 +198,37 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </div>
               )}
             </header>
+
+          {/* TOC */}
+          {tocItems.length >= 3 && (
+            <div className="mb-8 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+              <p className="text-sm text-slate-400 mb-3 font-semibold">On this page</p>
+              <ul className="space-y-2 text-sm text-slate-300">
+                {tocItems.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className="hover:text-violet-400 transition-colors"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Key takeaways */}
+          {keyTakeaways.length >= 2 && (
+            <div className="mb-8 rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
+              <p className="text-sm text-violet-300 mb-3 font-semibold">Key takeaways</p>
+              <ul className="list-disc list-inside space-y-1 text-sm text-slate-200">
+                {keyTakeaways.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
             {/* Content */}
             <div className="prose-custom">
