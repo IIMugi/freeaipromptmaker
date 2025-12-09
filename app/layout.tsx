@@ -4,6 +4,7 @@ import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { AdSenseScript } from '@/components/Ads/AdSenseScript';
 import { CookieConsent } from '@/components/CookieConsent';
+import { ScrollTracker } from '@/components/Analytics';
 import './globals.css';
 
 const geistSans = Geist({
@@ -151,7 +152,7 @@ export default function RootLayout({
       >
         {/* AdSense Script - afterInteractive yükleme */}
         <AdSenseScript />
-        
+        <ScrollTracker />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

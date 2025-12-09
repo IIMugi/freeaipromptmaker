@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2 } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import { MarkdownRenderer } from '@/components/Blog';
+import { CtaButtons } from '@/components/Blog/CtaButtons';
 import { SidebarAd, InArticleAd } from '@/components/Ads';
 import { cn } from '@/lib/utils';
 
@@ -92,21 +93,38 @@ export default async function BlogPostPage({ params }: PageProps) {
       title: 'See more AI prompt guides',
       href: '/blog',
     },
+    {
+      title: 'Explore product photo prompt tips',
+      href: '/blog/2025-12-05-ai-animation-video-prompts-guide',
+    },
   ];
 
   const faqEntries = [
     {
       q: `What is "${post.title}" about?`,
-      a: post.description || 'Learn how to improve your AI art prompts with practical steps and examples.',
+      a:
+        post.description ||
+        'Learn how to improve your AI art prompts with practical steps and examples.',
     },
     {
-      q: `How do I apply this guide to my prompts?`,
+      q: 'How do I apply this guide to my prompts?',
       a:
         'Pick one or two tips from the article and test them inside the Visual Prompt Generator, then iterate with small tweaks.',
     },
     {
       q: 'Where can I create and save my prompts?',
-      a: 'Use the Visual Prompt Generator to build, copy, and save prompts for Midjourney, DALL-E, and Stable Diffusion.',
+      a:
+        'Use the Visual Prompt Generator to build, copy, and save prompts for Midjourney, DALL-E, and Stable Diffusion.',
+    },
+    {
+      q: 'Do these tips work for Midjourney, DALL-E, and Stable Diffusion?',
+      a:
+        'Yes. The prompt patterns work across all three; just adapt syntax for each model (aspect ratio, stylize/chaos, negative prompts).',
+    },
+    {
+      q: 'How can I keep my outputs consistent across a series?',
+      a:
+        'Use a stable style reference (sref), fix aspect ratio, repeat key descriptors, and re-use seeds/model presets when available.',
     },
   ];
 
@@ -287,32 +305,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <InArticleAd />
 
           {/* CTA block */}
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {ctas.map((cta) => (
-              <Link
-                key={cta.title}
-                href={cta.href}
-                className={cn(
-                  'block rounded-xl border border-slate-800 bg-slate-900/60 p-5',
-                  'hover:border-violet-500/40 hover:bg-slate-900 transition-colors'
-                )}
-              >
-                <p className="text-sm text-violet-300 font-semibold mb-2">
-                  {cta.title}
-                </p>
-                {'description' in cta && cta.description ? (
-                  <p className="text-slate-300 text-sm">{cta.description}</p>
-                ) : (
-                  <p className="text-slate-400 text-sm">
-                    Explore more AI art prompt tutorials and walkthroughs.
-                  </p>
-                )}
-                <span className="inline-flex items-center gap-2 text-violet-400 text-sm font-medium mt-3">
-                  Go →
-                </span>
-              </Link>
-            ))}
-          </div>
+          <CtaButtons items={ctas} />
 
           {/* FAQ */}
           <div className="mt-10 rounded-xl border border-slate-800 bg-slate-900/60 p-6">
