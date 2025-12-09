@@ -10,11 +10,12 @@ import { AdUnit } from './AdUnit';
 export function SidebarAd() {
   return (
     <aside 
-      className="hidden lg:block sticky top-24 w-[300px]"
+      className="hidden lg:block sticky top-24 w-[300px] self-start"
       // SEO: Landmark ve yapısal veri
       aria-label="Sidebar Advertisement"
       itemScope
       itemType="https://schema.org/WPAdBlock"
+      style={{ height: 'fit-content' }}
     >
       <AdUnit
         slot="SIDEBAR_AD_SLOT"

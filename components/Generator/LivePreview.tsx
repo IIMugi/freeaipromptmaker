@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Copy, Check, History, Trash2 } from 'lucide-react';
 import { Button } from '@/components/UI';
-import { ResultAd } from '@/components/Ads';
+import { ResultAd, GeneratorResultAd } from '@/components/Ads';
 import { copyToClipboard } from '@/lib/utils';
 import type { PromptHistory } from '@/lib/prompt-builder';
 
@@ -92,7 +92,7 @@ export function LivePreview({
       </div>
 
       {/* SEO Uyumlu Reklam Alanı - Copy sonrası en değerli alan */}
-      {copied && <ResultAd />}
+      {copied && <GeneratorResultAd />}
 
       {/* History Panel */}
       <AnimatePresence>

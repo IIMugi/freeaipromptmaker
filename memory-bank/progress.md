@@ -56,6 +56,16 @@ AdSense Onay  ░░░░░░░░░░░░░░░░░░░░   0% 
 - [x] Git push (commit: d4603cf) ✅
 - [ ] Prod deploy doğrulaması (Vercel) — bekleniyor
 
+### Session 10: Blog UX + SEO + Ads (2025-12-09)
+- [x] Kategori + slug tabanlı kapak fallback havuzu (daha az tekrar) - commit: 00f48ed
+- [x] Blog detay: TOC, Key takeaways, CTA blokları, FAQ içerik + FAQ schema - commit: 0917655
+- [x] Blog detay: Çift in-article ad (üst/alt) CLS güvenli
+- [x] Blog liste: Top responsive ad slot eklendi - commit: 0917655
+- [x] Markdown heading'lerde id slug (TOC anchor) - commit: 0917655
+- [x] Build lokal ✅
+- [x] Push main ✅
+- [ ] Prod deploy kontrolü (Vercel) - bekleniyor
+
 ### Session 7: Community Prompts Gallery (2025-11-27)
 - [x] 12 örnek prompt içeren galeri eklendi
 - [x] Like sistemi (LocalStorage ile kalıcı)

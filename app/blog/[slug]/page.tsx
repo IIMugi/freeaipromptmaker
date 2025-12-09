@@ -4,9 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2 } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
-import { MarkdownRenderer } from '@/components/Blog';
-import { CtaButtons } from '@/components/Blog/CtaButtons';
-import { SidebarAd, InArticleAd } from '@/components/Ads';
+import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
+import { SidebarAd, EndOfContentAd } from '@/components/Ads';
 import { cn } from '@/lib/utils';
 
 interface PageProps {
@@ -157,10 +156,30 @@ export default async function BlogPostPage({ params }: PageProps) {
       name: 'Free AI Prompt Maker',
     },
     keywords: post.tags.join(', '),
+    image: post.image ? [post.image] : undefined,
   };
+
+  // HowTo Schema (for tutorial-style content)
+  const howToSchema = post.category === 'tutorials' || post.title.toLowerCase().includes('guide')
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: post.title,
+        description: post.description,
+        step: tocItems.map((item, index) => ({
+          '@type': 'HowToStep',
+          position: index + 1,
+          name: item.title,
+          url: `https://freeaipromptmaker.com/blog/${slug}#${item.id}`,
+        })),
+      }
+    : null;
 
   return (
     <>
+      {/* Read Progress Bar */}
+      <ReadProgressBar />
+      
       {/* Schema.org Article */}
       <script
         type="application/ld+json"
@@ -172,15 +191,26 @@ export default async function BlogPostPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
+      {/* HowTo Schema (if applicable) */}
+      {howToSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+        />
+      )}
+
       <article className="max-w-7xl mx-auto px-4 py-8">
         {/* Back Button */}
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Blog
         </Link>
+
+        {/* Breadcrumbs */}
+        <Breadcrumbs title={post.title} category={post.category} />
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
@@ -301,8 +331,8 @@ export default async function BlogPostPage({ params }: PageProps) {
               <MarkdownRenderer content={post.content} />
             </div>
 
-            {/* In-Article Ad (after content) */}
-            <InArticleAd />
+            {/* Dynamic In-Article Ads (based on content length) */}
+            <DynamicAdInjector contentLength={post.content.length} />
 
           {/* CTA block */}
           <CtaButtons items={ctas} />
@@ -320,8 +350,8 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* In-Article Ad near footer */}
-          <InArticleAd />
+          {/* End of Content Ad */}
+          <EndOfContentAd />
 
             {/* Share Section */}
             <div className="mt-12 pt-8 border-t border-slate-700">
@@ -365,30 +395,8 @@ export default async function BlogPostPage({ params }: PageProps) {
               </Link>
             </div>
 
-            {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <div className="mt-12">
-                <h3 className="text-xl font-bold text-white mb-6">
-                  Related Articles
-                </h3>
-                <div className="grid gap-4">
-                  {relatedPosts.map((relatedPost) => (
-                    <Link
-                      key={relatedPost.slug}
-                      href={`/blog/${relatedPost.slug}`}
-                      className="block p-4 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
-                    >
-                      <h4 className="font-medium text-white mb-1">
-                        {relatedPost.title}
-                      </h4>
-                      <p className="text-sm text-slate-400 line-clamp-1">
-                        {relatedPost.description}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Related Posts with contextual navigation */}
+            <RelatedPosts posts={relatedPosts} currentSlug={slug} />
           </div>
 
           {/* Sidebar */}

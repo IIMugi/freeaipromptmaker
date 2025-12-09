@@ -18,6 +18,9 @@
 - 🔧 **next.config.ts** - Unsplash için remotePatterns eklendi
 - 🌈 **Fallback** - Resimsiz yazılar için gradient placeholder eklendi
 - 🛡️ **Security** - Next.js 16.0.8 patch (vulnerable version uyarısı giderildi)
+- 📚 **Blog UX/SEO** - TOC, Key takeaways, CTA blokları, FAQ + FAQ schema eklendi
+- 📢 **Ads** - Blog liste üstü ad slotu + in-article ad sayısı artırıldı
+- 📈 **Analytics** - Scroll tracking (GA4 ready), CTA click event’leri, client CTA component
 
 ### Güncellenen Dosyalar:
 - `next.config.ts` - Unsplash hostname whitelisting
@@ -25,6 +28,12 @@
 - `app/blog/[slug]/page.tsx` - Blog detayda Image component + fallback
 - `package.json`, `package-lock.json` - Next.js 16.0.8
 - **Push edildi:** Commits `a1ffe5b` (fallback) + `d4603cf` (Next 16.0.8)
+- `lib/blog.ts` - Fallback kapak havuzu (deterministic)
+- `app/blog/[slug]/page.tsx` - TOC, takeaways, FAQ (schema), çift in-article ad, CTA blokları
+- `app/blog/page.tsx` - Blog top ad slotu
+- `components/Analytics/*`, `lib/analytics.ts` - Scroll tracking + CTA event
+- `components/Blog/CtaButtons.tsx` - Client CTA component
+- **Push edildi:** Commits `00f48ed`, `e000b1a`, `0917655`, `0853aa0`, `d1bf0ba`
 
 ---
 
