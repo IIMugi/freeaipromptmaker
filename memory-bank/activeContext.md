@@ -17,12 +17,14 @@
 - 🎨 **UI İyileştirmeleri** - Featured post ve card'larda hover efektleri
 - 🔧 **next.config.ts** - Unsplash için remotePatterns eklendi
 - 🌈 **Fallback** - Resimsiz yazılar için gradient placeholder eklendi
+- 🛡️ **Security** - Next.js 16.0.8 patch (vulnerable version uyarısı giderildi)
 
 ### Güncellenen Dosyalar:
 - `next.config.ts` - Unsplash hostname whitelisting
 - `app/blog/page.tsx` - Blog list'te Image component
 - `app/blog/[slug]/page.tsx` - Blog detayda Image component + fallback
-- **Push edildi:** Commit `bd45957` ✅ (fallback için yeni commit atılacak)
+- `package.json`, `package-lock.json` - Next.js 16.0.8
+- **Push edildi:** Commits `a1ffe5b` (fallback) + `d4603cf` (Next 16.0.8)
 
 ---
 

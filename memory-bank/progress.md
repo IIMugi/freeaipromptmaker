@@ -45,8 +45,16 @@ AdSense Onay  ░░░░░░░░░░░░░░░░░░░░   0% 
 - [x] Gradient overlay ve photo credits
 - [x] Resmi olmayan postlar için gradient placeholder fallback
 - [x] Local test (localhost:3001) ✅
-- [x] Git push (commit: bd45957) ✅
-- [ ] Production deploy + doğrulama (Vercel)
+- [x] Git push (commit: bd45957, a1ffe5b) ✅
+- [ ] Production deploy + doğrulama (Vercel) — bekleniyor
+
+### Session 9: Security Patch (2025-12-09)
+- [x] Vercel build hatası: “Vulnerable version of Next.js detected”
+- [x] npm view → latest 16.0.8; Context7 upgrade docs okundu
+- [x] Next.js & eslint-config-next 16.0.8'e yükseltildi
+- [x] npm run build (local) ✅
+- [x] Git push (commit: d4603cf) ✅
+- [ ] Prod deploy doğrulaması (Vercel) — bekleniyor
 
 ### Session 7: Community Prompts Gallery (2025-11-27)
 - [x] 12 örnek prompt içeren galeri eklendi
