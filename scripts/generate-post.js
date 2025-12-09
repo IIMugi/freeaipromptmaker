@@ -304,10 +304,19 @@ Rewrite guidelines:
 
 The goal: Make this indistinguishable from a post written by an experienced human blogger who genuinely enjoys AI art.
 
-Return the rewritten post in markdown format:
+CRITICAL: Do NOT include meta-commentary like "Here is the rewritten post..." or "Of course! Here is...". Start directly with the blog content.
+
+Return ONLY the rewritten post in markdown format (no preamble):
 `;
 
-  return await callGeminiWithRetry(prompt);
+  const response = await callGeminiWithRetry(prompt);
+  
+  // Clean up any meta-commentary that might have slipped through
+  return response
+    .replace(/^(Here is the rewritten blog post.*?\n\n)/i, '')
+    .replace(/^(Of course!.*?Here is.*?\n\n)/i, '')
+    .replace(/^(_\*\*# )/m, '# ')  // Remove leading _** if present
+    .trim();
 }
 
 /**
