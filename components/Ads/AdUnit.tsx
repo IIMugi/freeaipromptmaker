@@ -14,6 +14,7 @@ interface AdUnitProps {
 
 // AdSense client ID - .env'den alınacak
 const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-XXXXXXXXXXXXXXXX';
+const isConfigured = AD_CLIENT && !AD_CLIENT.includes('XXXX');
 
 export function AdUnit({
   slot,
@@ -26,6 +27,10 @@ export function AdUnit({
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    if (!isConfigured || !slot) {
+      return;
+    }
+
     // AdSense script yüklenmiş mi kontrol et
     const loadAd = () => {
       try {
@@ -58,6 +63,28 @@ export function AdUnit({
       setTimeout(() => clearInterval(checkInterval), 5000);
     }
   }, [slot]);
+
+  // AdSense yapılandırılmadıysa placeholder göster, script çalıştırma
+  if (!isConfigured || !slot) {
+    return (
+      <div
+        className={cn(
+          'ad-container relative overflow-hidden bg-slate-800/40 border border-dashed border-slate-700',
+          className
+        )}
+        style={{ minHeight: `${minHeight}px`, ...style }}
+        aria-label="Advertisement placeholder"
+        role="complementary"
+        data-ad-status="disabled"
+      >
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs text-slate-500">
+            Ad placeholder (configure NEXT_PUBLIC_ADSENSE_CLIENT)
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
