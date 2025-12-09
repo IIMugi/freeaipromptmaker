@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, Clock, Tag } from 'lucide-react';
 import { getAllPosts } from '@/lib/blog';
+import { AdUnit } from '@/components/Ads/AdUnit';
 
 export const metadata: Metadata = {
   title: 'Blog - AI Art Tips & Prompt Guides',
@@ -25,6 +26,16 @@ export default function BlogPage() {
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
           Expert tips, tutorials, and inspiration for creating stunning AI art
         </p>
+      </div>
+
+      {/* Top Ad (CLS-safe) */}
+      <div className="mb-10">
+        <AdUnit
+          slot="BLOG_TOP_RESPONSIVE"
+          format="auto"
+          minHeight={250}
+          className="rounded-xl border border-slate-800 bg-slate-900/50"
+        />
       </div>
 
       {/* Posts Grid */}

@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, Clock, Tag, User, Share2 } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import { MarkdownRenderer } from '@/components/Blog';
 import { SidebarAd, InArticleAd } from '@/components/Ads';
+import { cn } from '@/lib/utils';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -80,6 +81,48 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const keyTakeaways = tocHeadings.slice(0, 4);
 
+  const ctas: Array<{ title: string; href: string; description?: string }> = [
+    {
+      title: 'Try the Visual Prompt Generator',
+      description:
+        'Build Midjourney, DALL-E, and Stable Diffusion prompts without memorizing parameters.',
+      href: '/',
+    },
+    {
+      title: 'See more AI prompt guides',
+      href: '/blog',
+    },
+  ];
+
+  const faqEntries = [
+    {
+      q: `What is "${post.title}" about?`,
+      a: post.description || 'Learn how to improve your AI art prompts with practical steps and examples.',
+    },
+    {
+      q: `How do I apply this guide to my prompts?`,
+      a:
+        'Pick one or two tips from the article and test them inside the Visual Prompt Generator, then iterate with small tweaks.',
+    },
+    {
+      q: 'Where can I create and save my prompts?',
+      a: 'Use the Visual Prompt Generator to build, copy, and save prompts for Midjourney, DALL-E, and Stable Diffusion.',
+    },
+  ];
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntries.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  };
+
   // Article Schema
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -104,6 +147,11 @@ export default async function BlogPostPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <article className="max-w-7xl mx-auto px-4 py-8">
@@ -237,6 +285,50 @@ export default async function BlogPostPage({ params }: PageProps) {
 
             {/* In-Article Ad (after content) */}
             <InArticleAd />
+
+          {/* CTA block */}
+          <div className="mt-10 grid gap-4 md:grid-cols-2">
+            {ctas.map((cta) => (
+              <Link
+                key={cta.title}
+                href={cta.href}
+                className={cn(
+                  'block rounded-xl border border-slate-800 bg-slate-900/60 p-5',
+                  'hover:border-violet-500/40 hover:bg-slate-900 transition-colors'
+                )}
+              >
+                <p className="text-sm text-violet-300 font-semibold mb-2">
+                  {cta.title}
+                </p>
+                {'description' in cta && cta.description ? (
+                  <p className="text-slate-300 text-sm">{cta.description}</p>
+                ) : (
+                  <p className="text-slate-400 text-sm">
+                    Explore more AI art prompt tutorials and walkthroughs.
+                  </p>
+                )}
+                <span className="inline-flex items-center gap-2 text-violet-400 text-sm font-medium mt-3">
+                  Go →
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {/* FAQ */}
+          <div className="mt-10 rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">FAQ</h3>
+            <div className="space-y-4">
+              {faqEntries.map((item) => (
+                <div key={item.q} className="border-b border-slate-800 pb-4 last:border-b-0 last:pb-0">
+                  <p className="text-sm font-semibold text-slate-100">{item.q}</p>
+                  <p className="text-sm text-slate-300 mt-1">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* In-Article Ad near footer */}
+          <InArticleAd />
 
             {/* Share Section */}
             <div className="mt-12 pt-8 border-t border-slate-700">
