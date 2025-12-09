@@ -5,6 +5,25 @@ import readingTime from 'reading-time';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
+// Kategori bazlı kapak fallback'leri (Unsplash)
+const categoryFallbackImages: Record<string, string> = {
+  midjourney:
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
+  'stable-diffusion':
+    'https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1600&q=80',
+  'dall-e':
+    'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1600&q=80',
+  tutorials:
+    'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80',
+  comparisons:
+    'https://images.unsplash.com/photo-1488229297570-58520851e868?auto=format&fit=crop&w=1600&q=80',
+  'prompt-techniques':
+    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1600&q=80',
+};
+
+const defaultFallbackImage =
+  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80';
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -56,6 +75,12 @@ export function getAllPosts(): BlogPostMeta[] {
       // Okuma süresini hesapla
       const stats = readingTime(content);
       
+      const category = data.category as string | undefined;
+      const image =
+        data.image ||
+        (category ? categoryFallbackImages[category] : undefined) ||
+        defaultFallbackImage;
+
       return {
         slug,
         title: data.title || 'Untitled',
@@ -63,10 +88,10 @@ export function getAllPosts(): BlogPostMeta[] {
         description: data.description || '',
         tags: data.tags || [],
         author: data.author || 'Free AI Prompt Maker',
-        category: data.category,
+        category,
         difficulty: data.difficulty,
         readTime: data.readTime || stats.text,
-        image: data.image,
+        image,
       };
     })
     // Tarihe göre sırala (yeniden eskiye)
