@@ -24,6 +24,21 @@ const categoryFallbackImages: Record<string, string> = {
 const defaultFallbackImage =
   'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80';
 
+// Farklılık için genel fallback havuzu (deterministic seçim)
+const fallbackPool = [
+  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80', // desk purple
+  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80&sat=-60', // desk muted
+  'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80', // laptop notes
+  'https://images.unsplash.com/photo-1488229297570-58520851e868?auto=format&fit=crop&w=1600&q=80', // charts
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80', // team work
+  'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1600&q=80', // gradient tech
+];
+
+const pickFallbackFromPool = (slug: string) => {
+  const hash = Array.from(slug).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return fallbackPool[hash % fallbackPool.length] || defaultFallbackImage;
+};
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -79,6 +94,7 @@ export function getAllPosts(): BlogPostMeta[] {
       const image =
         data.image ||
         (category ? categoryFallbackImages[category] : undefined) ||
+        pickFallbackFromPool(slug) ||
         defaultFallbackImage;
 
       return {
