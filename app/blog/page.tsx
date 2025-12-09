@@ -33,8 +33,8 @@ export default function BlogPage() {
           {/* Featured Post (first one) */}
           {posts[0] && (
             <article className="group bg-gradient-to-br from-slate-800 to-slate-800/50 rounded-2xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden">
-              {posts[0].image && (
-                <div className="relative w-full h-64 md:h-80 overflow-hidden">
+              <div className="relative w-full h-64 md:h-80 overflow-hidden">
+                {posts[0].image ? (
                   <Image
                     src={posts[0].image}
                     alt={posts[0].title}
@@ -43,9 +43,11 @@ export default function BlogPage() {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
-                </div>
-              )}
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-900/60 via-slate-900 to-slate-900" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent" />
+              </div>
               <Link href={`/blog/${posts[0].slug}`} className="block p-8">
                 <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mb-4">
                   <span className="flex items-center gap-1">
@@ -103,8 +105,8 @@ export default function BlogPage() {
                 key={post.slug}
                 className="group bg-slate-800 rounded-xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden"
               >
-                {post.image && (
-                  <div className="relative w-full h-48 overflow-hidden">
+                <div className="relative w-full h-48 overflow-hidden">
+                  {post.image ? (
                     <Image
                       src={post.image}
                       alt={post.title}
@@ -112,9 +114,11 @@ export default function BlogPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
-                  </div>
-                )}
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900/50" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+                </div>
                 <Link href={`/blog/${post.slug}`} className="block p-6">
                   <div className="flex items-center gap-3 text-sm text-slate-400 mb-3">
                     <span className="flex items-center gap-1">

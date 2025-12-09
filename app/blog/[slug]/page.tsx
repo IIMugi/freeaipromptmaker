@@ -99,8 +99,8 @@ export default async function BlogPostPage({ params }: PageProps) {
           {/* Main Content */}
           <div className="flex-1 max-w-3xl">
             {/* Featured Image */}
-            {post.image && (
-              <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+            <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+              {post.image ? (
                 <Image
                   src={post.image}
                   alt={post.title}
@@ -109,23 +109,25 @@ export default async function BlogPostPage({ params }: PageProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                {post.imageCredit && (
-                  <div className="absolute bottom-3 right-3 text-xs text-white/70">
-                    Photo by{' '}
-                    <a
-                      href={post.imageCreditUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline hover:text-white"
-                    >
-                      {post.imageCredit}
-                    </a>
-                    {' '}on Unsplash
-                  </div>
-                )}
-              </div>
-            )}
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900/50" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+              {post.image && post.imageCredit && (
+                <div className="absolute bottom-3 right-3 text-xs text-white/70">
+                  Photo by{' '}
+                  <a
+                    href={post.imageCreditUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-white"
+                  >
+                    {post.imageCredit}
+                  </a>
+                  {' '}on Unsplash
+                </div>
+              )}
+            </div>
 
             {/* Header */}
             <header className="mb-8">
