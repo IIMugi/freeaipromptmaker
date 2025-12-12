@@ -79,9 +79,9 @@ function markKeyExhausted() {
 }
 
 /**
- * Gemini API çağrısı yap (retry ve key rotation ile)
+ * Gemini API çağrısı yap (retry, exponential backoff ve key rotation ile)
  */
-async function callGeminiWithRetry(prompt, maxRetries = 3) {
+async function callGeminiWithRetry(prompt, maxRetries = 5) {
   let lastError;
   
   for (let retry = 0; retry < maxRetries; retry++) {
@@ -106,16 +106,23 @@ async function callGeminiWithRetry(prompt, maxRetries = 3) {
       lastError = error;
       const errorMessage = error.message || String(error);
       
-      // Rate limit veya quota hatası
+      // Rate limit, quota, veya 503 (UNAVAILABLE) hatası
       if (
         errorMessage.includes('429') || 
         errorMessage.includes('quota') || 
         errorMessage.includes('exhausted') ||
         errorMessage.includes('RESOURCE_EXHAUSTED') ||
-        errorMessage.includes('rate limit')
+        errorMessage.includes('rate limit') ||
+        errorMessage.includes('503') ||
+        errorMessage.includes('UNAVAILABLE') ||
+        errorMessage.includes('overloaded')
       ) {
         markKeyExhausted();
-        console.log(`🔄 Retry ${retry + 1}/${maxRetries}...`);
+        
+        // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+        const waitTime = Math.min(1000 * Math.pow(2, retry), 16000);
+        console.log(`🔄 Retry ${retry + 1}/${maxRetries} (${waitTime}ms sonra)...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
         continue;
       }
       
