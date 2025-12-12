@@ -90,10 +90,10 @@ async function callGeminiWithRetry(prompt, maxRetries = 3) {
       const ai = new GoogleGenAI({ apiKey });
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-pro', // En güçlü model
+        model: 'gemini-2.5-flash', // Hızlı & Free tier, blog için ideal
         contents: prompt,
         config: {
-          maxOutputTokens: 8000, // 2.5 Pro daha uzun çıktı destekler
+          maxOutputTokens: 8000, // Flash da uzun çıktı destekler
           temperature: 0.8,
           topP: 0.95,
           topK: 40,
