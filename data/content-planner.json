@@ -86,7 +86,7 @@
       "id": "portrait-prompts",
       "title": "AI Portrait Prompts: Create Stunning Character Art",
       "slug": "ai-portrait-character-prompts-guide",
-      "status": "pending",
+      "status": "published",
       "keywords": [
         "ai portrait",
         "character art",
@@ -99,7 +99,8 @@
         "Expression and emotion",
         "Style variations",
         "Post-processing tips"
-      ]
+      ],
+      "publishedAt": "2025-12-12T14:31:22.319Z"
     },
     {
       "id": "landscape-prompts",
