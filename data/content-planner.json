@@ -187,7 +187,7 @@
       "id": "photorealistic-prompts",
       "title": "Photorealistic AI Art: Prompts That Look Like Real Photos",
       "slug": "photorealistic-ai-art-prompts",
-      "status": "pending",
+      "status": "published",
       "keywords": [
         "photorealistic",
         "realistic ai art",
@@ -200,7 +200,8 @@
         "Lighting for realism",
         "Detail and texture",
         "Post-processing look"
-      ]
+      ],
+      "publishedAt": "2025-12-15T08:25:38.327Z"
     }
   ],
   "lastUpdated": "2025-11-27",
