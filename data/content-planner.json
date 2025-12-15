@@ -167,7 +167,7 @@
       "id": "common-mistakes",
       "title": "10 AI Prompt Mistakes Killing Your Image Quality",
       "slug": "ai-prompt-mistakes-image-quality",
-      "status": "pending",
+      "status": "published",
       "keywords": [
         "prompt mistakes",
         "ai art tips",
@@ -180,7 +180,8 @@
         "Wrong aspect ratios",
         "Overcomplicated prompts",
         "Ignoring model strengths"
-      ]
+      ],
+      "publishedAt": "2025-12-15T07:22:11.055Z"
     },
     {
       "id": "photorealistic-prompts",
