@@ -4,7 +4,7 @@ import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { AdSenseScript } from '@/components/Ads/AdSenseScript';
 import { CookieConsent } from '@/components/CookieConsent';
-import { ScrollTracker } from '@/components/Analytics';
+import { ScrollTracker, GoogleAnalytics } from '@/components/Analytics';
 import './globals.css';
 
 const geistSans = Geist({
@@ -123,7 +123,7 @@ export default function RootLayout({
             }),
           }}
         />
-        
+
         {/* SEO: Organization Schema */}
         <script
           type="application/ld+json"
@@ -141,7 +141,7 @@ export default function RootLayout({
             }),
           }}
         />
-        
+
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -152,6 +152,8 @@ export default function RootLayout({
       >
         {/* AdSense Script - afterInteractive yükleme */}
         <AdSenseScript />
+        {/* Google Analytics 4 */}
+        <GoogleAnalytics />
         <ScrollTracker />
         <Header />
         <main className="flex-1">{children}</main>
