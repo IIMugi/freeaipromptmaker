@@ -53,7 +53,7 @@ function getNextApiKey() {
   if (exhaustedKeys.size >= API_KEYS.length) {
     throw new Error('❌ Tüm API key\'ler exhausted! Yarın tekrar deneyin.');
   }
-  
+
   // Exhausted olmayan ilk key'i bul
   let attempts = 0;
   while (attempts < API_KEYS.length) {
@@ -65,7 +65,7 @@ function getNextApiKey() {
     currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
     attempts++;
   }
-  
+
   throw new Error('❌ Kullanılabilir API key bulunamadı!');
 }
 
@@ -83,12 +83,12 @@ function markKeyExhausted() {
  */
 async function callGeminiWithRetry(prompt, maxRetries = 5) {
   let lastError;
-  
+
   for (let retry = 0; retry < maxRetries; retry++) {
     try {
       const apiKey = getNextApiKey();
       const ai = new GoogleGenAI({ apiKey });
-      
+
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash', // Hızlı & Free tier, blog için ideal
         contents: prompt,
@@ -99,17 +99,17 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
           topK: 40,
         },
       });
-      
+
       return response.text;
-      
+
     } catch (error) {
       lastError = error;
       const errorMessage = error.message || String(error);
-      
+
       // Rate limit, quota, veya 503 (UNAVAILABLE) hatası
       if (
-        errorMessage.includes('429') || 
-        errorMessage.includes('quota') || 
+        errorMessage.includes('429') ||
+        errorMessage.includes('quota') ||
         errorMessage.includes('exhausted') ||
         errorMessage.includes('RESOURCE_EXHAUSTED') ||
         errorMessage.includes('rate limit') ||
@@ -118,19 +118,19 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
         errorMessage.includes('overloaded')
       ) {
         markKeyExhausted();
-        
+
         // Exponential backoff: 1s, 2s, 4s, 8s, 16s
         const waitTime = Math.min(1000 * Math.pow(2, retry), 16000);
         console.log(`🔄 Retry ${retry + 1}/${maxRetries} (${waitTime}ms sonra)...`);
         await new Promise(resolve => setTimeout(resolve, waitTime));
         continue;
       }
-      
+
       // Diğer hatalar için direkt throw
       throw error;
     }
   }
-  
+
   throw lastError;
 }
 
@@ -157,7 +157,7 @@ async function fetchUnsplashImage(topic) {
     console.log('⚠️ UNSPLASH_ACCESS_KEY bulunamadı, varsayılan resim kullanılacak');
     return null;
   }
-  
+
   try {
     // AI art ile ilgili arama terimleri
     const searchTerms = [
@@ -170,10 +170,10 @@ async function fetchUnsplashImage(topic) {
       'abstract digital',
       'neon lights art'
     ];
-    
+
     // Rastgele bir terim seç
     const randomTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
-    
+
     const response = await fetch(
       `https://api.unsplash.com/photos/random?query=${encodeURIComponent(randomTerm)}&orientation=landscape`,
       {
@@ -182,17 +182,17 @@ async function fetchUnsplashImage(topic) {
         }
       }
     );
-    
+
     if (!response.ok) {
       console.log(`⚠️ Unsplash API hatası: ${response.status}`);
       return null;
     }
-    
+
     const data = await response.json();
-    
+
     console.log(`📸 Unsplash resmi alındı: ${data.urls.regular}`);
     console.log(`   📷 Fotoğrafçı: ${data.user.name}`);
-    
+
     return {
       url: data.urls.regular,
       photographer: data.user.name,
@@ -206,24 +206,194 @@ async function fetchUnsplashImage(topic) {
 }
 
 // ============================================
+// AI TOPIC GENERATION SYSTEM
+// ============================================
+
+const CONTENT_CATEGORIES = [
+  'midjourney',
+  'stable-diffusion',
+  'dall-e',
+  'flux',
+  'leonardo',
+  'prompt-techniques',
+  'art-styles',
+  'tutorials',
+  'comparisons',
+  'beginner-guides'
+];
+
+/**
+ * Get all published topics and keywords to avoid duplicates
+ */
+async function getPublishedTopicsData() {
+  try {
+    const plannerData = await fs.readFile(CONFIG.contentPlannerPath, 'utf-8');
+    const planner = JSON.parse(plannerData);
+
+    const publishedTopics = planner.topics
+      .filter(t => t.status === 'published')
+      .map(t => ({
+        title: t.title,
+        keywords: t.keywords || [],
+        slug: t.slug
+      }));
+
+    const allKeywords = publishedTopics.flatMap(t => t.keywords);
+    const allTitles = publishedTopics.map(t => t.title);
+
+    return { publishedTopics, allKeywords, allTitles, planner };
+  } catch (error) {
+    console.error('⚠️ Error reading published topics:', error.message);
+    return { publishedTopics: [], allKeywords: [], allTitles: [], planner: { topics: [] } };
+  }
+}
+
+/**
+ * Generate a new SEO-optimized topic using Gemini
+ */
+async function generateNewTopic(publishedData) {
+  console.log('🧠 AI ile yeni konu üretiliyor...');
+
+  const { allTitles, allKeywords } = publishedData;
+
+  // Rotate through categories
+  const categoryIndex = allTitles.length % CONTENT_CATEGORIES.length;
+  const suggestedCategory = CONTENT_CATEGORIES[categoryIndex];
+
+  const prompt = `
+You are an SEO expert specializing in AI art content. Your task is to generate ONE new blog topic.
+
+PUBLISHED CONTENT (DO NOT REPEAT):
+${allTitles.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+USED KEYWORDS (AVOID HEAVY OVERLAP):
+${[...new Set(allKeywords)].slice(0, 30).join(', ')}
+
+SUGGESTED CATEGORY FOR THIS POST: ${suggestedCategory}
+
+Generate a NEW blog topic that:
+1. Targets high-volume AI art search keywords
+2. Does NOT overlap with published content above
+3. Has clear search intent (how-to, guide, tips, collection)
+4. Is actionable and valuable for AI artists
+
+TOPIC IDEAS BY CATEGORY:
+- midjourney: New features, specific techniques, style references
+- stable-diffusion: ControlNet, LoRA, model comparisons
+- dall-e: ChatGPT integration, prompting secrets
+- flux: Speed optimization, quality settings
+- leonardo: Character consistency, motion features
+- prompt-techniques: Weighting, negative prompts, structure
+- art-styles: Specific aesthetics (anime, oil painting, etc.)
+- tutorials: Step-by-step guides
+- comparisons: Model vs model, feature comparisons
+- beginner-guides: Getting started, basics explained
+
+Respond in this EXACT JSON format (no markdown, no code blocks):
+{
+  "id": "unique-slug-id",
+  "title": "Compelling SEO-Optimized Title (50-60 chars)",
+  "slug": "url-friendly-slug",
+  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4"],
+  "outline": [
+    "Introduction section",
+    "Main topic 1",
+    "Main topic 2", 
+    "Main topic 3",
+    "Practical examples",
+    "Pro tips",
+    "Conclusion with CTA"
+  ],
+  "category": "${suggestedCategory}"
+}
+`;
+
+  const response = await callGeminiWithRetry(prompt);
+
+  // Parse JSON from response
+  try {
+    // Clean up response - remove markdown code blocks if present
+    let cleanResponse = response
+      .replace(/```json\s*/gi, '')
+      .replace(/```\s*/gi, '')
+      .trim();
+
+    const topic = JSON.parse(cleanResponse);
+
+    // Validate required fields
+    if (!topic.id || !topic.title || !topic.slug || !topic.keywords || !topic.outline) {
+      throw new Error('Missing required fields in generated topic');
+    }
+
+    topic.status = 'pending';
+    topic.autoGenerated = true;
+    topic.generatedAt = new Date().toISOString();
+
+    console.log(`✅ Yeni konu üretildi: ${topic.title}`);
+    return topic;
+
+  } catch (parseError) {
+    console.error('❌ Topic JSON parse hatası:', parseError.message);
+    console.error('Response was:', response.substring(0, 500));
+    throw new Error('Failed to parse generated topic');
+  }
+}
+
+/**
+ * Add new topic to content-planner.json
+ */
+async function addTopicToPlanner(topic, planner) {
+  planner.topics.push(topic);
+  planner.lastUpdated = new Date().toISOString().split('T')[0];
+
+  // Track auto-generation stats
+  if (!planner.autoGeneration) {
+    planner.autoGeneration = {
+      enabled: true,
+      totalAutoGenerated: 0
+    };
+  }
+  planner.autoGeneration.totalAutoGenerated++;
+  planner.autoGeneration.lastGeneratedAt = new Date().toISOString();
+
+  await fs.writeFile(CONFIG.contentPlannerPath, JSON.stringify(planner, null, 2));
+  console.log('📝 Konu content-planner.json\'a eklendi');
+}
+
+// ============================================
 // ANA FONKSİYONLAR
 // ============================================
 
 /**
- * Content planner'dan yazılmamış konu seç
+ * Content planner'dan yazılmamış konu seç veya yeni konu üret
  */
 async function selectTopic() {
-  const plannerData = await fs.readFile(CONFIG.contentPlannerPath, 'utf-8');
-  const planner = JSON.parse(plannerData);
-  
+  const publishedData = await getPublishedTopicsData();
+  const { planner } = publishedData;
+
+  // First check for pending topics
   const pendingTopic = planner.topics.find(t => t.status === 'pending');
-  
-  if (!pendingTopic) {
-    console.log('✅ Tüm konular yazıldı!');
+
+  if (pendingTopic) {
+    console.log('📋 Mevcut pending konu bulundu');
+    return pendingTopic;
+  }
+
+  // No pending topics - generate new one with AI
+  console.log('🔄 Pending konu yok, AI ile yeni konu üretiliyor...');
+
+  try {
+    const newTopic = await generateNewTopic(publishedData);
+
+    // Add to planner
+    await addTopicToPlanner(newTopic, planner);
+
+    return newTopic;
+  } catch (error) {
+    console.error('❌ Yeni konu üretme hatası:', error.message);
+    console.log('✅ Tüm konular yazıldı ve yeni konu üretilemedi!');
     return null;
   }
-  
-  return pendingTopic;
 }
 
 /**
@@ -232,13 +402,13 @@ async function selectTopic() {
 async function markTopicAsPublished(topicId) {
   const plannerData = await fs.readFile(CONFIG.contentPlannerPath, 'utf-8');
   const planner = JSON.parse(plannerData);
-  
+
   const topic = planner.topics.find(t => t.id === topicId);
   if (topic) {
     topic.status = 'published';
     topic.publishedAt = new Date().toISOString();
   }
-  
+
   await fs.writeFile(CONFIG.contentPlannerPath, JSON.stringify(planner, null, 2));
 }
 
@@ -247,7 +417,7 @@ async function markTopicAsPublished(topicId) {
  */
 async function generateDraft(topic) {
   console.log(`📝 Taslak yazılıyor: ${topic.title}`);
-  
+
   const prompt = `
 You are an expert AI art blogger writing for PromptMaster AI - a visual prompt generator for Midjourney, DALL-E, and Stable Diffusion.
 
@@ -291,7 +461,7 @@ Write the blog post now in markdown format:
  */
 async function humanizeContent(draft, topic) {
   console.log('🧑 İçerik humanize ediliyor...');
-  
+
   const prompt = `
 You are a professional editor and experienced blogger. Your task is to make this blog post sound more natural and human-written.
 
@@ -317,7 +487,7 @@ Return ONLY the rewritten post in markdown format (no preamble):
 `;
 
   const response = await callGeminiWithRetry(prompt);
-  
+
   // Clean up any meta-commentary that might have slipped through
   return response
     .replace(/^(Here is the rewritten blog post.*?\n\n)/i, '')
@@ -333,13 +503,13 @@ async function createMDXFile(content, topic, imageData) {
   const today = new Date().toISOString().split('T')[0];
   const filename = `${today}-${topic.slug}.mdx`;
   const filepath = path.join(CONFIG.postsDir, filename);
-  
+
   // Image frontmatter kısmı
   const imageFrontmatter = imageData ? `
 image: "${imageData.url}"
 imageCredit: "${imageData.photographer}"
 imageCreditUrl: "${imageData.photographerUrl}"` : '';
-  
+
   // Frontmatter ekle
   const frontmatter = `---
 title: "${topic.title}"
@@ -353,13 +523,13 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${imageFrontma
 `;
 
   const fullContent = frontmatter + content;
-  
+
   // posts klasörü yoksa oluştur
   await fs.mkdir(CONFIG.postsDir, { recursive: true });
-  
+
   // Dosyayı yaz
   await fs.writeFile(filepath, fullContent);
-  
+
   console.log(`✅ Dosya oluşturuldu: ${filepath}`);
   return filepath;
 }
@@ -370,46 +540,46 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${imageFrontma
 async function main() {
   console.log('🚀 PromptMaster AI Auto-Blogger başlatılıyor...');
   console.log(`📊 ${API_KEYS.length} API key yüklendi\n`);
-  
+
   // API key kontrolü
   if (API_KEYS.length === 0) {
     console.error('❌ Hiç API key bulunamadı! .env.local dosyasını kontrol edin.');
     process.exit(1);
   }
-  
+
   try {
     // 1. Konu seç
     const topic = await selectTopic();
     if (!topic) {
       process.exit(0);
     }
-    
+
     console.log(`📌 Seçilen konu: ${topic.title}\n`);
-    
+
     // 2. Unsplash'tan resim al
     const imageData = await fetchUnsplashImage(topic);
     if (imageData) {
       console.log('✅ Featured image alındı\n');
     }
-    
+
     // 3. Taslak oluştur (Gemini 2.5 Pro)
     const draft = await generateDraft(topic);
     console.log('✅ Taslak oluşturuldu\n');
-    
+
     // 4. Humanize et (Gemini 2.5 Pro)
     const humanizedContent = await humanizeContent(draft, topic);
     console.log('✅ İçerik humanize edildi\n');
-    
+
     // 5. MDX dosyası oluştur (resim ile)
     const filepath = await createMDXFile(humanizedContent, topic, imageData);
-    
+
     // 6. Konuyu published olarak işaretle
     await markTopicAsPublished(topic.id);
-    
+
     console.log('\n🎉 Blog yazısı başarıyla oluşturuldu!');
     console.log(`📄 Dosya: ${filepath}`);
     console.log(`🔑 Kullanılan key sayısı: ${exhaustedKeys.size + 1}`);
-    
+
   } catch (error) {
     console.error('❌ Hata:', error.message);
     process.exit(1);
