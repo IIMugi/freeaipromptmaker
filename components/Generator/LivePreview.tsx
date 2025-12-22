@@ -28,7 +28,7 @@ export function LivePreview({
 
   const handleCopy = async () => {
     if (!prompt) return;
-    
+
     const success = await copyToClipboard(prompt);
     if (success) {
       setCopied(true);
@@ -91,8 +91,22 @@ export function LivePreview({
         </Button>
       </div>
 
-      {/* SEO Uyumlu Reklam Alanı - Copy sonrası en değerli alan */}
-      {copied && <GeneratorResultAd />}
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {copied && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50"
+          >
+            <div className="flex items-center gap-2 px-4 py-3 bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-500/25">
+              <Check className="w-5 h-5" />
+              <span className="font-medium">Copied to clipboard!</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* History Panel */}
       <AnimatePresence>

@@ -1,7 +1,8 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowRight, Calendar, Clock, Tag, Sparkles, Image as ImageIcon, Palette, Wand2 } from 'lucide-react';
 import { getAllPosts } from '@/lib/blog';
 import { AdUnit } from '@/components/Ads/AdUnit';
 
@@ -14,6 +15,19 @@ export const metadata: Metadata = {
     description: 'Expert tutorials for Midjourney, Stable Diffusion, and DALL-E',
   },
 };
+
+// Category to icon/color mapping for dynamic placeholders
+const categoryStyles: Record<string, { icon: React.ReactNode; gradient: string }> = {
+  'midjourney': { icon: <Wand2 className="w-16 h-16" />, gradient: 'from-purple-900/80 via-violet-900/60 to-slate-900' },
+  'stable-diffusion': { icon: <Palette className="w-16 h-16" />, gradient: 'from-orange-900/70 via-amber-900/50 to-slate-900' },
+  'dall-e': { icon: <Sparkles className="w-16 h-16" />, gradient: 'from-emerald-900/70 via-teal-900/50 to-slate-900' },
+  'tutorials': { icon: <ImageIcon className="w-16 h-16" />, gradient: 'from-blue-900/70 via-cyan-900/50 to-slate-900' },
+  'default': { icon: <Sparkles className="w-16 h-16" />, gradient: 'from-violet-900/60 via-purple-900/40 to-slate-900' },
+};
+
+function getPostStyle(category?: string) {
+  return categoryStyles[category?.toLowerCase() || ''] || categoryStyles['default'];
+}
 
 export default function BlogPage() {
   const posts = getAllPosts();
@@ -55,7 +69,12 @@ export default function BlogPage() {
                     priority
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-900/60 via-slate-900 to-slate-900" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${getPostStyle(posts[0].category).gradient}`}>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20">
+                      {getPostStyle(posts[0].category).icon}
+                      <span className="mt-4 text-sm uppercase tracking-widest">AI Art Guide</span>
+                    </div>
+                  </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent" />
               </div>
@@ -126,7 +145,11 @@ export default function BlogPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900/50" />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${getPostStyle(post.category).gradient}`}>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-white/15">
+                        <Sparkles className="w-12 h-12" />
+                      </div>
+                    </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
                 </div>
