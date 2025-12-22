@@ -21,10 +21,7 @@ export function AdSenseScript() {
       async
       src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`}
       crossOrigin="anonymous"
-      strategy="afterInteractive"
-      onError={(e) => {
-        console.error('[AdSense] Script failed to load:', e);
-      }}
+      strategy="beforeInteractive"
     />
   );
 }
