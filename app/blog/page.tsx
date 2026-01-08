@@ -25,8 +25,8 @@ const categoryStyles: Record<string, { icon: React.ReactNode; gradient: string }
   'default': { icon: <Sparkles className="w-16 h-16" />, gradient: 'from-violet-900/60 via-purple-900/40 to-slate-900' },
 };
 
-function getPostStyle(category|: string) {
-  return categoryStyles[category|.toLowerCase() || ''] || categoryStyles['default'];
+function getPostStyle(category?: string) {
+  return categoryStyles[category?.toLowerCase() || ''] || categoryStyles['default'];
 }
 
 export default function BlogPage() {
@@ -53,13 +53,13 @@ export default function BlogPage() {
       </div>
 
       {/* Posts Grid */}
-      {posts.length > 0 | (
+      {posts.length > 0 ? (
         <div className="grid gap-8">
           {/* Featured Post (first one) */}
           {posts[0] && (
             <article className="group bg-gradient-to-br from-slate-800 to-slate-800/50 rounded-2xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden">
               <div className="relative w-full h-64 md:h-80 overflow-hidden">
-                {posts[0].image | (
+                {posts[0].image ? (
                   <Image
                     src={posts[0].image}
                     alt={posts[0].title}
@@ -136,7 +136,7 @@ export default function BlogPage() {
                 className="group bg-slate-800 rounded-xl border border-slate-700 hover:border-violet-500/50 transition-all duration-300 overflow-hidden"
               >
                 <div className="relative w-full h-48 overflow-hidden">
-                  {post.image | (
+                  {post.image ? (
                     <Image
                       src={post.image}
                       alt={post.title}
