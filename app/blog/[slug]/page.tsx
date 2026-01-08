@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Calendar, Clock, Tag, User, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, User, Share2, Check, X } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
+import type { BlogPost } from '@/lib/blog';
 import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
 import { SidebarAd, EndOfContentAd } from '@/components/Ads';
 import { cn } from '@/lib/utils';
@@ -12,6 +13,191 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.c
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+const PROS_CONS_BY_TOPIC: Record<string, { pros: string[]; cons: string[] }> = {
+  midjourney: {
+    pros: [
+      'Strong style control with parameters and seeds',
+      'High aesthetic quality with minimal post-work',
+      'Great for concept art and stylized visuals',
+    ],
+    cons: [
+      'Requires iterative prompting to match intent',
+      'Less precise control than node-based workflows',
+      'Subscription required for regular use',
+    ],
+  },
+  'stable-diffusion': {
+    pros: [
+      'Deep control with models, LoRAs, and ControlNet',
+      'Can run locally for privacy and cost control',
+      'Huge community resources and models',
+    ],
+    cons: [
+      'Setup and tuning take time',
+      'Quality varies by model and settings',
+      'Hardware needs for fast iteration',
+    ],
+  },
+  'dall-e': {
+    pros: [
+      'Excellent natural language prompt understanding',
+      'Reliable text rendering in images',
+      'Simple workflow in ChatGPT',
+    ],
+    cons: [
+      'Less granular style control',
+      'Safety filters can limit edge cases',
+      'Best access requires a paid plan',
+    ],
+  },
+  leonardo: {
+    pros: [
+      'Strong for character and game asset workflows',
+      'Friendly UI with model presets',
+      'Free tier for quick tests',
+    ],
+    cons: [
+      'Token limits for heavy usage',
+      'Advanced tools are paid',
+      'Model choice impacts consistency',
+    ],
+  },
+  flux: {
+    pros: [
+      'Photorealistic output with clean anatomy',
+      'Fast generation on supported platforms',
+      'Open weights variants for flexibility',
+    ],
+    cons: [
+      'Ecosystem still maturing',
+      'Availability depends on provider',
+      'Prompt tuning still required',
+    ],
+  },
+  'prompt-techniques': {
+    pros: [
+      'Improves consistency across models',
+      'Helps debug why outputs fail',
+      'Scales from beginner to advanced',
+    ],
+    cons: [
+      'More structure can reduce spontaneity',
+      'Model-specific syntax still varies',
+      'Requires iteration to internalize',
+    ],
+  },
+  'art-styles': {
+    pros: [
+      'Fast way to explore visual directions',
+      'Style keywords transfer across tools',
+      'Easy to build a reusable style library',
+    ],
+    cons: [
+      'Some styles can look generic',
+      'Model bias can overpower niche aesthetics',
+      'Needs references for consistent series',
+    ],
+  },
+  tutorials: {
+    pros: [
+      'Step-by-step reduces trial and error',
+      'Examples are easy to copy and adapt',
+      'Builds a repeatable workflow',
+    ],
+    cons: [
+      'Steps may change with model updates',
+      'Time investment to practice',
+      'Some tools or features are paywalled',
+    ],
+  },
+  comparisons: {
+    pros: [
+      'Clarifies tradeoffs between models',
+      'Helps match tool to use case',
+      'Saves testing time',
+    ],
+    cons: [
+      'Rapid updates can age quickly',
+      'Quality differences can be subjective',
+      'Pricing and limits shift often',
+    ],
+  },
+  'beginner-guides': {
+    pros: [
+      'Low-friction entry points',
+      'Covers core concepts quickly',
+      'Reduces early mistakes',
+    ],
+    cons: [
+      'Simplifies advanced nuance',
+      'Still requires hands-on practice',
+      'Model differences still matter',
+    ],
+  },
+  video: {
+    pros: [
+      'Adds motion storytelling fast',
+      'Great for short-form concepts',
+      'Pairs well with image workflows',
+    ],
+    cons: [
+      'Render times and credit limits',
+      'Motion control is less precise',
+      'Artifacts are common in long clips',
+    ],
+  },
+  default: {
+    pros: [
+      'Actionable steps you can apply immediately',
+      'Examples reduce trial and error',
+      'Works across major image models',
+    ],
+    cons: [
+      'Results vary by model and version',
+      'Requires iteration for best quality',
+      'Some steps depend on paid tiers',
+    ],
+  },
+};
+
+function guessProsConsCategory(post: BlogPost) {
+  const text = `${post.category || ''} ${post.slug} ${post.title} ${post.tags.join(' ')}`.toLowerCase();
+
+  if (text.includes('midjourney')) return 'midjourney';
+  if (text.includes('stable diffusion') || text.includes('stable-diffusion') || text.includes('sdxl') || text.includes('controlnet')) {
+    return 'stable-diffusion';
+  }
+  if (text.includes('dall-e') || text.includes('dalle')) return 'dall-e';
+  if (text.includes('leonardo')) return 'leonardo';
+  if (text.includes('flux')) return 'flux';
+  if (text.includes('comparison') || text.includes(' vs ')) return 'comparisons';
+  if (text.includes('beginner') || text.includes('first')) return 'beginner-guides';
+  if (text.includes('style') || text.includes('painting') || text.includes('pixel') || text.includes('watercolor') || text.includes('anime')) {
+    return 'art-styles';
+  }
+  if (text.includes('prompt') || text.includes('prompting')) return 'prompt-techniques';
+  if (text.includes('tutorial') || text.includes('guide') || text.includes('how to')) return 'tutorials';
+  if (text.includes('video') || text.includes('motion')) return 'video';
+
+  return null;
+}
+
+function getProsCons(post: BlogPost) {
+  const pros = Array.isArray(post.pros) ? post.pros.filter((item) => typeof item === 'string') : [];
+  const cons = Array.isArray(post.cons) ? post.cons.filter((item) => typeof item === 'string') : [];
+
+  if (pros.length || cons.length) {
+    return { pros, cons };
+  }
+
+  const categoryKey = guessProsConsCategory(post);
+  if (categoryKey && PROS_CONS_BY_TOPIC[categoryKey]) {
+    return PROS_CONS_BY_TOPIC[categoryKey];
+  }
+
+  return PROS_CONS_BY_TOPIC.default;
 }
 
 // Static generation için tüm slug'ları al
@@ -82,6 +268,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }));
 
   const keyTakeaways = tocHeadings.slice(0, 4);
+  const prosCons = getProsCons(post);
 
   const ctas: Array<{ title: string; href: string; description?: string }> = [
     {
@@ -325,6 +512,41 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <li key={t}>{t}</li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {(prosCons.pros.length > 0 || prosCons.cons.length > 0) && (
+            <div className="mb-8 rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h2 id="advantages-and-limitations" className="text-lg font-semibold text-white">
+                  Advantages and limitations
+                </h2>
+                <span className="text-xs text-slate-500">Quick tradeoff check</span>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-emerald-400">Advantages</p>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-300">
+                    {prosCons.pros.slice(0, 4).map((pro) => (
+                      <li key={pro} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span>{pro}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-red-400">Limitations</p>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-300">
+                    {prosCons.cons.slice(0, 4).map((con) => (
+                      <li key={con} className="flex items-start gap-2">
+                        <X className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                        <span>{con}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           )}
 

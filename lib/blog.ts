@@ -53,6 +53,8 @@ export interface BlogPost {
   image?: string;
   imageCredit?: string;
   imageCreditUrl?: string;
+  pros?: string[];
+  cons?: string[];
 }
 
 export interface BlogPostMeta {
@@ -151,6 +153,8 @@ export function getPostBySlug(slug: string): BlogPost | null {
     image: data.image,
     imageCredit: data.imageCredit,
     imageCreditUrl: data.imageCreditUrl,
+    pros: Array.isArray(data.pros) ? data.pros : undefined,
+    cons: Array.isArray(data.cons) ? data.cons : undefined,
   };
 }
 

@@ -182,12 +182,12 @@ export default function ToolsPage() {
                                     </div>
                                 </div>
 
-                                {/* Pros/Cons */}
+                                {/* Advantages / Limitations */}
                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                     <div>
-                                        <span className="text-xs text-emerald-500 uppercase tracking-wider">Pros</span>
+                                        <span className="text-xs text-emerald-500 uppercase tracking-wider">Advantages</span>
                                         <ul className="mt-2 space-y-1">
-                                            {tool.pros.slice(0, 2).map((pro) => (
+                                            {tool.pros.slice(0, 3).map((pro) => (
                                                 <li key={pro} className="flex items-start gap-1 text-xs text-slate-400">
                                                     <Check className="w-3 h-3 text-emerald-400 mt-0.5 flex-shrink-0" />
                                                     {pro}
@@ -196,9 +196,9 @@ export default function ToolsPage() {
                                         </ul>
                                     </div>
                                     <div>
-                                        <span className="text-xs text-red-500 uppercase tracking-wider">Cons</span>
+                                        <span className="text-xs text-red-500 uppercase tracking-wider">Limitations</span>
                                         <ul className="mt-2 space-y-1">
-                                            {tool.cons.slice(0, 2).map((con) => (
+                                            {tool.cons.slice(0, 3).map((con) => (
                                                 <li key={con} className="flex items-start gap-1 text-xs text-slate-400">
                                                     <X className="w-3 h-3 text-red-400 mt-0.5 flex-shrink-0" />
                                                     {con}
@@ -247,6 +247,30 @@ export default function ToolsPage() {
                                     </div>
                                 </div>
                                 <p className="text-slate-400 text-sm mb-4">{tool.description}</p>
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span className="text-xs text-emerald-500 uppercase tracking-wider">Advantages</span>
+                                        <ul className="mt-2 space-y-1">
+                                            {tool.pros.slice(0, 3).map((pro) => (
+                                                <li key={pro} className="flex items-start gap-1 text-xs text-slate-400">
+                                                    <Check className="w-3 h-3 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                                    {pro}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <span className="text-xs text-red-500 uppercase tracking-wider">Limitations</span>
+                                        <ul className="mt-2 space-y-1">
+                                            {tool.cons.slice(0, 3).map((con) => (
+                                                <li key={con} className="flex items-start gap-1 text-xs text-slate-400">
+                                                    <X className="w-3 h-3 text-red-400 mt-0.5 flex-shrink-0" />
+                                                    {con}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
                                 <a
                                     href={tool.affiliateLink || tool.website}
                                     target="_blank"
