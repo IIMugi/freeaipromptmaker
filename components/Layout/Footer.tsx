@@ -6,6 +6,7 @@ export function Footer() {
 
   const legalLinks = [
     { href: '/about', label: 'About Us' },
+    { href: '/content-standards', label: 'Content Standards' },
     { href: '/privacy', label: 'Privacy Policy' },
     { href: '/terms', label: 'Terms of Service' },
     { href: '/contact', label: 'Contact' },
@@ -45,7 +46,7 @@ export function Footer() {
                 <span className="sr-only">Twitter</span>
               </a>
               <a
-                href="https://github.com/freeaipromptmaker"
+                href="https://github.com/IIMugi/freeaipromptmaker"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-300 hover:text-violet-400 transition-colors"
@@ -95,7 +96,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-slate-800">
           <p className="text-slate-400 text-sm text-center">
-            © {currentYear} Free AI Prompt Maker. All rights reserved.
+            Copyright {currentYear} Free AI Prompt Maker. All rights reserved.
           </p>
         </div>
       </div>

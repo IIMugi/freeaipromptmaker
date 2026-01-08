@@ -136,7 +136,7 @@ export default function RootLayout({
               logo: `${siteUrl}/logo.png`,
               sameAs: [
                 'https://twitter.com/FreeAIPromptMkr',
-                'https://github.com/freeaipromptmaker',
+                'https://github.com/IIMugi/freeaipromptmaker',
               ],
             }),
           }}

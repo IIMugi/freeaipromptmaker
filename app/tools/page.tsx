@@ -9,7 +9,7 @@ import {
     ArrowRight,
     Zap
 } from 'lucide-react';
-import { aiTools, toolCategories } from '@/data/ai-tools';
+import { aiTools } from '@/data/ai-tools';
 
 export const metadata: Metadata = {
     title: 'Best AI Art Generators 2025 - Compare Top AI Image Tools',
@@ -116,7 +116,8 @@ export default function ToolsPage() {
             {/* Image Generators Section */}
             <section className="mb-16">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    🎨 Image Generators
+                    <Sparkles className="w-6 h-6 text-violet-400" />
+                    Image Generators
                 </h2>
                 <div className="grid md:grid-cols-2 gap-6">
                     {imageGenerators.map((tool) => (
@@ -156,7 +157,7 @@ export default function ToolsPage() {
                                     <span className="text-xs text-slate-500 uppercase tracking-wider">Pricing</span>
                                     <p className="text-white font-medium">
                                         {tool.pricing.free && tool.pricing.freeTier && (
-                                            <span className="text-emerald-400">Free: {tool.pricing.freeTier} • </span>
+                                            <span className="text-emerald-400">Free: {tool.pricing.freeTier}</span>
                                         )}
                                         {tool.pricing.startingPrice}
                                     </p>
@@ -222,7 +223,8 @@ export default function ToolsPage() {
             {/* Video Generators Section */}
             <section className="mb-16">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    🎬 Video Generators
+                    <Zap className="w-6 h-6 text-cyan-400" />
+                    Video Generators
                 </h2>
                 <div className="grid md:grid-cols-2 gap-6">
                     {videoGenerators.map((tool) => (

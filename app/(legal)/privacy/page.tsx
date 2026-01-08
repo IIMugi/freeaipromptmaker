@@ -117,10 +117,10 @@ export default function PrivacyPage() {
           <p className="text-slate-300 leading-relaxed">
             If you have questions about this Privacy Policy, please contact us at{' '}
             <a
-              href="mailto:privacy@promptmaster.ai"
+              href="mailto:privacy@freeaipromptmaker.com"
               className="text-violet-400 hover:text-violet-300"
             >
-              privacy@promptmaster.ai
+              privacy@freeaipromptmaker.com
             </a>
           </p>
         </section>

@@ -141,10 +141,10 @@ export default function CookiesPage() {
           <p className="text-slate-300 leading-relaxed">
             If you have questions about our use of cookies, please contact us at{' '}
             <a
-              href="mailto:privacy@promptmaster.ai"
+              href="mailto:privacy@freeaipromptmaker.com"
               className="text-violet-400 hover:text-violet-300"
             >
-              privacy@promptmaster.ai
+              privacy@freeaipromptmaker.com
             </a>
           </p>
         </section>

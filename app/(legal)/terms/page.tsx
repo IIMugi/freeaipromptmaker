@@ -121,10 +121,10 @@ export default function TermsPage() {
           <p className="text-slate-300 leading-relaxed">
             For questions about these Terms of Service, contact us at{' '}
             <a
-              href="mailto:legal@promptmaster.ai"
+              href="mailto:legal@freeaipromptmaker.com"
               className="text-violet-400 hover:text-violet-300"
             >
-              legal@promptmaster.ai
+              legal@freeaipromptmaker.com
             </a>
           </p>
         </section>

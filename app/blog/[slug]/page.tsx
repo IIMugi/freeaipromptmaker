@@ -8,6 +8,8 @@ import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProg
 import { SidebarAd, EndOfContentAd } from '@/components/Ads';
 import { cn } from '@/lib/utils';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -170,7 +172,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           '@type': 'HowToStep',
           position: index + 1,
           name: item.title,
-          url: `https://freeaipromptmaker.com/blog/${slug}#${item.id}`,
+          url: `${siteUrl}/blog/${slug}#${item.id}`,
         })),
       }
     : null;
@@ -360,7 +362,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <span className="text-slate-400">Share this article</span>
                 <div className="flex gap-2">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://promptmaster.ai/blog/${slug}`)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${siteUrl}/blog/${slug}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors"
@@ -368,7 +370,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     Twitter
                   </a>
                   <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://promptmaster.ai/blog/${slug}`)}`}
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${siteUrl}/blog/${slug}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors"

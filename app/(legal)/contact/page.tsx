@@ -30,10 +30,10 @@ export default function ContactPage() {
                   Best for detailed inquiries
                 </p>
                 <a
-                  href="mailto:hello@promptmaster.ai"
+                  href="mailto:hello@freeaipromptmaker.com"
                   className="text-violet-400 hover:text-violet-300 transition-colors"
                 >
-                  hello@promptmaster.ai
+                  hello@freeaipromptmaker.com
                 </a>
               </div>
             </div>
@@ -52,7 +52,7 @@ export default function ContactPage() {
                   Follow us for updates
                 </p>
                 <a
-                  href="https://twitter.com"
+                  href="https://twitter.com/FreeAIPromptMkr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-violet-400 hover:text-violet-300 transition-colors"
