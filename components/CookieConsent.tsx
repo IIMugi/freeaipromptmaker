@@ -4,36 +4,45 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Cookie, X } from 'lucide-react';
 import Link from 'next/link';
+import { CONSENT_EVENT, CONSENT_KEY } from '@/lib/consent';
 
-const CONSENT_KEY = 'cookie-consent';
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     // Check if user has already consented
-    const consent = localStorage.getItem(CONSENT_KEY);
-    if (!consent) {
-      // Small delay to prevent flash on initial load
+    try {
+      const consent = localStorage.getItem(CONSENT_KEY);
+      if (!consent) {
+        // Small delay to prevent flash on initial load
+        const timer = setTimeout(() => setShowBanner(true), 1000);
+        return () => clearTimeout(timer);
+      }
+    } catch {
       const timer = setTimeout(() => setShowBanner(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem(CONSENT_KEY, 'accepted');
+    try {
+      localStorage.setItem(CONSENT_KEY, 'accepted');
+    } catch {
+      // Ignore storage errors (private mode, blocked storage, etc.)
+    }
     setShowBanner(false);
-    
-    // Enable analytics/ads after consent
-    // window.gtag?.('consent', 'update', { analytics_storage: 'granted', ad_storage: 'granted' });
+    window.dispatchEvent(new Event(CONSENT_EVENT));
   };
 
   const handleDecline = () => {
-    localStorage.setItem(CONSENT_KEY, 'declined');
+    try {
+      localStorage.setItem(CONSENT_KEY, 'declined');
+    } catch {
+      // Ignore storage errors (private mode, blocked storage, etc.)
+    }
     setShowBanner(false);
-    
-    // Keep analytics/ads disabled
-    // window.gtag?.('consent', 'update', { analytics_storage: 'denied', ad_storage: 'denied' });
+    window.dispatchEvent(new Event(CONSENT_EVENT));
   };
 
   return (
@@ -57,7 +66,7 @@ export function CookieConsent() {
                 {/* Content */}
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white mb-2">
-                    We use cookies 🍪
+                    We use cookies
                   </h3>
                   <p className="text-slate-400 text-sm mb-4">
                     We use cookies to improve your experience, analyze traffic, and show relevant ads. 

@@ -49,6 +49,10 @@ export default function ToolsPage() {
                     Create Prompts for Any Tool
                     <ArrowRight className="w-5 h-5" />
                 </Link>
+                <p className="text-xs text-slate-500 max-w-2xl mx-auto mt-4">
+                    Disclosure: Some links are affiliate links. We may earn a commission at no extra cost to you.
+                    Rankings are based on our own review criteria.
+                </p>
             </div>
 
             {/* Quick Comparison Table */}

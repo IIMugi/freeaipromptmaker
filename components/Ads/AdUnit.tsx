@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { CONSENT_EVENT, CONSENT_KEY } from '@/lib/consent';
 
 interface AdUnitProps {
   slot: string;
@@ -16,6 +17,14 @@ interface AdUnitProps {
 const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-XXXXXXXXXXXXXXXX';
 const isConfigured = AD_CLIENT && !AD_CLIENT.includes('XXXX');
 
+const readConsent = () => {
+  try {
+    return localStorage.getItem(CONSENT_KEY) === 'accepted';
+  } catch {
+    return false;
+  }
+};
+
 export function AdUnit({
   slot,
   format = 'auto',
@@ -25,9 +34,32 @@ export function AdUnit({
 }: AdUnitProps) {
   const adRef = useRef<HTMLModElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasConsent, setHasConsent] = useState(false);
 
   useEffect(() => {
-    if (!isConfigured || !slot) {
+    const updateConsent = () => {
+      setHasConsent(readConsent());
+    };
+
+    updateConsent();
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === CONSENT_KEY) {
+        updateConsent();
+      }
+    };
+
+    window.addEventListener(CONSENT_EVENT, updateConsent);
+    window.addEventListener('storage', onStorage);
+
+    return () => {
+      window.removeEventListener(CONSENT_EVENT, updateConsent);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isConfigured || !slot || !hasConsent) {
       return;
     }
 
@@ -62,7 +94,7 @@ export function AdUnit({
       // 5 saniye sonra vazgeç
       setTimeout(() => clearInterval(checkInterval), 5000);
     }
-  }, [slot]);
+  }, [slot, hasConsent]);
 
   // AdSense yapılandırılmadıysa placeholder göster, script çalıştırma
   if (!isConfigured || !slot) {

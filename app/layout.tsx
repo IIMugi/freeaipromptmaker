@@ -4,6 +4,7 @@ import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { AdSenseScript } from '@/components/Ads/AdSenseScript';
 import { CookieConsent } from '@/components/CookieConsent';
+import { ConsentGate } from '@/components/ConsentGate';
 import { ScrollTracker, GoogleAnalytics } from '@/components/Analytics';
 import './globals.css';
 
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
       'Free AI prompt generator for Midjourney, DALL-E & Stable Diffusion. No memorization needed!',
     images: [
       {
-        url: '/og-image.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Free AI Prompt Maker - Visual Prompt Generator',
@@ -66,7 +67,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Free AI Prompt Maker - Visual Prompt Generator',
     description: 'Create AI art prompts visually for free. Just click and generate!',
-    images: ['/og-image.png'],
+    images: ['/twitter-image'],
     creator: '@FreeAIPromptMkr',
   },
   robots: {
@@ -150,10 +151,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        {/* AdSense Script - afterInteractive yükleme */}
-        <AdSenseScript />
-        {/* Google Analytics 4 */}
-        <GoogleAnalytics />
+        {/* AdSense Script + Analytics (after consent) */}
+        <ConsentGate>
+          <AdSenseScript />
+          <GoogleAnalytics />
+        </ConsentGate>
         <ScrollTracker />
         <Header />
         <main className="flex-1">{children}</main>
