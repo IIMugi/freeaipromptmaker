@@ -1,21 +1,30 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { AdSenseScript } from '@/components/Ads/AdSenseScript';
-import { CookieConsent } from '@/components/CookieConsent';
-import { ConsentGate } from '@/components/ConsentGate';
+import { CookieConsent } from '@/components/Consent/CookieConsent';
+import { ConsentGate } from '@/components/Consent/ConsentGate';
+import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
 import { ScrollTracker, GoogleAnalytics } from '@/components/Analytics';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: '--font-display',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
+const inter = Inter({
+  variable: '--font-body',
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-code',
   subsets: ['latin'],
+  weight: ['400'],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
@@ -23,21 +32,22 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.c
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Free AI Prompt Maker - Visual Prompt Generator for Midjourney, DALL-E & Stable Diffusion',
+    default: 'Free AI Prompt Generator | Midjourney v7, Flux & DALL-E 3',
     template: '%s | Free AI Prompt Maker',
   },
   description:
-    'Free AI prompt generator - create stunning prompts visually for Midjourney, DALL-E 3, and Stable Diffusion. No memorization needed, just click and generate!',
+    'Stop guessing AI prompts. Use our free visual generator to build professional, copy-paste ready prompts for Midjourney v7, Flux Pro, and DALL-E 3 instantly.',
   keywords: [
-    'free ai prompt maker',
-    'free ai prompt generator',
-    'midjourney prompt generator',
-    'stable diffusion prompts',
+    'ai prompt generator',
+    'midjourney v7 prompt helper',
+    'flux pro prompt builder',
     'dall-e prompt generator',
-    'ai art prompts',
-    'visual prompt builder',
-    'free ai art tools',
-    'midjourney prompts free',
+    'stable diffusion prompt builder',
+    'image to prompt generator',
+    'midjourney prompt generator',
+    'ai art prompt builder',
+    'prompt generator for logos',
+    'anime prompt generator ai',
   ],
   authors: [{ name: 'Free AI Prompt Maker', url: siteUrl }],
   creator: 'Free AI Prompt Maker',
@@ -51,9 +61,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: siteUrl,
     siteName: 'Free AI Prompt Maker',
-    title: 'Free AI Prompt Maker - Create Stunning Prompts Visually',
+    title: 'Free AI Prompt Generator | Midjourney v7, Flux & DALL-E 3',
     description:
-      'Free AI prompt generator for Midjourney, DALL-E & Stable Diffusion. No memorization needed!',
+      'Stop guessing AI prompts. Use our free visual generator to build professional, copy-paste ready prompts instantly.',
     images: [
       {
         url: '/opengraph-image',
@@ -65,8 +75,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free AI Prompt Maker - Visual Prompt Generator',
-    description: 'Create AI art prompts visually for free. Just click and generate!',
+    title: 'Free AI Prompt Generator | Midjourney v7, Flux & DALL-E 3',
+    description: 'Stop guessing AI prompts. Use our free visual generator to build professional, copy-paste ready prompts instantly.',
     images: ['/twitter-image'],
     creator: '@FreeAIPromptMkr',
   },
@@ -82,11 +92,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // Google Search Console verification
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-  },
-  alternates: {
-    canonical: siteUrl,
   },
 };
 
@@ -96,7 +102,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         {/* SEO: Schema.org SoftwareApplication */}
         <script
@@ -144,23 +150,24 @@ export default function RootLayout({
         />
 
         {/* Preconnect for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        {/* AdSense Script + Analytics (after consent) */}
-        <ConsentGate>
-          <AdSenseScript />
-          <GoogleAnalytics />
-        </ConsentGate>
-        <ScrollTracker />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieConsent />
+        <ThemeProvider>
+          {/* AdSense Script + Analytics (after consent) */}
+          <ConsentGate>
+            <AdSenseScript />
+            <GoogleAnalytics />
+          </ConsentGate>
+          <ScrollTracker />
+          <BreadcrumbsJSON />
+          <Header />
+          <main className="flex-1 w-full pt-28 md:pt-36">{children}</main>
+          <Footer />
+          <CookieConsent />
+        </ThemeProvider>
       </body>
     </html>
   );

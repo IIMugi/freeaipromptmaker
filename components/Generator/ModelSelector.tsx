@@ -1,97 +1,289 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
+import type { LucideIcon } from 'lucide-react';
+import { Clock3, Sparkles } from 'lucide-react';
+import {
+  Bot,
+  Brush,
+  Camera,
+  Gem,
+  Image as ImageIcon,
+  Layers3,
+  PenSquare,
+  Rocket,
+  ScanEye,
+  Shield,
+  Speech,
+  Wand2,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocalStorage } from '@/lib/hooks';
 import { modelInfoList, type AIModel, type ModelInfo } from '@/lib/prompt-builder';
-import { useState } from 'react';
 
 interface ModelSelectorProps {
   selected: AIModel;
   onChange: (model: AIModel) => void;
+  mainConcept?: string;
+  quickMode?: boolean;
 }
 
 const categoryNames: Record<ModelInfo['category'], string> = {
-  popular: '🔥 Popular',
-  professional: '💼 Professional',
-  specialized: '🎯 Specialized',
+  popular: 'Popular',
+  professional: 'Professional',
+  specialized: 'Specialized',
 };
 
 const categoryOrder: ModelInfo['category'][] = ['popular', 'professional', 'specialized'];
 
-export function ModelSelector({ selected, onChange }: ModelSelectorProps) {
-  const [showAll, setShowAll] = useState(true);
-  
-  // Get popular models for initial view
-  const popularModels = modelInfoList.filter(m => m.category === 'popular');
-  const allModels = modelInfoList;
-  
-  const displayModels = showAll ? allModels : popularModels;
-  
-  // Group models by category
-  const groupedModels = categoryOrder.reduce((acc, category) => {
-    acc[category] = displayModels.filter(m => m.category === category);
-    return acc;
-  }, {} as Record<ModelInfo['category'], ModelInfo[]>);
+const modelBrandMap: Record<
+  AIModel,
+  {
+    short: string;
+    bestFor: string;
+    tone: string;
+    icon: LucideIcon;
+    badge: 'Speed' | 'Quality' | 'Control' | 'Text';
+  }
+> = {
+  flux: {
+    short: 'FLX',
+    bestFor: 'Fast photorealism',
+    tone: 'text-[#00e5ff] bg-[#00e5ff]/10 border-[#00e5ff]/20',
+    icon: Rocket,
+    badge: 'Speed',
+  },
+  'flux-pro': {
+    short: 'FLX+',
+    bestFor: 'Commercial detail',
+    tone: 'text-[#00ffa3] bg-[#00ffa3]/10 border-[#00ffa3]/20',
+    icon: Gem,
+    badge: 'Quality',
+  },
+  'midjourney-v7': {
+    short: 'MJ7',
+    bestFor: 'High-end art quality',
+    tone: 'text-[#b388ff] bg-[#b388ff]/10 border-[#b388ff]/20',
+    icon: Wand2,
+    badge: 'Quality',
+  },
+  midjourney: {
+    short: 'MJ6',
+    bestFor: 'Reliable visual style',
+    tone: 'text-[#ea80fc] bg-[#ea80fc]/10 border-[#ea80fc]/20',
+    icon: Brush,
+    badge: 'Quality',
+  },
+  'stable-diffusion': {
+    short: 'SDXL',
+    bestFor: 'Maximum control',
+    tone: 'text-[#1de9b6] bg-[#1de9b6]/10 border-[#1de9b6]/20',
+    icon: Layers3,
+    badge: 'Control',
+  },
+  'dall-e': {
+    short: 'D3',
+    bestFor: 'Natural language prompts',
+    tone: 'text-[#ffea00] bg-[#ffea00]/10 border-[#ffea00]/20',
+    icon: Speech,
+    badge: 'Text',
+  },
+  'nano-banana': {
+    short: 'NB',
+    bestFor: 'Text + edits',
+    tone: 'text-[#c6ff00] bg-[#c6ff00]/10 border-[#c6ff00]/20',
+    icon: PenSquare,
+    badge: 'Text',
+  },
+  firefly: {
+    short: 'AF3',
+    bestFor: 'Adobe workflows',
+    tone: 'text-[#ff5252] bg-[#ff5252]/10 border-[#ff5252]/20',
+    icon: Camera,
+    badge: 'Control',
+  },
+  ideogram: {
+    short: 'ID',
+    bestFor: 'Typography and logos',
+    tone: 'text-[#ff4081] bg-[#ff4081]/10 border-[#ff4081]/20',
+    icon: ImageIcon,
+    badge: 'Text',
+  },
+  leonardo: {
+    short: 'LIO',
+    bestFor: 'Character concepting',
+    tone: 'text-[#448aff] bg-[#448aff]/10 border-[#448aff]/20',
+    icon: Shield,
+    badge: 'Control',
+  },
+  recraft: {
+    short: 'RC',
+    bestFor: 'Vector and icon outputs',
+    tone: 'text-[#64ffda] bg-[#64ffda]/10 border-[#64ffda]/20',
+    icon: ScanEye,
+    badge: 'Control',
+  },
+  gpt4o: {
+    short: '4O',
+    bestFor: 'Conversation-led iteration',
+    tone: 'text-[#e0e0e0] bg-[#e0e0e0]/10 border-[#e0e0e0]/20',
+    icon: Bot,
+    badge: 'Text',
+  },
+};
+
+function getRecommendedModels(mainConcept?: string): AIModel[] {
+  const text = (mainConcept || '').toLowerCase();
+  if (!text.trim()) return ['flux', 'midjourney-v7', 'dall-e', 'stable-diffusion'];
+
+  if (text.includes('logo') || text.includes('poster') || text.includes('text')) {
+    return ['ideogram', 'recraft', 'dall-e', 'gpt4o'];
+  }
+
+  if (text.includes('anime') || text.includes('character') || text.includes('game')) {
+    return ['leonardo', 'midjourney-v7', 'flux-pro', 'stable-diffusion'];
+  }
+
+  if (text.includes('photo') || text.includes('portrait') || text.includes('realistic')) {
+    return ['flux', 'flux-pro', 'midjourney-v7', 'dall-e'];
+  }
+
+  return ['flux', 'midjourney-v7', 'stable-diffusion', 'dall-e'];
+}
+
+function badgeTone(label: 'Speed' | 'Quality' | 'Control' | 'Text') {
+  if (label === 'Speed') return 'bg-[var(--info)]/10 text-[var(--info)] border-[var(--info)]/40';
+  if (label === 'Quality') return 'bg-violet-500/10 text-violet-300 border-violet-500/40';
+  if (label === 'Control') return 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/40';
+  return 'bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/40';
+}
+
+export function ModelSelector({
+  selected,
+  onChange,
+  mainConcept,
+  quickMode = false,
+}: ModelSelectorProps) {
+  const [showAllModels, setShowAllModels] = useState(!quickMode);
+  const [recentModels, setRecentModels] = useLocalStorage<AIModel[]>('recent-models', []);
+
+  const recommended = useMemo(
+    () => getRecommendedModels(mainConcept).filter((id) => modelInfoList.some((item) => item.id === id)),
+    [mainConcept]
+  );
+
+  const groupedModels = useMemo(
+    () =>
+      categoryOrder.reduce((acc, category) => {
+        acc[category] = modelInfoList.filter((model) => model.category === category);
+        return acc;
+      }, {} as Record<ModelInfo['category'], ModelInfo[]>),
+    []
+  );
+
+  const recentList = useMemo(
+    () =>
+      recentModels
+        .map((id) => modelInfoList.find((model) => model.id === id))
+        .filter((item): item is ModelInfo => Boolean(item))
+        .slice(0, 3),
+    [recentModels]
+  );
+
+  const handleSelect = (model: AIModel) => {
+    onChange(model);
+    setRecentModels((prev) => {
+      const next = [model, ...prev.filter((item) => item !== model)];
+      return next.slice(0, 6);
+    });
+  };
+
+  const scrollContainerClasses = "flex snap-x snap-mandatory overflow-x-auto pb-4 gap-3 sm:grid sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden";
+  const snapChildClasses = "snap-center snap-always min-w-[260px] sm:min-w-0 flex-shrink-0";
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
-          Select AI Model
-        </h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em]">Select AI Model</h2>
+          <p className="mt-1 text-xs text-[var(--text-secondary)]">Choose a profile based on speed, quality, and control.</p>
+        </div>
         <button
-          onClick={() => setShowAll(!showAll)}
-          className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
-          aria-expanded={showAll}
-          aria-label={showAll ? 'Show fewer AI models' : `Show all ${allModels.length} AI models`}
+          type="button"
+          onClick={() => setShowAllModels((prev) => !prev)}
+          className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--surface-overlay)] active:scale-95 transition-all"
+          aria-expanded={showAllModels}
         >
-          {showAll ? 'Show Less' : `Show All (${allModels.length})`}
+          {showAllModels ? 'Focus view' : 'Browse all'}
         </button>
       </div>
-      
-      {showAll ? (
-        // Categorized view
-        <div className="space-y-6">
-          {categoryOrder.map((category) => {
-            const models = groupedModels[category];
-            if (models.length === 0) return null;
-            
+
+      {recentList.length > 0 && (
+        <div className="space-y-3">
+          <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold text-[var(--text-tertiary)]">
+            <Clock3 className="h-3.5 w-3.5" />
+            Recent models
+          </p>
+          <div className={cn(scrollContainerClasses, "sm:grid-cols-3")}>
+            {recentList.map((model) => (
+              <ModelCard
+                key={`recent-${model.id}`}
+                model={model}
+                selected={selected === model.id}
+                onClick={() => handleSelect(model.id)}
+                compact
+                className={snapChildClasses}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-3">
+        <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold text-[var(--accent-primary)]">
+          <Sparkles className="h-3.5 w-3.5" />
+          Recommended
+        </p>
+        <div className={cn(scrollContainerClasses, "sm:grid-cols-2 lg:grid-cols-4")}>
+          {recommended.map((id) => {
+            const model = modelInfoList.find((item) => item.id === id);
+            if (!model) return null;
             return (
-              <div key={category} className="space-y-3">
-                <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  {categoryNames[category]}
-                </h3>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                  {models.map((model) => (
-                    <ModelCard
-                      key={model.id}
-                      model={model}
-                      selected={selected === model.id}
-                      onClick={() => onChange(model.id)}
-                      compact
-                    />
-                  ))}
-                </div>
-              </div>
+              <ModelCard
+                key={`recommended-${model.id}`}
+                model={model}
+                selected={selected === model.id}
+                onClick={() => handleSelect(model.id)}
+                className={snapChildClasses}
+              />
             );
           })}
         </div>
-      ) : (
-        // Simple grid view for popular models
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {popularModels.map((model) => (
-            <ModelCard
-              key={model.id}
-              model={model}
-              selected={selected === model.id}
-              onClick={() => onChange(model.id)}
-            />
+      </div>
+
+      {showAllModels && (
+        <div className="space-y-6 border-t border-[var(--border-default)] pt-6">
+          {categoryOrder.map((category) => (
+            <div key={category} className="space-y-3">
+              <h3 className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.16em]">
+                {categoryNames[category]}
+              </h3>
+              <div className={cn(scrollContainerClasses, "sm:grid-cols-2 lg:grid-cols-4")}>
+                {groupedModels[category].map((model) => (
+                  <ModelCard
+                    key={model.id}
+                    model={model}
+                    selected={selected === model.id}
+                    onClick={() => handleSelect(model.id)}
+                    className={snapChildClasses}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}
-      
-      {/* Selected model features */}
-      <SelectedModelInfo modelId={selected} />
     </div>
   );
 }
@@ -101,88 +293,58 @@ interface ModelCardProps {
   selected: boolean;
   onClick: () => void;
   compact?: boolean;
+  className?: string;
 }
 
-function ModelCard({ model, selected, onClick, compact }: ModelCardProps) {
+function ModelCard({ model, selected, onClick, compact = false, className }: ModelCardProps) {
+  const brand = modelBrandMap[model.id];
+  const LogoIcon = brand.icon;
+
   return (
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+    <button
+      type="button"
       onClick={onClick}
-      title={model.name}
-      aria-label={`Select ${model.name} AI model${selected ? ' (currently selected)' : ''}`}
       aria-pressed={selected}
+      aria-label={`Select ${model.name} model${selected ? ' (selected)' : ''}`}
       className={cn(
-        'relative p-3 rounded-xl border text-left transition-all duration-200',
+        'group relative flex flex-col justify-start overflow-hidden rounded-xl border p-3 text-left transition-all duration-200 active:scale-95 will-change-transform',
         selected
-          ? 'bg-violet-600/20 border-violet-500 ring-2 ring-violet-500/20'
-          : 'bg-slate-800 border-slate-700 hover:border-slate-600',
-        compact && 'p-2.5'
+          ? 'border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] shadow-[var(--shadow-glow)]'
+          : 'border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-raised)]',
+        compact && 'p-2.5',
+        className
       )}
     >
-      <div className={cn('flex items-start gap-2', compact && 'items-center gap-1.5')}>
-        <span className={cn('text-2xl flex-shrink-0', compact && 'text-lg')} aria-hidden="true">{model.icon}</span>
-        <div className="min-w-0 flex-1">
-          <h4 className={cn(
-            'font-semibold text-white',
-            compact ? 'text-xs leading-tight' : 'text-sm'
-          )}>
-            {model.name}
-          </h4>
-          {!compact && (
-            <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
-              {model.description}
-            </p>
+      <div className="flex w-full items-start gap-3">
+        <div
+          className={cn(
+            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border text-[var(--text-primary)] transition-colors',
+            brand.tone,
+            selected && 'border-[var(--accent-primary-strong)]'
           )}
+        >
+          <LogoIcon className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-1 w-full">
+            <p className={cn("truncate text-sm font-bold transition-colors", selected ? "text-[var(--accent-primary)]" : "text-[var(--text-primary)] group-hover:text-[var(--text-primary)]")}>
+              {model.name}
+            </p>
+            <span className="flex-shrink-0 rounded-[4px] border border-[var(--border-default)] bg-[var(--surface-raised)] px-1 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+              {brand.short}
+            </span>
+          </div>
+          {!compact && <p className="mt-1 truncate text-xs font-medium text-[var(--text-secondary)]">{brand.bestFor}</p>}
+          <span
+            className={cn(
+              'mt-1.5 inline-flex rounded-md border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide',
+              badgeTone(brand.badge)
+            )}
+          >
+            {brand.badge}
+          </span>
         </div>
       </div>
-      {selected && (
-        <motion.div
-          layoutId="model-indicator"
-          className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-violet-500"
-          initial={false}
-          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        />
-      )}
-    </motion.button>
-  );
-}
-
-function SelectedModelInfo({ modelId }: { modelId: AIModel }) {
-  const model = modelInfoList.find(m => m.id === modelId);
-  if (!model) return null;
-  
-  return (
-    <motion.div
-      key={modelId}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50"
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">{model.icon}</span>
-        <span className="font-medium text-white">{model.name}</span>
-        <span className="text-xs px-2 py-0.5 bg-slate-700 rounded-full text-slate-300">
-          {model.category}
-        </span>
-      </div>
-      <p className="text-xs text-slate-400 mb-2">{model.description}</p>
-      <div className="flex flex-wrap gap-1">
-        {model.features.map((feature, i) => (
-          <span
-            key={i}
-            className="text-xs px-2 py-0.5 bg-violet-600/20 text-violet-300 rounded-full"
-          >
-            {feature}
-          </span>
-        ))}
-      </div>
-      <div className="flex gap-3 mt-2 text-xs text-slate-500">
-        {model.supportsNegative && <span>✓ Negative prompts</span>}
-        {model.supportsAspectRatio && <span>✓ Aspect ratio</span>}
-        {model.supportsStylize && <span>✓ Stylize</span>}
-        {model.supportsChaos && <span>✓ Chaos</span>}
-      </div>
-    </motion.div>
+    </button>
   );
 }

@@ -24,38 +24,34 @@ export function ParameterSliders({
   onChaosChange,
 }: ParameterSlidersProps) {
   const modelInfo = getModelInfo(model);
-  
+
   const aspectRatioOptions = stylesData.aspectRatios.map((ar) => ({
     value: ar.value,
     label: `${ar.name} (${ar.value})`,
   }));
 
-  // Get model capabilities
   const supportsAspectRatio = modelInfo?.supportsAspectRatio ?? true;
   const supportsStylize = modelInfo?.supportsStylize ?? false;
   const supportsChaos = modelInfo?.supportsChaos ?? false;
 
-  // Model-specific tips
   const modelTips: Partial<Record<AIModel, string>> = {
-    'stable-diffusion': '💡 SD uses resolution instead of aspect ratio. We convert automatically.',
-    'dall-e': '💡 DALL-E 3 uses natural language. Keep your prompt descriptive!',
-    'flux': '⚡ Flux excels at photorealistic images and human anatomy.',
-    'flux-pro': '💎 Flux Pro offers higher quality and better prompt adherence.',
-    'nano-banana': '🍌 Nano Banana Pro is great for text in images and photo editing.',
-    'ideogram': '✍️ Ideogram is the best for text and typography in images.',
-    'leonardo': '🎮 Leonardo specializes in game assets and character design.',
-    'firefly': '🔶 Firefly is trained on licensed content - safe for commercial use.',
-    'recraft': '📐 Recraft can output vector formats - great for icons and logos.',
-    'gpt4o': '💬 GPT-4o allows conversational image creation and iteration.',
-    'midjourney-v7': '🎨 MJ v7 has improved anatomy, hands, and text rendering.',
+    'stable-diffusion': 'Tip: Stable Diffusion uses resolution semantics. Ratio presets are normalized for you.',
+    'dall-e': 'Tip: DALL-E responds best to natural language, contextual prompt descriptions.',
+    flux: 'Tip: Flux is strong at photorealism and human anatomy consistency.',
+    'flux-pro': 'Tip: Flux Pro improves detail retention and prompt adherence.',
+    'nano-banana': 'Tip: Nano Banana is useful for text-in-image and edit-first workflows.',
+    ideogram: 'Tip: Ideogram is optimized for text and layout-driven generations.',
+    leonardo: 'Tip: Leonardo is tuned for characters, assets, and concept art workflows.',
+    firefly: 'Tip: Firefly is trained on licensed content and business-safe pipelines.',
+    recraft: 'Tip: Recraft is strong for vector-style outputs, icons, and illustrations.',
+    gpt4o: 'Tip: GPT-4o works best with iterative conversational refinements.',
+    'midjourney-v7': 'Tip: Midjourney v7 improves anatomy, style coherence, and detail quality.',
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
-        Parameters
-      </h2>
-      
+      <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">Parameters</h2>
+
       <div className="space-y-6">
         {supportsAspectRatio && (
           <Select
@@ -76,9 +72,7 @@ export function ParameterSliders({
               step={50}
               onChange={onStylizeChange}
             />
-            <div className="text-xs text-slate-400 -mt-2">
-              Lower = more literal, Higher = more artistic
-            </div>
+            <p className="text-xs text-slate-400 -mt-2">Lower values are literal. Higher values are more artistic.</p>
           </>
         )}
 
@@ -92,30 +86,21 @@ export function ParameterSliders({
               step={5}
               onChange={onChaosChange}
             />
-            <div className="text-xs text-slate-400 -mt-2">
-              Higher values produce more varied results
-            </div>
+            <p className="text-xs text-slate-400 -mt-2">Higher chaos creates more variation per generation.</p>
           </>
         )}
 
-        {/* Model-specific tip */}
         {modelTips[model] && (
-          <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-            <p className="text-sm text-slate-300">
-              {modelTips[model]}
-            </p>
+          <div className="rounded-lg border border-white/12 bg-[#101a2b]/80 p-3">
+            <p className="text-sm text-slate-300">{modelTips[model]}</p>
           </div>
         )}
 
-        {/* Show supported features */}
         {modelInfo && (
-          <div className="flex flex-wrap gap-2 pt-2">
-            {modelInfo.features.map((feature, i) => (
-              <span
-                key={i}
-                className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded-md"
-              >
-                ✓ {feature}
+          <div className="flex flex-wrap gap-2 pt-1">
+            {modelInfo.features.map((feature) => (
+              <span key={feature} className="rounded-md bg-[#1a2742] px-2 py-1 text-xs text-slate-300">
+                {feature}
               </span>
             ))}
           </div>

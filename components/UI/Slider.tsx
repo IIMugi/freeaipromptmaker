@@ -32,7 +32,7 @@ export function Slider({
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-slate-300">{label}</label>
         {showValue && (
-          <span className="text-sm font-mono text-violet-400">
+          <span className="text-sm font-mono text-cyan-200">
             {value}{unit}
           </span>
         )}
@@ -50,20 +50,20 @@ export function Slider({
             [&::-webkit-slider-thumb]:w-4
             [&::-webkit-slider-thumb]:h-4
             [&::-webkit-slider-thumb]:rounded-full
-            [&::-webkit-slider-thumb]:bg-violet-500
+            [&::-webkit-slider-thumb]:bg-cyan-300
             [&::-webkit-slider-thumb]:shadow-lg
-            [&::-webkit-slider-thumb]:shadow-violet-500/50
+            [&::-webkit-slider-thumb]:shadow-cyan-300/60
             [&::-webkit-slider-thumb]:cursor-pointer
             [&::-webkit-slider-thumb]:transition-transform
             [&::-webkit-slider-thumb]:hover:scale-110
             [&::-moz-range-thumb]:w-4
             [&::-moz-range-thumb]:h-4
             [&::-moz-range-thumb]:rounded-full
-            [&::-moz-range-thumb]:bg-violet-500
+            [&::-moz-range-thumb]:bg-cyan-300
             [&::-moz-range-thumb]:border-0
             [&::-moz-range-thumb]:cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${percentage}%, #334155 ${percentage}%, #334155 100%)`,
+            background: `linear-gradient(to right, #3bd5f5 0%, #3bd5f5 ${percentage}%, #334155 ${percentage}%, #334155 100%)`,
           }}
         />
       </div>

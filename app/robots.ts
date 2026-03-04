@@ -14,12 +14,10 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: [
           '/api/',
-          '/_next/',
-          '/static/',
         ],
       },
       {
-        // Google AdSense bot'una izin ver
+        // Allow Google AdSense bot
         userAgent: 'Mediapartners-Google',
         allow: '/',
       },

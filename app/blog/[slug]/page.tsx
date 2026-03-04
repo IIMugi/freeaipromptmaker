@@ -7,7 +7,6 @@ import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import type { BlogPost } from '@/lib/blog';
 import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
 import { SidebarAd, EndOfContentAd } from '@/components/Ads';
-import { cn } from '@/lib/utils';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
 
@@ -215,15 +214,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Post Not Found' };
   }
 
+  const canonicalUrl = new URL(`/blog/${slug}`, siteUrl).toString();
+
   return {
     title: post.title,
     description: post.description,
     keywords: post.tags,
     authors: [{ name: post.author }],
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: post.title,
       description: post.description,
       type: 'article',
+      url: canonicalUrl,
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
@@ -247,6 +252,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const relatedPosts = getRelatedPosts(slug, 3);
+  const contentWithoutTopH1 = post.content.replace(/^#\s+.*\r?\n?/, '').trimStart();
 
   const slugify = (text: string) =>
     text
@@ -552,11 +558,11 @@ export default async function BlogPostPage({ params }: PageProps) {
 
             {/* Content */}
             <div className="prose-custom">
-              <MarkdownRenderer content={post.content} />
+              <MarkdownRenderer content={contentWithoutTopH1} />
             </div>
 
             {/* Dynamic In-Article Ads (based on content length) */}
-            <DynamicAdInjector contentLength={post.content.length} />
+            <DynamicAdInjector contentLength={contentWithoutTopH1.length} />
 
           {/* CTA block */}
           <CtaButtons items={ctas} />

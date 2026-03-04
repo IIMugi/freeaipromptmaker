@@ -1,7 +1,6 @@
 'use client';
 
 import { type ReactNode } from 'react';
-import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps {
@@ -29,25 +28,28 @@ export function Button({
   type = 'button',
   'aria-label': ariaLabel,
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900';
+  const baseStyles =
+    'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary-strong)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] active:scale-95 disabled:active:scale-100 will-change-transform';
 
   const variants = {
-    primary: 'bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/25',
-    secondary: 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600',
-    ghost: 'bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white',
-    success: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/25',
+    primary:
+      'bg-[var(--accent-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-glow)] hover:bg-[var(--accent-primary-strong)] hover:-translate-y-0.5',
+    secondary:
+      'bg-[var(--surface-raised)] hover:bg-[var(--surface-overlay)] text-[var(--text-primary)] border border-[var(--border-default)]',
+    ghost:
+      'bg-transparent hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent',
+    success:
+      'bg-[var(--success)] hover:brightness-110 text-white shadow-[0_14px_32px_-18px_rgba(16,185,129,0.8)] hover:-translate-y-0.5',
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-2.5 text-base',
     lg: 'px-6 py-3 text-lg',
   };
 
   return (
-    <motion.button
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
+    <button
       className={cn(
         baseStyles,
         variants[variant],
@@ -62,7 +64,7 @@ export function Button({
     >
       {isLoading ? (
         <svg
-          className="animate-spin h-4 w-4"
+          className="animate-spin h-4 w-4 flex-shrink-0"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -85,6 +87,6 @@ export function Button({
         icon
       ) : null}
       {children}
-    </motion.button>
+    </button>
   );
 }

@@ -13,7 +13,7 @@ interface AdUnitProps {
   minHeight?: number;
 }
 
-// AdSense client ID - .env'den alınacak
+// AdSense client ID
 const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-XXXXXXXXXXXXXXXX';
 const isConfigured = AD_CLIENT && !AD_CLIENT.includes('XXXX');
 
@@ -63,45 +63,26 @@ export function AdUnit({
       return;
     }
 
-    // AdSense script yüklenmiş mi kontrol et
-    const loadAd = () => {
-      try {
-        // @ts-expect-error - AdSense global
-        if (window.adsbygoogle && adRef.current) {
-          // @ts-expect-error - AdSense push
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-          setIsLoaded(true);
-        }
-      } catch (error) {
-        console.error('[AdUnit] Failed to load ad:', error);
+    try {
+      // @ts-expect-error - AdSense global
+      if (window.adsbygoogle && adRef.current?.getAttribute('data-adsbygoogle-status')) {
+        setIsLoaded(true);
+        return;
       }
-    };
-
-    // Script yüklendiyse hemen çalıştır, yoksa bekle
-    // @ts-expect-error - AdSense global
-    if (window.adsbygoogle) {
-      loadAd();
-    } else {
-      // Script yüklenene kadar bekle
-      const checkInterval = setInterval(() => {
-        // @ts-expect-error - AdSense global
-        if (window.adsbygoogle) {
-          loadAd();
-          clearInterval(checkInterval);
-        }
-      }, 100);
-
-      // 5 saniye sonra vazgeç
-      setTimeout(() => clearInterval(checkInterval), 5000);
+      // AdSense script kuyruğuna push et (script yüklü olmasa bile çalışır, yüklendiğinde kuyruğu eritir)
+      // @ts-expect-error - AdSense global
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      setIsLoaded(true);
+    } catch (error) {
+      console.error('[AdUnit] Failed to push ad:', error);
     }
   }, [slot, hasConsent]);
 
-  // AdSense yapılandırılmadıysa placeholder göster, script çalıştırma
   if (!isConfigured || !slot) {
     return (
       <div
         className={cn(
-          'ad-container relative overflow-hidden bg-slate-800/40 border border-dashed border-slate-700',
+          'ad-container relative overflow-hidden bg-[var(--surface-raised)] border border-dashed border-[var(--border-default)]',
           className
         )}
         style={{ minHeight: `${minHeight}px`, ...style }}
@@ -110,7 +91,7 @@ export function AdUnit({
         data-ad-status="disabled"
       >
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-[var(--text-tertiary)]">
             Ad placeholder (configure NEXT_PUBLIC_ADSENSE_CLIENT)
           </span>
         </div>
@@ -121,16 +102,14 @@ export function AdUnit({
   return (
     <div
       className={cn(
-        'ad-container relative overflow-hidden',
-        // SEO: CLS önlemek için sabit minimum yükseklik
-        !isLoaded && 'bg-slate-800/30',
+        'ad-container relative overflow-hidden transition-colors',
+        !isLoaded && 'bg-[var(--surface-sunken)]',
         className
       )}
       style={{
         minHeight: `${minHeight}px`,
         ...style,
       }}
-      // SEO: Reklam alanını işaretle
       data-ad-status={isLoaded ? 'loaded' : 'loading'}
       aria-label="Advertisement"
       role="complementary"
@@ -148,14 +127,12 @@ export function AdUnit({
         data-ad-format={format}
         data-full-width-responsive="true"
       />
-      
-      {/* SEO: Placeholder - CLS önleme */}
+
       {!isLoaded && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs text-slate-600">Ad</span>
+          <span className="text-xs text-[var(--text-tertiary)]">Ad</span>
         </div>
       )}
     </div>
   );
 }
-

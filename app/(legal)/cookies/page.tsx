@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Cookie Policy',
   description: 'Cookie Policy for Free AI Prompt Maker - Learn about our use of cookies.',
+  alternates: {
+    canonical: '/cookies',
+  },
 };
 
 export default function CookiesPage() {
@@ -63,7 +66,7 @@ export default function CookiesPage() {
               href="https://policies.google.com/technologies/ads"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-cyan-400 hover:text-cyan-300"
             >
               Google&apos;s Advertising Policies
             </a>
@@ -99,7 +102,7 @@ export default function CookiesPage() {
                 href="https://adssettings.google.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-violet-400 hover:text-violet-300"
+                className="text-cyan-400 hover:text-cyan-300"
               >
                 Google Ad Settings
               </a>
@@ -142,7 +145,7 @@ export default function CookiesPage() {
             If you have questions about our use of cookies, please contact us at{' '}
             <a
               href="mailto:privacy@freeaipromptmaker.com"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-cyan-400 hover:text-cyan-300"
             >
               privacy@freeaipromptmaker.com
             </a>

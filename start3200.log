@@ -1,0 +1,13 @@
+
+> free-ai-prompt-maker@1.0.0 start
+> next start --port 3200
+
+   ▲ Next.js 16.0.8
+   - Local:         http://localhost:3200
+   - Network:       http://192.168.1.7:3200
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Ready in 548ms
+
+D:\AI PROJECTS\n1sche>

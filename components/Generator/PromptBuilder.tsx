@@ -1,210 +1,258 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles } from 'lucide-react';
-import { TextArea } from '@/components/UI';
+import { useSearchParams } from 'next/navigation';
+import { Clock3, Copy, Eye, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { TextArea, Badge, SectionShell } from '@/components/UI';
 import { ModelSelector } from './ModelSelector';
-import { StyleCards, getStyleValues } from './StyleCards';
+import { StyleCards } from './StyleCards';
 import { LightingCamera } from './LightingCamera';
 import { ParameterSliders } from './ParameterSliders';
 import { LivePreview } from './LivePreview';
-import { buildPrompt, getModelDefaults, getModelInfo, type AIModel, type PromptHistory } from '@/lib/prompt-builder';
-import { useLocalStorage } from '@/lib/hooks';
-import { generateId } from '@/lib/utils';
+import { usePromptBuilder } from '@/lib/hooks/usePromptBuilder';
+import { cn } from '@/lib/utils';
+import { GeneratorErrorBoundary } from './GeneratorErrorBoundary';
 
 export function PromptBuilder() {
-  // Model state - default to flux (most popular in 2025)
-  const [model, setModel] = useState<AIModel>('flux');
-  
-  // Prompt content state
-  const [mainConcept, setMainConcept] = useState('');
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [lighting, setLighting] = useState('');
-  const [camera, setCamera] = useState('');
-  const [negativePrompt, setNegativePrompt] = useState('');
-  
-  // Parameters state
-  const [aspectRatio, setAspectRatio] = useState('16:9');
-  const [stylize, setStylize] = useState(100);
-  const [chaos, setChaos] = useState(0);
-  
-  // History (persisted to localStorage)
-  const [history, setHistory] = useLocalStorage<PromptHistory[]>('prompt-history', []);
+  const searchParams = useSearchParams();
+  const prefilledConcept = searchParams.get('q')?.trim() || '';
 
-  // Get current model info
-  const modelInfo = getModelInfo(model);
+  const { state, computed, actions } = usePromptBuilder(prefilledConcept);
+  const previewRef = useRef<HTMLDivElement | null>(null);
 
-  // Model değiştiğinde varsayılan değerleri ayarla
-  const handleModelChange = (newModel: AIModel) => {
-    setModel(newModel);
-    const defaults = getModelDefaults(newModel);
-    if (defaults.aspectRatio) setAspectRatio(defaults.aspectRatio);
-    if (defaults.stylize !== undefined) setStylize(defaults.stylize);
-    if (defaults.chaos !== undefined) setChaos(defaults.chaos);
-  };
+  // Keyboard shortcut to show history
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const paletteShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+      if (!paletteShortcut) return;
 
-  // Style toggle
-  const handleToggleStyle = (styleId: string) => {
-    setSelectedStyles((prev) =>
-      prev.includes(styleId)
-        ? prev.filter((id) => id !== styleId)
-        : [...prev, styleId]
-    );
-  };
-
-  // Generate prompt
-  const generatedPrompt = useMemo(() => {
-    return buildPrompt({
-      model,
-      mainConcept,
-      styles: getStyleValues(selectedStyles),
-      lighting,
-      camera,
-      aspectRatio,
-      stylize,
-      chaos,
-      negativePrompt,
-    });
-  }, [model, mainConcept, selectedStyles, lighting, camera, aspectRatio, stylize, chaos, negativePrompt]);
-
-  // Save to history
-  const handleSaveToHistory = () => {
-    if (!generatedPrompt) return;
-    
-    const newEntry: PromptHistory = {
-      id: generateId(),
-      prompt: generatedPrompt,
-      model,
-      timestamp: new Date().toISOString(),
+      event.preventDefault();
+      actions.setShowHistory((prev: boolean) => !prev);
+      previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-    
-    setHistory((prev) => [newEntry, ...prev.slice(0, 9)]); // Keep last 10
-  };
 
-  // Clear history
-  const handleClearHistory = () => {
-    setHistory([]);
-  };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [actions]);
 
-  // Load from history
-  const handleLoadFromHistory = (prompt: string) => {
-    // Parse prompt and set main concept
-    // For simplicity, just set it as main concept
-    setMainConcept(prompt);
+  const openPreview = (withHistory = false) => {
+    if (withHistory) actions.setShowHistory(true);
+    previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
-  // Check if model supports negative prompts
-  const supportsNegativePrompt = modelInfo?.supportsNegative ?? false;
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
-      >
-        <div className="inline-flex items-center gap-2 mb-4">
-          <Sparkles className="w-8 h-8 text-violet-500" />
-          <h1 className="text-3xl md:text-4xl font-bold gradient-text">
-            Free AI Prompt Maker
-          </h1>
-        </div>
-        <p className="text-slate-300 text-lg">
-          Create stunning AI art prompts visually - 100% free!
-        </p>
-        <p className="text-slate-400 text-sm mt-2">
-          Supporting {12} AI models including Flux, Midjourney v7, DALL-E 3, and more
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column - Controls */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-8"
-        >
-          {/* Model Selector */}
-          <ModelSelector selected={model} onChange={handleModelChange} />
-
-          {/* Main Concept Input */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
-              Main Concept
+    <GeneratorErrorBoundary>
+      <div className="mx-auto max-w-7xl space-y-8 pb-32 lg:pb-0">
+        <section className="hero-grid relative overflow-hidden rounded-[2rem] border border-[var(--border-default)] bg-[var(--surface-base)]/80 px-6 py-8 md:px-10 md:py-10 shadow-[var(--shadow-card)]">
+          <div className="relative z-10 max-w-3xl">
+            <Badge variant="cyan" size="sm" icon={<Sparkles className="h-3.5 w-3.5" />}>
+              Generator Workspace
+            </Badge>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl">
+              Quick draft first, precision controls second.
             </h2>
-            <TextArea
-              value={mainConcept}
-              onChange={(e) => setMainConcept(e.target.value)}
-              placeholder="Describe your image... e.g., A mystical forest with glowing mushrooms"
-              rows={3}
-            />
-          </div>
-
-          {/* Style Cards */}
-          <StyleCards
-            selectedStyles={selectedStyles}
-            onToggleStyle={handleToggleStyle}
-          />
-
-          {/* Lighting & Camera */}
-          <LightingCamera
-            lighting={lighting}
-            camera={camera}
-            onLightingChange={setLighting}
-            onCameraChange={setCamera}
-          />
-
-          {/* Parameter Sliders */}
-          <ParameterSliders
-            model={model}
-            aspectRatio={aspectRatio}
-            stylize={stylize}
-            chaos={chaos}
-            onAspectRatioChange={setAspectRatio}
-            onStylizeChange={setStylize}
-            onChaosChange={setChaos}
-          />
-
-          {/* Negative Prompt (for models that support it) */}
-          {supportsNegativePrompt && (
-            <div className="space-y-3">
-              <h2 className="text-sm font-medium text-slate-300 uppercase tracking-wider">
-                Negative Prompt
-              </h2>
-              <TextArea
-                value={negativePrompt}
-                onChange={(e) => setNegativePrompt(e.target.value)}
-                placeholder="What to avoid... e.g., blurry, low quality, distorted, extra fingers"
-                rows={2}
-              />
-              <p className="text-xs text-slate-400">
-                Specify what you don&apos;t want in the image
-              </p>
+            <p className="mt-3 max-w-2xl text-[var(--text-secondary)] text-sm md:text-base leading-relaxed">
+              <span className="font-mono text-[var(--accent-primary)] rounded-md border border-[var(--border-default)] bg-[var(--surface-sunken)] px-1.5 py-0.5">Ctrl/⌘ + K</span> opens History. Switch Quick/Pro modes based on how deep you want to tune syntax.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => actions.setMode('quick')}
+                className={cn(
+                  'rounded-full border px-4 py-2 transition-all duration-200 font-medium',
+                  state.mode === 'quick'
+                    ? 'border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] shadow-[var(--shadow-glow)]'
+                    : 'border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
+                )}
+              >
+                Quick Mode
+              </button>
+              <button
+                type="button"
+                onClick={() => actions.setMode('pro')}
+                className={cn(
+                  'rounded-full border px-4 py-2 transition-all duration-200 font-medium',
+                  state.mode === 'pro'
+                    ? 'border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] shadow-[var(--shadow-glow)]'
+                    : 'border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
+                )}
+              >
+                Pro Mode
+              </button>
+              <span className="rounded-full border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-[var(--text-secondary)]">
+                12 AI models
+              </span>
+              <span className="rounded-full border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-[var(--text-secondary)]">
+                Live syntax translation
+              </span>
             </div>
-          )}
-        </motion.div>
-
-        {/* Right Column - Preview */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:sticky lg:top-8 lg:self-start"
-        >
-          <div className="glass rounded-2xl p-6 space-y-6">
-            <LivePreview
-              prompt={generatedPrompt}
-              history={history}
-              onSaveToHistory={handleSaveToHistory}
-              onClearHistory={handleClearHistory}
-              onLoadFromHistory={handleLoadFromHistory}
-            />
           </div>
-        </motion.div>
+        </section>
+
+        <AnimateHint text={state.modelSwitchHint} />
+
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <SectionShell>
+              <ModelSelector
+                selected={state.model}
+                onChange={actions.handleModelChange}
+                mainConcept={state.mainConcept}
+                quickMode={state.mode === 'quick'}
+              />
+            </SectionShell>
+
+            <SectionShell className="space-y-4">
+              <h2 className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em]">Main Concept</h2>
+              <TextArea
+                value={state.mainConcept}
+                onChange={(e) => actions.setMainConcept(e.target.value)}
+                placeholder="Example: cinematic portrait of a neon street chef, rain-soaked alley, dramatic rim light"
+                rows={4}
+                className="bg-[var(--surface-sunken)] focus:border-[var(--accent-primary-strong)] focus:ring-[var(--accent-primary-strong)]"
+              />
+            </SectionShell>
+
+            <SectionShell>
+              <StyleCards
+                selectedStyles={state.selectedStyles}
+                onToggleStyle={actions.handleToggleStyle}
+                onClearStyles={actions.handleClearStyles}
+                quickMode={state.mode === 'quick'}
+              />
+            </SectionShell>
+
+            {state.mode === 'pro' ? (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-6 overflow-hidden">
+                <SectionShell>
+                  <LightingCamera
+                    lighting={state.lighting}
+                    camera={state.camera}
+                    onLightingChange={actions.setLighting}
+                    onCameraChange={actions.setCamera}
+                  />
+                </SectionShell>
+
+                <SectionShell>
+                  <ParameterSliders
+                    model={state.model}
+                    aspectRatio={state.aspectRatio}
+                    stylize={state.stylize}
+                    chaos={state.chaos}
+                    onAspectRatioChange={actions.setAspectRatio}
+                    onStylizeChange={actions.setStylize}
+                    onChaosChange={actions.setChaos}
+                  />
+                </SectionShell>
+
+                {computed.supportsNegativePrompt && (
+                  <SectionShell className="space-y-4">
+                    <h2 className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em]">Negative Prompt</h2>
+                    <TextArea
+                      value={state.negativePrompt}
+                      onChange={(e) => actions.setNegativePrompt(e.target.value)}
+                      placeholder="Example: blurry, low detail, warped hands, text artifacts, oversaturated skin"
+                      rows={3}
+                      className="bg-[var(--surface-sunken)] focus:border-[var(--accent-primary-strong)] focus:ring-[var(--accent-primary-strong)]"
+                    />
+                    <p className="text-xs text-[var(--text-tertiary)]">
+                      Use negative constraints to remove artifacts and lock visual consistency.
+                    </p>
+                  </SectionShell>
+                )}
+              </motion.div>
+            ) : (
+              <SectionShell>
+                <p className="text-sm text-[var(--text-secondary)]">
+                  Quick Mode is active. Switch to Pro Mode for camera controls, advanced parameters, and
+                  negative prompt filters.
+                </p>
+              </SectionShell>
+            )}
+          </motion.div>
+
+          <motion.aside
+            ref={previewRef}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="lg:sticky lg:top-28 lg:self-start"
+          >
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg-dense)] p-5 md:p-6 shadow-[var(--shadow-card)] backdrop-blur-xl">
+              <LivePreview
+                prompt={computed.generatedPrompt}
+                model={state.model}
+                history={state.history}
+                draft={computed.draft}
+                scores={{
+                  outputConfidence: computed.outputConfidence,
+                  syntaxQuality: computed.syntaxQuality,
+                  validationMessage: computed.promptValidation.valid ? undefined : computed.promptValidation.message,
+                }}
+                showHistory={state.showHistory}
+                copyVariantState={state.copyVariantState}
+                onShowHistoryChange={actions.setShowHistory}
+                onCopyVariant={actions.handleCopyVariant}
+                onClearHistory={actions.handleClearHistory}
+                onLoadFromHistory={actions.handleLoadFromHistory}
+                onDuplicateHistory={actions.handleDuplicateHistory}
+                onToggleFavorite={actions.handleToggleFavorite}
+                onTogglePinned={actions.handleTogglePinned}
+                onRemixHistory={actions.handleRemixHistory}
+              />
+            </div>
+          </motion.aside>
+        </div>
+
+        {/* Mobile sticky bottom toolbar */}
+        <div className="fixed inset-x-4 bottom-4 z-50 lg:hidden safe-bottom">
+          <div className="glass-1 rounded-2xl p-2 shadow-[var(--shadow-nav)]">
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => openPreview(false)}
+                className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] text-xs font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-overlay)] active:scale-95"
+              >
+                <Eye className="h-4 w-4" />
+                Preview
+              </button>
+              <button
+                type="button"
+                onClick={() => actions.handleCopyVariant('prompt')}
+                disabled={!computed.generatedPrompt}
+                className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] text-xs font-medium text-[var(--accent-primary)] transition-all hover:bg-[var(--accent-primary-strong)] active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+              >
+                <Copy className="h-4 w-4" />
+                Copy
+              </button>
+              <button
+                type="button"
+                onClick={() => openPreview(true)}
+                className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] text-xs font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-overlay)] active:scale-95"
+              >
+                <Clock3 className="h-4 w-4" />
+                History
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </GeneratorErrorBoundary>
+  );
+}
+
+function AnimateHint({ text }: { text: string }) {
+  if (!text) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className="inline-flex items-center gap-2 rounded-xl border border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] px-4 py-2.5 text-sm font-medium text-[var(--accent-primary)] shadow-[var(--shadow-glow)]"
+    >
+      <SlidersHorizontal className="h-4 w-4" />
+      {text}
+    </motion.div>
   );
 }

@@ -4,6 +4,9 @@ import { Mail, MessageSquare, Clock } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Contact Us',
   description: 'Get in touch with the Free AI Prompt Maker team.',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 export default function ContactPage() {
@@ -21,8 +24,8 @@ export default function ContactPage() {
         <div className="space-y-6">
           <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-violet-600/20 rounded-lg">
-                <Mail className="w-6 h-6 text-violet-500" />
+              <div className="p-3 bg-cyan-600/20 rounded-lg">
+                <Mail className="w-6 h-6 text-cyan-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white mb-1">Email</h3>
@@ -31,7 +34,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href="mailto:hello@freeaipromptmaker.com"
-                  className="text-violet-400 hover:text-violet-300 transition-colors"
+                  className="text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
                   hello@freeaipromptmaker.com
                 </a>
@@ -41,8 +44,8 @@ export default function ContactPage() {
 
           <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-violet-600/20 rounded-lg">
-                <MessageSquare className="w-6 h-6 text-violet-500" />
+              <div className="p-3 bg-cyan-600/20 rounded-lg">
+                <MessageSquare className="w-6 h-6 text-cyan-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white mb-1">
@@ -55,7 +58,7 @@ export default function ContactPage() {
                   href="https://twitter.com/FreeAIPromptMkr"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-violet-400 hover:text-violet-300 transition-colors"
+                  className="text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
                   @FreeAIPromptMkr
                 </a>
@@ -65,8 +68,8 @@ export default function ContactPage() {
 
           <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-violet-600/20 rounded-lg">
-                <Clock className="w-6 h-6 text-violet-500" />
+              <div className="p-3 bg-cyan-600/20 rounded-lg">
+                <Clock className="w-6 h-6 text-cyan-500" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white mb-1">

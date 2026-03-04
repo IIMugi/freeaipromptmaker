@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'Content Standards',
   description:
     'Learn how Free AI Prompt Maker creates, reviews, and updates prompt guides and tutorials.',
+  alternates: {
+    canonical: '/content-standards',
+  },
 };
 
 export default function ContentStandardsPage() {
@@ -80,12 +83,12 @@ export default function ContentStandardsPage() {
             Email us at{' '}
             <a
               href="mailto:hello@freeaipromptmaker.com"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-cyan-400 hover:text-cyan-300"
             >
               hello@freeaipromptmaker.com
             </a>{' '}
             or visit the{' '}
-            <Link href="/contact" className="text-violet-400 hover:text-violet-300">
+            <Link href="/contact" className="text-cyan-400 hover:text-cyan-300">
               contact page
             </Link>
             .

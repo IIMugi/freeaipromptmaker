@@ -92,7 +92,7 @@ export function PromptGallery() {
     <section className="py-12">
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 mb-3">
-          <Sparkles className="w-6 h-6 text-violet-500" />
+          <Sparkles className="w-6 h-6 text-cyan-300" />
           <h2 className="text-2xl md:text-3xl font-bold text-white">
             Top Community Prompts
           </h2>
@@ -113,8 +113,8 @@ export function PromptGallery() {
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               selectedCategory === cat.id
-                ? 'bg-violet-600 text-white'
-                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                ? 'bg-cyan-300 text-[#04101c]'
+                : 'bg-[#101a2b] text-slate-200 hover:bg-[#16243a]'
             )}
           >
             <span className="mr-1.5" aria-hidden="true">{cat.icon}</span>
@@ -164,7 +164,7 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ delay: index * 0.05 }}
-      className="group relative bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-violet-500/50 transition-all duration-300"
+      className="group relative bg-[#101a2b] rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-300/45 transition-all duration-300"
     >
       {/* Image Placeholder with Gradient */}
       <div className={cn(
@@ -199,7 +199,9 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
           {/* Like Button */}
           <button
             onClick={onLike}
-            aria-label={isLiked ? `Unlike ${prompt.title}` : `Like ${prompt.title}`}
+            aria-label={isLiked
+              ? `Unlike ${prompt.title} with ${prompt.likes + 1} likes`
+              : `Like ${prompt.title} with ${prompt.likes} likes`}
             aria-pressed={isLiked}
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200',
@@ -225,7 +227,7 @@ function PromptCard({ prompt, index, isLiked, isCopied, onLike, onCopy }: Prompt
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200',
               isCopied
                 ? 'bg-green-500/20 text-green-400'
-                : 'bg-violet-600/20 text-violet-300 hover:bg-violet-600/30'
+                : 'bg-cyan-300/15 text-cyan-100 hover:bg-cyan-300/25'
             )}
           >
             {isCopied ? (

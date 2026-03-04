@@ -35,6 +35,8 @@ export interface PromptHistory {
   prompt: string;
   model: AIModel;
   timestamp: string;
+  pinned?: boolean;
+  favorite?: boolean;
 }
 
 // Model information for display

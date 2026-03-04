@@ -12,11 +12,14 @@ import {
 import { aiTools } from '@/data/ai-tools';
 
 export const metadata: Metadata = {
-    title: 'Best AI Art Generators 2025 - Compare Top AI Image Tools',
-    description: 'Compare the best AI art generators of 2025. Detailed reviews of Midjourney, DALL-E 3, Leonardo.ai, Stable Diffusion, and more. Find the perfect AI tool for your needs.',
-    keywords: ['AI art generator', 'best AI image generator 2025', 'Midjourney alternatives', 'AI art tools comparison', 'free AI art generator'],
+    title: 'Best AI Art Generators 2026 - Compare Top AI Image Tools',
+    description: 'Compare the best AI art generators of 2026. Detailed reviews of Midjourney, DALL-E 3, Leonardo.ai, Stable Diffusion, and more. Find the perfect AI tool for your needs.',
+    keywords: ['AI art generator', 'best AI image generator 2026', 'Midjourney alternatives', 'AI art tools comparison', 'free AI art generator'],
+    alternates: {
+        canonical: '/tools',
+    },
     openGraph: {
-        title: 'Best AI Art Generators 2025 - Complete Comparison',
+        title: 'Best AI Art Generators 2026 - Complete Comparison',
         description: 'Find the perfect AI art tool. Compare features, pricing, and quality of top AI image generators.',
     },
 };
@@ -29,12 +32,12 @@ export default function ToolsPage() {
         <div className="max-w-6xl mx-auto px-4 py-16">
             {/* Hero Section */}
             <div className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 text-violet-400 rounded-full text-sm mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 text-cyan-300 rounded-full text-sm mb-6">
                     <Sparkles className="w-4 h-4" />
-                    Updated December 2025
+                    Updated February 2026
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                    Best AI Art Generators 2025
+                    Best AI Art Generators 2026
                 </h1>
                 <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
                     Compare the top AI image and video generators. Find the perfect tool for your creative needs.
@@ -43,7 +46,7 @@ export default function ToolsPage() {
                 {/* Quick CTA */}
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-lg hover:from-violet-500 hover:to-purple-500 transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 rounded-lg hover:from-cyan-400 hover:to-emerald-400 transition-all"
                 >
                     <Zap className="w-5 h-5" />
                     Create Prompts for Any Tool
@@ -105,7 +108,7 @@ export default function ToolsPage() {
                                             href={tool.affiliateLink || tool.website}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors"
+                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm rounded-lg transition-colors"
                                         >
                                             Visit <ExternalLink className="w-3 h-3" />
                                         </a>
@@ -120,20 +123,20 @@ export default function ToolsPage() {
             {/* Image Generators Section */}
             <section className="mb-16">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Sparkles className="w-6 h-6 text-violet-400" />
+                    <Sparkles className="w-6 h-6 text-cyan-300" />
                     Image Generators
                 </h2>
                 <div className="grid md:grid-cols-2 gap-6">
                     {imageGenerators.map((tool) => (
                         <article
                             key={tool.id}
-                            className="bg-slate-800 rounded-xl border border-slate-700 hover:border-violet-500/50 transition-all overflow-hidden"
+                            className="bg-slate-800 rounded-xl border border-slate-700 hover:border-cyan-400/50 transition-all overflow-hidden"
                         >
                             {/* Header */}
                             <div className="p-6 border-b border-slate-700">
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center text-2xl text-white font-bold">
+                                        <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center text-2xl text-slate-950 font-bold">
                                             {tool.name.charAt(0)}
                                         </div>
                                         <div>
@@ -213,7 +216,7 @@ export default function ToolsPage() {
                                     href={tool.affiliateLink || tool.website}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-lg transition-all font-medium"
+                                    className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 rounded-lg transition-all font-medium"
                                 >
                                     Try {tool.name}
                                     <ExternalLink className="w-4 h-4" />
@@ -234,7 +237,7 @@ export default function ToolsPage() {
                     {videoGenerators.map((tool) => (
                         <article
                             key={tool.id}
-                            className="bg-slate-800 rounded-xl border border-slate-700 hover:border-violet-500/50 transition-all overflow-hidden"
+                            className="bg-slate-800 rounded-xl border border-slate-700 hover:border-cyan-400/50 transition-all overflow-hidden"
                         >
                             <div className="p-6">
                                 <div className="flex items-center gap-3 mb-4">
@@ -287,7 +290,7 @@ export default function ToolsPage() {
             </section>
 
             {/* Bottom CTA */}
-            <section className="text-center bg-gradient-to-r from-violet-600/20 to-purple-600/20 rounded-2xl p-8 border border-violet-500/30">
+            <section className="text-center bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 rounded-2xl p-8 border border-cyan-400/30">
                 <h2 className="text-2xl font-bold text-white mb-3">
                     Ready to Create Amazing AI Art?
                 </h2>
@@ -297,7 +300,7 @@ export default function ToolsPage() {
                 </p>
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all font-medium text-lg"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 rounded-xl hover:from-cyan-400 hover:to-emerald-400 transition-all font-medium text-lg"
                 >
                     <Sparkles className="w-5 h-5" />
                     Start Creating Prompts - Free

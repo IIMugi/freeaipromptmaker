@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Terms of Service for Free AI Prompt Maker.',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 export default function TermsPage() {
@@ -122,7 +125,7 @@ export default function TermsPage() {
             For questions about these Terms of Service, contact us at{' '}
             <a
               href="mailto:legal@freeaipromptmaker.com"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-cyan-400 hover:text-cyan-300"
             >
               legal@freeaipromptmaker.com
             </a>

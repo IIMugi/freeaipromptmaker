@@ -47,10 +47,10 @@ export function Select({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           aria-label={label || placeholder}
-          className="w-full appearance-none bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 pr-10
-            text-white placeholder-slate-400
-            focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
-            hover:border-slate-600 transition-colors cursor-pointer"
+          className="w-full appearance-none rounded-xl border border-white/12 bg-[#0f1a2d]/86 px-4 py-2.5 pr-10
+            text-slate-100 placeholder:text-slate-400
+            focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300/40
+            hover:border-white/25 transition-colors cursor-pointer"
         >
           {placeholder && (
             <option value="" disabled>

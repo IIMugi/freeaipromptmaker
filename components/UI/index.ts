@@ -1,7 +1,9 @@
 export { Button } from './Button';
-export { Card, CardHeader, CardContent, CardFooter } from './Card';
-export { Slider } from './Slider';
-export { Select } from './Select';
+export { Card } from './Card';
 export { Input } from './Input';
+export { Select } from './Select';
+export { Slider } from './Slider';
 export { TextArea } from './TextArea';
-
+export { Badge } from './Badge';
+export { SectionShell } from './SectionShell';
+export { LinkCard } from './LinkCard';
