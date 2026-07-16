@@ -158,7 +158,7 @@ const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 /**
  * Unsplash'tan konu ile ilgili resim al
  */
-async function fetchUnsplashImage(topic) {
+async function fetchUnsplashImage() {
   if (!UNSPLASH_ACCESS_KEY) {
     console.log('⚠️ UNSPLASH_ACCESS_KEY bulunamadı, varsayılan resim kullanılacak');
     return null;
@@ -575,19 +575,6 @@ async function selectTopic() {
 /**
  * Konuyu "published" olarak işaretle
  */
-async function markTopicAsPublished(topicId) {
-  const plannerData = await fs.readFile(CONFIG.contentPlannerPath, 'utf-8');
-  const planner = JSON.parse(plannerData);
-
-  const topic = planner.topics.find(t => t.id === topicId);
-  if (topic) {
-    topic.status = 'published';
-    topic.publishedAt = new Date().toISOString();
-  }
-
-  await fs.writeFile(CONFIG.contentPlannerPath, JSON.stringify(planner, null, 2));
-}
-
 /**
  * SEO uyumlu blog taslağı oluştur (Gemini 2.5 Pro)
  */
@@ -702,7 +689,7 @@ async function main() {
     console.log(`📌 Seçilen konu: ${topic.title}\n`);
 
     // 2. Unsplash'tan resim al
-    const imageData = await fetchUnsplashImage(topic);
+    const imageData = await fetchUnsplashImage();
     if (imageData) {
       console.log('✅ Featured image alındı\n');
     }

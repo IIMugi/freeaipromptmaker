@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { motion } from 'motion/react';
 import type { LucideIcon } from 'lucide-react';
 import { Clock3, Sparkles } from 'lucide-react';
 import {

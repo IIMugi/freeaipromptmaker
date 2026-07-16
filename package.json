@@ -16,15 +16,15 @@
     "daily-content": "node scripts/content-manager.js"
   },
   "dependencies": {
-    "@google/genai": "^1.30.0",
+    "@google/genai": "^1.52.0",
     "clsx": "^2.1.1",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.468.0",
-    "motion": "^12.4.7",
-    "next": "^16.0.8",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "motion": "^12.42.2",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
     "reading-time": "^1.5.0",
     "rehype-highlight": "^7.0.2",
@@ -34,19 +34,22 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.61.1",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "eslint": "^9",
-    "eslint-config-next": "^16.0.8",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.2.10",
     "jsdom": "^29.1.1",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "postcss": "8.5.19"
   }
 }

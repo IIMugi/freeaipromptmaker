@@ -108,7 +108,6 @@ async function callGemini(prompt, maxRetries = 3) {
 // ============================================
 
 const CONTENT_HISTORY_PATH = './data/content-history.json';
-const CONTENT_PLANNER_PATH = './data/content-planner.json';
 
 // İçerik kategorileri - çeşitlilik için
 const CONTENT_CATEGORIES = [
@@ -150,10 +149,6 @@ async function loadContentHistory() {
 /**
  * İçerik geçmişini kaydet
  */
-async function saveContentHistory(history) {
-  await fs.writeFile(CONTENT_HISTORY_PATH, JSON.stringify(history, null, 2));
-}
-
 /**
  * Bugün zaten post atıldı mı kontrol et
  */

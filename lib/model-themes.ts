@@ -3,8 +3,6 @@
  * Single source of truth consumed by ModelSelector, PromptGallery, and other components
  */
 
-import type { AIModel } from '@/lib/prompt-builder';
-
 export interface ModelTheme {
     gradient: string;
     badgeBg: string;

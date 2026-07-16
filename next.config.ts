@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import { permanentRedirects } from './data/redirects';
 
-const securityHeaders = [
+export const securityHeaders = [
   {
     key: 'X-Content-Type-Options',
     value: 'nosniff',
