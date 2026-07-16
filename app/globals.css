@@ -46,6 +46,8 @@
   --success: #00ffaa;
   --warning: #ffaa00;
   --error: #ff0055;
+  --danger: #ff0055;
+  --focus-ring: #67e8f9;
 
   /* Glass */
   --glass-bg: rgba(6, 10, 18, 0.6);
@@ -94,6 +96,8 @@
   --success: #16a34a;
   --warning: #d97706;
   --error: #dc2626;
+  --danger: #dc2626;
+  --focus-ring: #0e7490;
 
   --glass-bg: rgba(255, 255, 255, 0.72);
   --glass-bg-dense: rgba(255, 255, 255, 0.90);
@@ -118,6 +122,7 @@
    ═══════════════════════════════════════════ */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 [data-theme="dark"] body {
@@ -146,7 +151,7 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -558,5 +563,20 @@ body {
   textarea,
   select {
     font-size: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

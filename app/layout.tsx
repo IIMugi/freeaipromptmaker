@@ -28,6 +28,8 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400'],
 });
 
+const themeInitScript = `(function(){try{var key='theme-preference';var stored=localStorage.getItem(key);var valid=stored==='light'||stored==='dark'||stored==='system'?stored:'system';var dark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=valid==='system'?(dark?'dark':'light'):valid;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved;}catch(e){document.documentElement.dataset.theme='light';document.documentElement.style.colorScheme='light';}})();`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.origin),
   title: {
@@ -86,8 +88,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -99,13 +102,19 @@ export default function RootLayout({
         className={`${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only fixed left-4 top-4 z-[200] rounded-lg bg-[var(--surface-overlay)] px-4 py-3 text-[var(--text-primary)] focus:not-sr-only"
+          >
+            Skip to main content
+          </a>
           {/* Optional analytics loads only after explicit consent. */}
           <ConsentGate>
             <GoogleAnalytics />
           </ConsentGate>
           <BreadcrumbsJSON />
           <Header />
-          <main className="flex-1 w-full pt-28 md:pt-36">{children}</main>
+          <main id="main-content" className="flex-1 w-full pt-20">{children}</main>
           <Footer />
           <CookieConsent />
         </ThemeProvider>
