@@ -30,6 +30,7 @@ export function usePromptBuilder(prefilledConcept: string = '') {
     const [history, setHistory] = useLocalStorage<PromptHistory[]>('prompt-history', []);
     const [showHistory, setShowHistory] = useState(false);
     const [copyVariantState, setCopyVariantState] = useState<CopyVariant | null>(null);
+    const [copyMessage, setCopyMessage] = useState('');
     const [modelSwitchHint, setModelSwitchHint] = useState('');
     const generatedTrackedRef = useRef(false);
 
@@ -79,26 +80,6 @@ export function usePromptBuilder(prefilledConcept: string = '') {
             generatedTrackedRef.current = true;
         }
     }, [generatedPrompt, mainConcept, model]);
-
-    const outputConfidence = useMemo(() => {
-        let score = 0;
-        if (mainConcept.trim()) score += 35;
-        if (selectedStyles.length) score += Math.min(24, selectedStyles.length * 6);
-        if (lighting || camera) score += 14;
-        if (!supportsNegativePrompt || negativePrompt.trim()) score += 10;
-        if (aspectRatio) score += 10;
-        if (mainConcept.trim().length >= 35) score += 7;
-        return Math.min(100, score);
-    }, [aspectRatio, camera, lighting, mainConcept, negativePrompt, selectedStyles.length, supportsNegativePrompt]);
-
-    const syntaxQuality = useMemo(() => {
-        let score = 62;
-        if (generatedPrompt) score += 14;
-        if (promptValidation.valid) score += 14;
-        if (selectedStyles.length > 0) score += 6;
-        if (!supportsNegativePrompt || negativePrompt.trim()) score += 4;
-        return Math.min(100, score);
-    }, [generatedPrompt, negativePrompt, promptValidation.valid, selectedStyles.length, supportsNegativePrompt]);
 
     // Handle prefilled concept from URL
     useEffect(() => {
@@ -204,10 +185,12 @@ export function usePromptBuilder(prefilledConcept: string = '') {
         const copied = await copyToClipboard(text);
         if (!copied) {
             trackProductEvent('prompt_copy_failed', { model, variant });
+            setCopyMessage('Copy failed. Select the prompt text and copy it manually.');
             return;
         }
 
         trackProductEvent('prompt_copy_succeeded', { model, variant });
+        setCopyMessage(variant === 'json' ? 'JSON copied.' : 'Prompt copied.');
 
         setCopyVariantState(variant);
         if (variant !== 'json') {
@@ -287,13 +270,12 @@ export function usePromptBuilder(prefilledConcept: string = '') {
             history,
             showHistory,
             copyVariantState,
+            copyMessage,
             modelSwitchHint,
         },
         computed: {
             generatedPrompt,
             promptValidation,
-            outputConfidence,
-            syntaxQuality,
             draft,
             modelInfo,
             supportsNegativePrompt,

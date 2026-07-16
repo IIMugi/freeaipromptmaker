@@ -185,11 +185,8 @@ export function PromptBuilder() {
                 model={state.model}
                 history={state.history}
                 draft={computed.draft}
-                scores={{
-                  outputConfidence: computed.outputConfidence,
-                  syntaxQuality: computed.syntaxQuality,
-                  validationMessage: computed.promptValidation.valid ? undefined : computed.promptValidation.message,
-                }}
+                validationMessage={computed.promptValidation.valid ? undefined : computed.promptValidation.message}
+                copyMessage={state.copyMessage}
                 showHistory={state.showHistory}
                 copyVariantState={state.copyVariantState}
                 onShowHistoryChange={actions.setShowHistory}

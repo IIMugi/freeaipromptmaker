@@ -17,18 +17,13 @@ interface PromptDraft {
   modelSyntax: string;
 }
 
-interface PromptScores {
-  outputConfidence: number;
-  syntaxQuality: number;
-  validationMessage?: string;
-}
-
 interface LivePreviewProps {
   prompt: string;
   model: AIModel;
   history: PromptHistory[];
   draft: PromptDraft;
-  scores: PromptScores;
+  validationMessage?: string;
+  copyMessage?: string;
   showHistory: boolean;
   copyVariantState: CopyVariant | null;
   onShowHistoryChange: (value: boolean) => void;
@@ -46,7 +41,8 @@ export function LivePreview({
   model,
   history,
   draft,
-  scores,
+  validationMessage,
+  copyMessage,
   showHistory,
   copyVariantState,
   onShowHistoryChange,
@@ -73,7 +69,7 @@ export function LivePreview({
       <div className="flex items-center justify-between gap-2">
         <div>
           <h3 className="text-sm font-medium text-slate-200 uppercase tracking-wider">Prompt Draft</h3>
-          <p className="text-xs text-slate-400 mt-1">Live syntax mode: {model}</p>
+          <p className="text-xs text-slate-400 mt-1">Formatted locally for {model}</p>
         </div>
         <Button
           variant="ghost"
@@ -87,14 +83,9 @@ export function LivePreview({
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <ScoreCard label="Output Confidence" value={scores.outputConfidence} tone="cyan" />
-        <ScoreCard label="Syntax Quality" value={scores.syntaxQuality} tone="emerald" />
-      </div>
-
-      {scores.validationMessage && (
+      {validationMessage && (
         <p className="rounded-lg border border-amber-300/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
-          {scores.validationMessage}
+          {validationMessage}
         </p>
       )}
 
@@ -155,6 +146,10 @@ export function LivePreview({
           Copy JSON
         </Button>
       </div>
+
+      <p aria-live="polite" className="min-h-4 text-xs text-slate-300">
+        {copyMessage || 'Copy controls become available when a prompt exists.'}
+      </p>
 
       <AnimatePresence>
         {showHistory && (
@@ -244,32 +239,6 @@ function DraftRow({ label, value, highlight = false }: { label: string; value: s
     >
       <p className="text-[11px] uppercase tracking-[0.1em] text-slate-400">{label}</p>
       <p className="text-xs text-slate-100 mt-1">{value}</p>
-    </div>
-  );
-}
-
-function ScoreCard({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone: 'cyan' | 'emerald';
-}) {
-  const clamped = Math.max(0, Math.min(100, value));
-  return (
-    <div className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2">
-      <p className="text-[11px] uppercase tracking-[0.1em] text-slate-400">{label}</p>
-      <div className="mt-1.5 flex items-center gap-2">
-        <div className="h-1.5 flex-1 rounded-full bg-white/10">
-          <div
-            className={cn('h-1.5 rounded-full', tone === 'cyan' ? 'bg-cyan-300' : 'bg-emerald-300')}
-            style={{ width: `${clamped}%` }}
-          />
-        </div>
-        <span className="text-xs font-medium text-slate-100">{clamped}</span>
-      </div>
     </div>
   );
 }
