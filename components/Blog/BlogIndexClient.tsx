@@ -141,12 +141,11 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
           </div>
 
           <div className="space-y-3">
-            <h1 className="text-balance text-3xl font-semibold text-white sm:text-4xl md:text-5xl">
-              Tactical guides for better prompts and better outputs.
+            <h1 className="text-balance text-3xl font-semibold text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+              Verified prompt guides
             </h1>
             <p className="max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
-              Find model-specific playbooks, practical workflows, and copy-ready examples for
-              Midjourney, Flux, DALL-E, and Stable Diffusion.
+              Only guides that complete the current source and model-version review appear here.
             </p>
           </div>
 
@@ -359,9 +358,13 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
       ) : (
         <section className="section-shell mt-8 p-8 text-center">
           <BookOpen className="mx-auto h-8 w-8 text-slate-400" />
-          <h2 className="mt-3 text-xl font-semibold text-white">No matching guides</h2>
+          <h2 className="mt-3 text-xl font-semibold text-[var(--text-primary)]">
+            {posts.length ? 'No matching guides' : 'Guides are under editorial review'}
+          </h2>
           <p className="mt-2 text-sm text-slate-300">
-            Try clearing filters or using broader keywords.
+            {posts.length
+              ? 'Try clearing filters or using broader keywords.'
+              : 'No guide is promoted here until its claims, sources, and current model version are verified.'}
           </p>
         </section>
       )}

@@ -290,39 +290,6 @@ export default async function BlogPostPage({ params }: PageProps) {
       title: 'See more AI prompt guides',
       href: '/blog',
     },
-    {
-      title: 'Explore product photo prompt tips',
-      href: '/blog/2025-12-05-ai-animation-video-prompts-guide',
-    },
-  ];
-
-  const faqEntries = [
-    {
-      q: `What is "${post.title}" about?`,
-      a:
-        post.description ||
-        'Learn how to improve your AI art prompts with practical steps and examples.',
-    },
-    {
-      q: 'How do I apply this guide to my prompts?',
-      a:
-        'Pick one or two tips from the article and test them inside the Visual Prompt Generator, then iterate with small tweaks.',
-    },
-    {
-      q: 'Where can I create and save my prompts?',
-      a:
-        'Use the Visual Prompt Generator to build, copy, and save prompts for Midjourney, DALL-E, and Stable Diffusion.',
-    },
-    {
-      q: 'Do these tips work for Midjourney, DALL-E, and Stable Diffusion?',
-      a:
-        'Yes. The prompt patterns work across all three; just adapt syntax for each model (aspect ratio, stylize/chaos, negative prompts).',
-    },
-    {
-      q: 'How can I keep my outputs consistent across a series?',
-      a:
-        'Use a stable style reference (sref), fix aspect ratio, repeat key descriptors, and re-use seeds/model presets when available.',
-    },
   ];
 
   const articleSchema = editorialPolicy.index
@@ -375,6 +342,23 @@ export default async function BlogPostPage({ params }: PageProps) {
               </aside>
             ) : null}
 
+            <dl className="mb-8 grid gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm sm:grid-cols-3">
+              <div>
+                <dt className="text-[var(--text-tertiary)]">Editorial status</dt>
+                <dd className="mt-1 font-medium text-[var(--text-primary)]">
+                  {post.editorialState === 'verified' ? 'Verified' : post.editorialState === 'archived' ? 'Archived' : 'Needs review'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[var(--text-tertiary)]">Last verified</dt>
+                <dd className="mt-1 font-medium text-[var(--text-primary)]">{post.lastVerified || 'Not yet verified'}</dd>
+              </div>
+              <div>
+                <dt className="text-[var(--text-tertiary)]">Sources</dt>
+                <dd className="mt-1 font-medium text-[var(--text-primary)]">{post.sources.length ? `${post.sources.length} listed` : 'Not yet verified'}</dd>
+              </div>
+            </dl>
+
             {/* Featured Image */}
             <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
               {post.image ? (
@@ -415,7 +399,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </span>
               )}
 
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4 leading-tight">
                 {post.title}
               </h1>
 
@@ -486,7 +470,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           )}
 
-          {(prosCons.pros.length > 0 || prosCons.cons.length > 0) && (
+          {editorialPolicy.index && (prosCons.pros.length > 0 || prosCons.cons.length > 0) && (
             <div className="mb-8 rounded-xl border border-slate-800 bg-slate-900/50 p-6">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h2 id="advantages-and-limitations" className="text-lg font-semibold text-white">
@@ -529,19 +513,6 @@ export default async function BlogPostPage({ params }: PageProps) {
             {/* Dynamic In-Article Ads (based on content length) */}
           {/* CTA block */}
           <CtaButtons items={ctas} />
-
-          {/* FAQ */}
-          <div className="mt-10 rounded-xl border border-slate-800 bg-slate-900/60 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">FAQ</h3>
-            <div className="space-y-4">
-              {faqEntries.map((item) => (
-                <div key={item.q} className="border-b border-slate-800 pb-4 last:border-b-0 last:pb-0">
-                  <p className="text-sm font-semibold text-slate-100">{item.q}</p>
-                  <p className="text-sm text-slate-300 mt-1">{item.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* End of Content Ad */}
             {/* Share Section */}

@@ -1,122 +1,38 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'Cookie Policy for Free AI Prompt Maker - Learn about our use of cookies.',
-  alternates: {
-    canonical: '/cookies',
-  },
+  description: 'Local storage and optional analytics used by Free AI Prompt Maker.',
+  alternates: { canonical: '/cookies' },
 };
 
 export default function CookiesPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-white mb-8">Cookie Policy</h1>
-      <p className="text-slate-400 mb-8">Last updated: July 16, 2026</p>
-
-      <div className="prose prose-invert max-w-none space-y-8">
+    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
+      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Cookie policy</h1>
+      <p className="mt-3 text-sm text-[var(--text-tertiary)]">Last updated: July 16, 2026</p>
+      <div className="mt-10 space-y-8 text-[var(--text-secondary)]">
         <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            What Are Cookies?
-          </h2>
-          <p className="text-slate-300 leading-relaxed">
-            Cookies are small text files stored on your device when you visit a
-            website. They help websites remember information about your visit,
-            making your next visit easier and more useful.
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Required local storage</h2>
+          <p className="mt-3 leading-relaxed">
+            Browser localStorage remembers theme, consent choice, and prompt history on your device.
+            These features do not require an account.
           </p>
         </section>
-
         <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            How We Use Cookies
-          </h2>
-          <p className="text-slate-300 leading-relaxed">
-            Free AI Prompt Maker uses cookies and similar technologies for:
-          </p>
-
-          <h3 className="text-xl font-medium text-white mb-2 mt-4">
-            Essential Cookies
-          </h3>
-          <p className="text-slate-300 leading-relaxed">
-            These cookies are necessary for the website to function properly.
-            They enable basic features like page navigation and access to secure
-            areas.
-          </p>
-
-          <h3 className="text-xl font-medium text-white mb-2 mt-4">
-            Analytics Cookies
-          </h3>
-          <p className="text-slate-300 leading-relaxed">
-            With your permission, Google Analytics helps us understand aggregate
-            site usage so we can improve the tools. Analytics remains off when you decline.
-          </p>
-          <h3 className="text-xl font-medium text-white mb-2 mt-4">
-            Local Storage
-          </h3>
-          <p className="text-slate-300 leading-relaxed">
-            We use browser localStorage to save your prompt history locally on
-            your device. This data never leaves your browser and is not sent to
-            our servers.
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Optional analytics</h2>
+          <p className="mt-3 leading-relaxed">
+            Google Analytics may set cookies only after you choose Allow analytics. Decline is the
+            default when no consent is recorded. Use the Privacy button to change or withdraw your choice.
           </p>
         </section>
-
         <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            Managing Cookies
-          </h2>
-          <p className="text-slate-300 leading-relaxed">
-            You can control and manage cookies in several ways:
-          </p>
-          <ul className="text-slate-300 list-disc pl-6 space-y-2 mt-2">
-            <li>
-              <strong>Browser Settings:</strong> Most browsers allow you to
-              refuse or accept cookies through their settings menu.
-            </li>
-            <li>
-              <strong>Privacy settings:</strong> Use the Privacy button at the lower edge of the
-              site to allow analytics or withdraw consent at any time.
-            </li>
-            <li>
-              <strong>Clear Local Storage:</strong> You can clear your prompt
-              history by clearing your browser&apos;s local storage data.
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            Third-Party Cookies
-          </h2>
-          <p className="text-slate-300 leading-relaxed">
-            Google Analytics may set analytics cookies only after you choose
-            &quot;Allow analytics.&quot; Google processes that data under its own privacy policy.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            Updates to This Policy
-          </h2>
-          <p className="text-slate-300 leading-relaxed">
-            We may update this Cookie Policy from time to time. Any changes will
-            be posted on this page with an updated revision date.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-4">Contact Us</h2>
-          <p className="text-slate-300 leading-relaxed">
-            If you have questions about our use of cookies, please contact us at{' '}
-            <a
-              href="mailto:privacy@freeaipromptmaker.com"
-              className="text-cyan-400 hover:text-cyan-300"
-            >
-              privacy@freeaipromptmaker.com
-            </a>
-          </p>
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">No advertising cookies</h2>
+          <p className="mt-3 leading-relaxed">Advertising is disabled in the readiness build, so the current application does not load advertising cookies.</p>
         </section>
       </div>
-    </div>
+      <p className="mt-10 text-[var(--text-secondary)]">See the <Link href="/privacy" className="text-[var(--accent-primary)] hover:underline">privacy policy</Link> for provider and request-data boundaries.</p>
+    </article>
   );
 }
-

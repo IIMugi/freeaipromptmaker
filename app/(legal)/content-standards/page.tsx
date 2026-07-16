@@ -3,98 +3,54 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Content Standards',
-  description:
-    'Learn how Free AI Prompt Maker creates, reviews, and updates prompt guides and tutorials.',
-  alternates: {
-    canonical: '/content-standards',
-  },
+  description: 'The editorial states and verification requirements used by Free AI Prompt Maker.',
+  alternates: { canonical: '/content-standards' },
 };
+
+const requirements = [
+  'Claims are checked against primary documentation or a clearly identified source.',
+  'Model and interface versions are stated when they materially affect the instructions.',
+  'Examples do not invent first-person testing, credentials, results, ratings, or audience data.',
+  'The page records a verification date and sources before it can enter guide hubs or the sitemap.',
+];
 
 export default function ContentStandardsPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-white mb-4">Content Standards</h1>
-      <p className="text-slate-400 mb-10">Last updated: December 22, 2025</p>
+    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
+      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Content standards</h1>
+      <p className="mt-3 text-sm text-[var(--text-tertiary)]">Last updated: July 16, 2026</p>
+      <p className="mt-6 text-lg leading-relaxed text-[var(--text-secondary)]">
+        Every guide has one explicit state: verified, needs review, or archived. Only verified guides
+        may be indexed, appear in the sitemap, or be promoted from a hub.
+      </p>
 
-      <div className="prose prose-invert max-w-none space-y-8">
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">Purpose</h2>
-          <p className="text-slate-300 leading-relaxed">
-            Free AI Prompt Maker publishes practical prompt guides and visual tools for Midjourney,
-            Stable Diffusion, and DALL-E. Our goal is to help creators generate better images with
-            clear, repeatable instructions.
-          </p>
-        </section>
+      <section className="mt-10 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Verification requirements</h2>
+        <ul className="mt-4 list-disc space-y-3 pl-5 text-[var(--text-secondary)]">
+          {requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}
+        </ul>
+      </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">How we create guides</h2>
-          <ul className="text-slate-300 list-disc pl-6 space-y-2">
-            <li>
-              <strong>Research:</strong> We review model updates, official docs, and community best
-              practices.
-            </li>
-            <li>
-              <strong>Prompt testing:</strong> Every guide is backed by real prompt runs to confirm
-              that the instructions work as written.
-            </li>
-            <li>
-              <strong>Editing:</strong> We rewrite for clarity and remove vague or repetitive advice.
-            </li>
-          </ul>
-        </section>
+      <section className="mt-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">AI-assisted legacy content</h2>
+        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
+          The repository contains a legacy automated corpus. Those pages default to needs review.
+          Automated direct publishing is disabled; any future draft requires manual review and an
+          explicit editorial-state change.
+        </p>
+      </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">AI assistance disclosure</h2>
-          <p className="text-slate-300 leading-relaxed">
-            We may use AI tools to help draft outlines or summarize ideas, but every article is reviewed
-            and refined by a human editor before publishing. We never publish unreviewed AI output.
-          </p>
-        </section>
+      <section className="mt-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Commercial readiness</h2>
+        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
+          Advertising is disabled in the readiness build and there are no affiliate links in the
+          tool directory. AdSense approval is not guaranteed by these changes or by this policy.
+        </p>
+      </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">Quality checklist</h2>
-          <ul className="text-slate-300 list-disc pl-6 space-y-2">
-            <li>Clear, actionable steps with examples.</li>
-            <li>Accurate model parameters and up-to-date terminology.</li>
-            <li>Original writing with no copied or scraped material.</li>
-            <li>Balanced recommendations and honest limitations.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">Advertising and affiliates</h2>
-          <p className="text-slate-300 leading-relaxed">
-            The site is supported by ads and occasional affiliate links. These never influence our
-            editorial content. Sponsored or affiliate links are disclosed on the page.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">Corrections</h2>
-          <p className="text-slate-300 leading-relaxed">
-            If you notice an error or outdated advice, please reach out so we can update the guide.
-            We aim to respond within 48 hours.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-white mb-3">Contact</h2>
-          <p className="text-slate-300 leading-relaxed">
-            Email us at{' '}
-            <a
-              href="mailto:hello@freeaipromptmaker.com"
-              className="text-cyan-400 hover:text-cyan-300"
-            >
-              hello@freeaipromptmaker.com
-            </a>{' '}
-            or visit the{' '}
-            <Link href="/contact" className="text-cyan-400 hover:text-cyan-300">
-              contact page
-            </Link>
-            .
-          </p>
-        </section>
-      </div>
-    </div>
+      <p className="mt-8 text-[var(--text-secondary)]">
+        Found a factual issue? Use the <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">contact page</Link>.
+      </p>
+    </article>
   );
 }

@@ -1,42 +1,19 @@
 import Link from 'next/link';
-import { Home, Search } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4">
-      <div className="text-center">
-        {/* 404 Number */}
-        <div className="text-9xl font-bold text-slate-800 select-none">
-          404
-        </div>
-
-        {/* Message */}
-        <h1 className="text-3xl font-bold text-white mt-4 mb-2">
-          Page Not Found
-        </h1>
-        <p className="text-slate-400 max-w-md mx-auto mb-8">
-          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
-          Let&apos;s get you back on track.
+    <section className="mx-auto flex min-h-[60vh] max-w-3xl items-center px-4 py-16">
+      <div>
+        <p className="text-sm font-medium text-[var(--accent-primary)]">404</p>
+        <h1 className="mt-3 text-4xl font-semibold text-[var(--text-primary)]">Page not found</h1>
+        <p className="mt-4 max-w-xl leading-relaxed text-[var(--text-secondary)]">
+          This URL is not part of the current site. It may have been removed, renamed, or typed incorrectly.
         </p>
-
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
-          >
-            <Home className="w-5 h-5" />
-            Go to Homepage
-          </Link>
-          <Link
-            href="/blog"
-            className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-700 transition-colors"
-          >
-            <Search className="w-5 h-5" />
-            Browse Blog
-          </Link>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <Link href="/#generator" className="rounded-xl bg-[var(--accent-primary)] px-5 py-3 text-sm font-semibold text-[var(--text-inverted)]">Open the generator</Link>
+          <Link href="/prompt-generators" className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] px-5 py-3 text-sm font-medium text-[var(--text-primary)]">Browse prompt pages</Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
