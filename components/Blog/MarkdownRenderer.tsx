@@ -23,6 +23,12 @@ const allowedElements = [
   'a',
   'code',
   'pre',
+  'table',
+  'thead',
+  'tbody',
+  'tr',
+  'th',
+  'td',
 ];
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
@@ -71,6 +77,16 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           strong: ({ children }) => <strong>{children}</strong>,
           em: ({ children }) => <em>{children}</em>,
           pre: ({ children }) => <pre className="code-block" tabIndex={0}>{children}</pre>,
+          table: ({ children }) => (
+            <div
+              className="table-scroll overflow-x-auto"
+              role="region"
+              aria-label="Scrollable data table"
+              tabIndex={0}
+            >
+              <table className="data-table">{children}</table>
+            </div>
+          ),
           code: ({ className, children }) => {
             const isInline = !className;
             if (isInline) {

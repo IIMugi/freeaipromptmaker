@@ -78,12 +78,38 @@ const stableDiffusionCandidates = [
   },
 ] as const;
 
-const guaranteeLanguage = /\bguarantee(?:s|d|ing)?\b/i;
-const negatedGuarantee = /\b(?:does not|doesn't|cannot|can't|never|not)\s+guarantee(?:s|d|ing)?\b|\bno\s+(?:\w+\s+){0,3}can\s+guarantee(?:s|d|ing)?\b/gi;
-const rankingOrHype = /\b(?:universally?|perfect(?:ly)?|game[- ]changer)\b|(?<!not the )(?<!not )\bbest\s+(?:extension|tool|model|workflow|results?|quality)\b|\b(?:ranked|rated|named|declared)\s+(?:as\s+)?(?:the\s+)?best\b/i;
+const rankingLimitation = /\bnot(?:\s+\w+){0,3}\s+the\s+best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b/gi;
+const rankingOrHype = /#\s*1\b|\btop[- ]ranked\b|\branked\s+(?:#?\s*1|first)\b|\b(?:ranked|rated|named|declared)\s+(?:as\s+)?(?:the\s+)?best\b|\b(?:the\s+)?best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b|\bperfect(?:ly)?\s+(?:outputs?|results?|quality|placement|compatibility|images?)\b|\b(?:universally?|game[- ]changer)\b/i;
+const popularityOrAudienceClaim = /\b(?:most popular|widely (?:used|adopted)|popular with|used by (?:millions|thousands)|trusted by (?:millions|thousands)|millions of (?:users|creators)|for everyone)\b/i;
+const priceOrRatingClaim = /[$€£¥]\s*\d|\b(?:USD|EUR|GBP|TRY)\s*\d|\b(?:costs?|priced at|price of)\s+\d+(?:\.\d+)?(?:\s+per\s+\w+)?\b|\b\d+(?:\.\d{1,2})?\s*(?:dollars?|euros?|pounds?)\b|\b(?:free|paid|premium)\s+tier\b|\bpricing plan\b|\b\d(?:\.\d+)?\s*\/\s*(?:5|10|100)\b|\b(?:one|two|three|four|five)[ -]star\b|\b(?:rated|rating of)\s+\d(?:\.\d+)?(?:\s+out of\s+(?:5|10))?/i;
+const benchmarkClaim = /\b\d+(?:\.\d+)?%\s+(?:faster|slower|better|fewer|improvement|increase|decrease)\b|\b\d+(?:\.\d+)?x\s+faster\b|\btwice\s+as\s+(?:fast|slow)\b/i;
+const fabricatedTesting = /\b(?:i|we)\s+(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
 
-const hasUnsupportedGuarantee = (text: string) =>
-  guaranteeLanguage.test(text.replace(negatedGuarantee, ''));
+const affirmativeGuaranteeClaims = [
+  /\b(?:i|we)\s+guarantee\b/i,
+  /\b(?:this|it)\s+guarantees\b/i,
+  /\b(?:this|it)\s+(?:can|does|will)\s+guarantee\b/i,
+  /\bthe\s+(?:extension|feature|method|tool|workflow)\s+(?:guaranteed|guarantees)\b/i,
+  /\b(?:and|but)\s+guarantees\b/i,
+  /\bit\s+not only\s+guarantees\b/i,
+] as const;
+
+// This automation intentionally detects only reviewable phrase families.
+// Novel grammar remains a manual editorial-review concern rather than inferred NLP.
+const boundedEditorialClaimFamilies = [
+  { name: 'affirmative guarantees', patterns: affirmativeGuaranteeClaims },
+  { name: 'rankings and hype', patterns: [rankingOrHype] },
+  { name: 'popularity and audience', patterns: [popularityOrAudienceClaim] },
+  { name: 'pricing and ratings', patterns: [priceOrRatingClaim] },
+  { name: 'benchmarks', patterns: [benchmarkClaim] },
+  { name: 'fabricated testing', patterns: [fabricatedTesting] },
+] as const;
+
+const hasUnsupportedClaim = (text: string) => {
+  const proseWithoutRankingLimitations = text.replace(rankingLimitation, '');
+  return boundedEditorialClaimFamilies.some((family) =>
+    family.patterns.some((pattern) => pattern.test(proseWithoutRankingLimitations)));
+};
 
 describe('guide corpus', () => {
   it('has an explicit editorial status for every guide', () => {
@@ -109,26 +135,68 @@ describe('guide corpus', () => {
 
   it('distinguishes unsupported claims from honest limitations and contextual wording', () => {
     const allowed = [
-      'Regional prompting does not guarantee placement.',
-      'No extension can guarantee compatibility.',
-      'This never guarantees a result.',
-      'Choose the best fit for the documented requirement.',
-      'This is not the best extension for every workflow.',
+      { label: 'direct limitation', text: 'Regional prompting does not guarantee placement.' },
+      { label: 'subject limitation', text: 'No extension can guarantee compatibility.' },
+      { label: 'multiword subject limitation', text: 'No regional extension can guarantee compatibility.' },
+      { label: 'multiword passive limitation', text: 'No generated output is guaranteed.' },
+      { label: 'noun limitation', text: 'There is no guarantee of compatibility.' },
+      { label: 'plural noun limitation', text: 'The documentation makes no guarantees about compatibility.' },
+      { label: 'plural existential limitation', text: 'There are no guarantees of compatibility.' },
+      { label: 'contextual guarantee noun', text: 'Without a guarantee of compatibility, pin the commit.' },
+      { label: 'conditional guarantee noun', text: 'A guarantee would require evidence.' },
+      { label: 'no-evidence guarantee', text: 'There is no evidence of a compatibility guarantee.' },
+      { label: 'no-evidence comparison', text: 'There is no evidence supporting a speed comparison.' },
+      { label: 'never disclaimer', text: 'This never guarantees a result.' },
+      { label: 'modal not disclaimer', text: 'This will not guarantee compatibility.' },
+      { label: 'modal never disclaimer', text: 'This can never guarantee placement.' },
+      { label: 'contextual perfect', text: 'This syntax is perfectly valid.' },
+      { label: 'contextual best', text: 'Choose the best fit for the documented requirement.' },
+      { label: 'direct ranking disclaimer', text: 'This is not the best extension for every workflow.' },
+      { label: 'qualified ranking disclaimer', text: 'This is not necessarily the best extension.' },
+      { label: 'comparison limitation', text: 'No pricing or benchmark comparison was performed.' },
     ];
     const prohibited = [
-      'This guarantees consistent placement.',
-      'The extension guaranteed clean outputs.',
-      'This is the best extension for image quality.',
-      'This tool produces perfect outputs.',
-      'This is a game-changer.',
+      { label: 'direct guarantee', text: 'This guarantees consistent placement.' },
+      { label: 'intervening guarantee', text: 'This guarantees consistently clean placement.' },
+      { label: 'first-person base guarantee', text: 'We guarantee consistent placement.' },
+      { label: 'singular first-person base guarantee', text: 'I guarantee clean output.' },
+      { label: 'unrelated without clause', text: 'It works without setup and guarantees results.' },
+      { label: 'unrelated no clause', text: 'It has no caveat but guarantees placement.' },
+      { label: 'unrelated not clause', text: 'Not only fast, it guarantees quality.' },
+      { label: 'additive not-only guarantee', text: 'It not only guarantees speed but improves quality.' },
+      { label: 'past guarantee', text: 'The extension guaranteed clean outputs.' },
+      { label: 'ranking', text: 'This is the best extension for image quality.' },
+      { label: 'choice ranking', text: 'This is the best choice.' },
+      { label: 'first-place ranking', text: 'This extension ranked first.' },
+      { label: 'number-one ranking', text: 'This is the #1 extension.' },
+      { label: 'top ranking', text: 'This is the top-ranked workflow.' },
+      { label: 'perfect output', text: 'This tool produces perfect outputs.' },
+      { label: 'hype', text: 'This is a game-changer.' },
+      { label: 'popularity', text: 'This is the most popular extension.' },
+      { label: 'adoption claim', text: 'This extension is widely adopted.' },
+      { label: 'creator popularity', text: 'This extension is popular with creators.' },
+      { label: 'audience size', text: 'Used by millions of creators.' },
+      { label: 'currency price', text: 'The extension costs $9.99.' },
+      { label: 'named currency price', text: 'The extension costs USD 12.' },
+      { label: 'unqualified recurring price', text: 'The extension costs 12 per month.' },
+      { label: 'tier claim', text: 'A premium tier is available.' },
+      { label: 'numeric rating', text: 'Users rate it 4.8/5.' },
+      { label: 'written numeric rating', text: 'It is rated 4.8 out of 5.' },
+      { label: 'star rating', text: 'It has a five-star rating.' },
+      { label: 'percentage benchmark', text: 'It runs 35% faster.' },
+      { label: 'multiplier benchmark', text: 'It runs 2x faster.' },
+      { label: 'written multiplier benchmark', text: 'It runs twice as fast.' },
+      { label: 'failure benchmark', text: 'It has 35% fewer failures.' },
+      { label: 'first-person finding', text: 'We found fewer failures.' },
+      { label: 'test finding', text: 'Our tests showed cleaner output.' },
+      { label: 'testing finding', text: 'Our testing showed fewer failures.' },
     ];
 
-    for (const text of allowed) {
-      expect(hasUnsupportedGuarantee(text)).toBe(false);
-      expect(text).not.toMatch(rankingOrHype);
+    for (const fixture of allowed) {
+      expect(hasUnsupportedClaim(fixture.text), fixture.label).toBe(false);
     }
-    for (const text of prohibited) {
-      expect(hasUnsupportedGuarantee(text) || rankingOrHype.test(text)).toBe(true);
+    for (const fixture of prohibited) {
+      expect(hasUnsupportedClaim(fixture.text), fixture.label).toBe(true);
     }
   });
 
@@ -136,8 +204,6 @@ describe('guide corpus', () => {
     const limitation = 'No independent image-generation comparison was performed for this guide.';
     const legacyCopy = /hey there|imagine a world|ready to (?:transform|supercharge)|fellow ai art|unlock (?:new|unprecedented)|\uFFFD|PromptMaster/i;
     const inventedExperience = /\b(?:i know i(?:'|’)ve|i(?:'|’)ve (?:found|tried|learned|experienced)|in my experience|my go-to|in my opinion|what works for me|trust me|for me,? this)\b/i;
-    const ratingOrPriceClaim = /\b\d(?:\.\d)?\s*\/\s*(?:5|10)\b|\b(?:one|two|three|four|five)[ -]star\b|\$\s*\d|\b(?:free|paid|premium) tier\b|\bpricing plan\b/i;
-    const fakeTesting = /\b(?:i|we)\s+(?:tested|compared|benchmarked|verified|ran|generated|installed|used)\b/i;
 
     for (const candidate of stableDiffusionCandidates) {
       const raw = fs.readFileSync(path.join(postsDirectory, `${candidate.slug}.mdx`), 'utf8');
@@ -164,10 +230,7 @@ describe('guide corpus', () => {
         .replace(/https:\/\/[^\s)"']+/g, '');
       expect(proseWithoutUrls).not.toMatch(legacyCopy);
       expect(proseWithoutUrls).not.toMatch(inventedExperience);
-      expect(hasUnsupportedGuarantee(proseWithoutUrls)).toBe(false);
-      expect(proseWithoutUrls).not.toMatch(ratingOrPriceClaim);
-      expect(proseWithoutUrls).not.toMatch(fakeTesting);
-      expect(proseWithoutUrls).not.toMatch(rankingOrHype);
+      expect(hasUnsupportedClaim(proseWithoutUrls)).toBe(false);
     }
   });
 });
