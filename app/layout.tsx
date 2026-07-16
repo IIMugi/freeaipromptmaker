@@ -6,7 +6,7 @@ import { Footer } from '@/components/Layout/Footer';
 import { CookieConsent } from '@/components/Consent/CookieConsent';
 import { ConsentGate } from '@/components/Consent/ConsentGate';
 import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
-import { ScrollTracker, GoogleAnalytics } from '@/components/Analytics';
+import { GoogleAnalytics } from '@/components/Analytics';
 import { SITE } from '@/lib/site';
 import { websiteJsonLd } from '@/lib/seo';
 import './globals.css';
@@ -103,7 +103,6 @@ export default function RootLayout({
           <ConsentGate>
             <GoogleAnalytics />
           </ConsentGate>
-          <ScrollTracker />
           <BreadcrumbsJSON />
           <Header />
           <main className="flex-1 w-full pt-28 md:pt-36">{children}</main>

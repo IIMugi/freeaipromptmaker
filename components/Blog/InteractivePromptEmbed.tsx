@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 import { copyToClipboard } from '@/lib/utils';
-import { trackEvent } from '@/lib/analytics';
+import { trackProductEvent } from '@/lib/analytics';
 
 interface InteractivePromptEmbedProps {
   prompt: string;
@@ -27,21 +27,14 @@ export function InteractivePromptEmbed({
     const success = await copyToClipboard(prompt);
     if (success) {
       setCopied(true);
-      trackEvent({
-        action: 'copy_prompt_from_blog',
-        category: 'engagement',
-        label: model,
-      });
+      trackProductEvent('prompt_copy_succeeded', { model: model.toLowerCase(), variant: 'prompt' });
       setTimeout(() => setCopied(false), 2000);
+    } else {
+      trackProductEvent('prompt_copy_failed', { model: model.toLowerCase(), variant: 'prompt' });
     }
   };
 
   const handleOpenInGenerator = () => {
-    trackEvent({
-      action: 'open_in_generator',
-      category: 'conversion',
-      label: model,
-    });
     // Prompt'u query param olarak generator'a gönder
     const encodedPrompt = encodeURIComponent(prompt);
     window.open(`/?prompt=${encodedPrompt}`, '_blank');

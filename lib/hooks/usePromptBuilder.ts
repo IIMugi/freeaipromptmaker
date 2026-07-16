@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
     buildPrompt,
     getModelDefaults,
@@ -11,6 +11,7 @@ import { useLocalStorage } from '@/lib/hooks';
 import { copyToClipboard, generateId } from '@/lib/utils';
 import { getStyleValues } from '@/components/Generator/StyleCards';
 import type { CopyVariant } from '@/components/Generator/LivePreview';
+import { trackProductEvent } from '@/lib/analytics';
 
 export type BuilderMode = 'quick' | 'pro';
 
@@ -30,6 +31,7 @@ export function usePromptBuilder(prefilledConcept: string = '') {
     const [showHistory, setShowHistory] = useState(false);
     const [copyVariantState, setCopyVariantState] = useState<CopyVariant | null>(null);
     const [modelSwitchHint, setModelSwitchHint] = useState('');
+    const generatedTrackedRef = useRef(false);
 
     const modelInfo = getModelInfo(model);
     const supportsNegativePrompt = modelInfo?.supportsNegative ?? false;
@@ -66,6 +68,17 @@ export function usePromptBuilder(prefilledConcept: string = '') {
         () => (generatedPrompt ? validatePromptLength(generatedPrompt, model) : { valid: true }),
         [generatedPrompt, model]
     );
+
+    useEffect(() => {
+        if (!mainConcept.trim()) {
+            generatedTrackedRef.current = false;
+            return;
+        }
+        if (!generatedTrackedRef.current && generatedPrompt) {
+            trackProductEvent('prompt_generated', { model });
+            generatedTrackedRef.current = true;
+        }
+    }, [generatedPrompt, mainConcept, model]);
 
     const outputConfidence = useMemo(() => {
         let score = 0;
@@ -189,14 +202,19 @@ export function usePromptBuilder(prefilledConcept: string = '') {
 
         const text = buildCopyVariant(variant);
         const copied = await copyToClipboard(text);
-        if (!copied) return;
+        if (!copied) {
+            trackProductEvent('prompt_copy_failed', { model, variant });
+            return;
+        }
+
+        trackProductEvent('prompt_copy_succeeded', { model, variant });
 
         setCopyVariantState(variant);
         if (variant !== 'json') {
             savePromptToHistory(generatedPrompt);
         }
         setTimeout(() => setCopyVariantState(null), 1800);
-    }, [buildCopyVariant, generatedPrompt, savePromptToHistory]);
+    }, [buildCopyVariant, generatedPrompt, model, savePromptToHistory]);
 
     const handleLoadFromHistory = useCallback((prompt: string) => {
         setMainConcept(prompt);

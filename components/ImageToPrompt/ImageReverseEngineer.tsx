@@ -6,6 +6,7 @@ import { Copy, ImageUp, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { copyToClipboard, cn } from '@/lib/utils';
 import { detectImageType, MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
+import { trackProductEvent } from '@/lib/analytics';
 
 interface ReversePromptResult {
   styleDna: {
@@ -55,11 +56,13 @@ export function ImageReverseEngineer() {
     resetResult();
     if (!file) return;
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      trackProductEvent('image_upload_rejected', { reason: 'type' });
       setState('error');
       setMessage('Only PNG, JPG, and WEBP images are supported.');
       return;
     }
     if (file.size > MAX_IMAGE_FILE_SIZE) {
+      trackProductEvent('image_upload_rejected', { reason: 'size' });
       setState('error');
       setMessage('Maximum file size is 8MB.');
       return;
@@ -85,6 +88,8 @@ export function ImageReverseEngineer() {
 
     const detectedType = detectImageType(new Uint8Array(await selectedFile.arrayBuffer()));
     if (!detectedType || detectedType !== selectedFile.type) {
+      trackProductEvent('image_upload_rejected', { reason: 'signature' });
+      trackProductEvent('image_analysis_failed', { reason: 'validation' });
       setState('error');
       setMessage('The file contents do not match a supported image format.');
       return;
@@ -102,20 +107,26 @@ export function ImageReverseEngineer() {
         | null;
 
       if (response.status === 503 || payload?.code === 'analysis_unavailable') {
+        trackProductEvent('image_analysis_failed', { reason: 'unavailable' });
         setState('unavailable');
         setMessage('Image analysis is currently unavailable. Your selected file is preserved.');
         return;
       }
       if (!response.ok || !payload?.data) {
+        trackProductEvent('image_analysis_failed', {
+          reason: response.status === 400 ? 'validation' : 'provider',
+        });
         setState('error');
         setMessage('Image analysis failed. Please check the file and try again.');
         return;
       }
 
       setResult(payload.data);
+      trackProductEvent('image_analysis_succeeded', {});
       setState('success');
       setMessage('Image analysis completed.');
     } catch {
+      trackProductEvent('image_analysis_failed', { reason: 'provider' });
       setState('error');
       setMessage('Image analysis could not be reached. Please try again.');
     }

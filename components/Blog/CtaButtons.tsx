@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 type CTA = { title: string; href: string; description?: string };
@@ -17,13 +16,6 @@ export function CtaButtons({ items }: CtaButtonsProps) {
         <Link
           key={cta.title}
           href={cta.href}
-          onClick={() =>
-            trackEvent({
-              action: 'cta_click',
-              category: 'blog',
-              label: cta.title,
-            })
-          }
           className={cn(
             'block rounded-xl border border-slate-800 bg-slate-900/60 p-5',
             'hover:border-violet-500/40 hover:bg-slate-900 transition-colors'
