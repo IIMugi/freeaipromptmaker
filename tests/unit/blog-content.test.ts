@@ -28,14 +28,67 @@ interface OffsetSpan {
   end: number;
 }
 
-const findDelimitedSpans = (source: string, opening: string, closing: string) => {
-  const spans: OffsetSpan[] = [];
-  let cursor = 0;
+const getNodeSpan = (node: MarkdownNode): OffsetSpan | undefined => {
+  const start = node.position?.start.offset;
+  const end = node.position?.end.offset;
+  if (start === undefined || end === undefined) return undefined;
 
-  while (cursor < source.length) {
-    const start = source.indexOf(opening, cursor);
+  return { start, end };
+};
+
+const collectCodeSpans = (node: MarkdownNode): OffsetSpan[] => {
+  const spans: OffsetSpan[] = [];
+
+  const visit = (candidate: MarkdownNode) => {
+    if (candidate.type === 'code' || candidate.type === 'inlineCode') {
+      const span = getNodeSpan(candidate);
+      if (span) spans.push(span);
+      return;
+    }
+
+    for (const child of candidate.children ?? []) visit(child);
+  };
+
+  visit(node);
+  return spans;
+};
+
+const isEscaped = (source: string, offset: number) => {
+  let backslashes = 0;
+  for (let index = offset - 1; index >= 0 && source[index] === '\\'; index -= 1) {
+    backslashes += 1;
+  }
+  return backslashes % 2 === 1;
+};
+
+const findDelimitedSpans = (
+  source: string,
+  opening: string,
+  closing: string,
+  protectedSpans: readonly OffsetSpan[] = [],
+  bounds: OffsetSpan = { start: 0, end: source.length },
+) => {
+  const spans: OffsetSpan[] = [];
+  let cursor = bounds.start;
+
+  const findNextDelimiter = (delimiter: string, from: number) => {
+    let candidate = source.indexOf(delimiter, from);
+
+    while (candidate >= 0 && candidate + delimiter.length <= bounds.end) {
+      const isProtected = protectedSpans.some(
+        (span) => candidate >= span.start && candidate < span.end,
+      );
+      if (!isProtected && !isEscaped(source, candidate)) return candidate;
+      candidate = source.indexOf(delimiter, candidate + delimiter.length);
+    }
+
+    return -1;
+  };
+
+  while (cursor < bounds.end) {
+    const start = findNextDelimiter(opening, cursor);
     if (start < 0) break;
-    const closingStart = source.indexOf(closing, start + opening.length);
+    const closingStart = findNextDelimiter(closing, start + opening.length);
     if (closingStart < 0) break;
     const end = closingStart + closing.length;
     spans.push({ start, end });
@@ -45,9 +98,25 @@ const findDelimitedSpans = (source: string, opening: string, closing: string) =>
   return spans;
 };
 
-const findCommentSpans = (source: string) => [
-  ...findDelimitedSpans(source, '{/*', '*/}'),
-  ...findDelimitedSpans(source, '<!--', '-->'),
+const collectHtmlCommentSpans = (source: string, node: MarkdownNode): OffsetSpan[] => {
+  const spans: OffsetSpan[] = [];
+
+  const visit = (candidate: MarkdownNode) => {
+    if (candidate.type === 'html') {
+      const bounds = getNodeSpan(candidate);
+      if (bounds) spans.push(...findDelimitedSpans(source, '<!--', '-->', [], bounds));
+    }
+
+    for (const child of candidate.children ?? []) visit(child);
+  };
+
+  visit(node);
+  return spans;
+};
+
+const findCommentSpans = (source: string, tree: MarkdownNode) => [
+  ...findDelimitedSpans(source, '{/*', '*/}', collectCodeSpans(tree)),
+  ...collectHtmlCommentSpans(source, tree),
 ];
 
 const isInsideCommentSpan = (node: MarkdownNode, commentSpans: readonly OffsetSpan[]) => {
@@ -58,6 +127,19 @@ const isInsideCommentSpan = (node: MarkdownNode, commentSpans: readonly OffsetSp
   return commentSpans.some((span) => start >= span.start && end <= span.end);
 };
 
+const hasActiveHtmlImage = (
+  node: MarkdownNode,
+  commentSpans: readonly OffsetSpan[],
+) => {
+  const nodeStart = node.position?.start.offset;
+
+  return [...(node.value ?? '').matchAll(/<(?:img|image|picture)\b/gi)].some((match) => {
+    if (nodeStart === undefined || match.index === undefined) return true;
+    const tagStart = nodeStart + match.index;
+    return !commentSpans.some((span) => tagStart >= span.start && tagStart < span.end);
+  });
+};
+
 const hasInlineImageNode = (
   node: MarkdownNode,
   commentSpans: readonly OffsetSpan[],
@@ -66,7 +148,7 @@ const hasInlineImageNode = (
   if (node.type === 'image' || node.type === 'imageReference') return true;
 
   if (node.type === 'html') {
-    if (/<(?:img|image|picture)\b/i.test(node.value ?? '')) return true;
+    if (hasActiveHtmlImage(node, commentSpans)) return true;
   }
 
   return (node.children ?? []).some((child) => hasInlineImageNode(child, commentSpans));
@@ -74,7 +156,7 @@ const hasInlineImageNode = (
 
 const hasInlineImage = (text: string) => {
   const tree = markdownParser.parse(text) as unknown as MarkdownNode;
-  return hasInlineImageNode(tree, findCommentSpans(text));
+  return hasInlineImageNode(tree, findCommentSpans(text, tree));
 };
 
 const stableDiffusionCandidates = [
@@ -577,13 +659,19 @@ describe('guide corpus', () => {
       '<Image src="/image.png" alt="MDX image" />',
       '<picture><source srcSet="/image.webp" /></picture>',
       '{/* comment */} <Image src="/active-between-comments.png" /> {/* comment */}',
+      '<!-- comment --><Image src="/active-between-html-comments.png" /><!-- comment -->',
       '{/* comment */}<Image src="/active-before-empty-comment.png" />{/**/}',
       '{/* comment */} ![active diagram]\n\n[active diagram]: /active-reference.png',
+      '`{/*` ![active](/x.png) `*/}`',
+      '`<!--` ![active](/x.png) `-->`',
+      '\\{/* ![active](/x.png) */}',
+      '\\<!-- ![active](/x.png) -->',
     ];
     const allowedNonImages = [
       '[ordinary link](https://example.com)',
       '\\![escaped alt](https://example.com/image.png)',
       '<!-- <img src="/commented.png" /> -->',
+      '<!-- <img src="/commented-a.png" /> --><!-- <Image src="/commented-b.png" /> -->',
       '{/* <Image src="/commented.png" /> */}',
       '{/* ![commented diagram][commented-id] */}\n\n[commented-id]: /commented-reference.png',
       '~~~mdx\n<Image src="/tilde-fence.png" />\n~~~',
