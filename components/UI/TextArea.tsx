@@ -1,6 +1,6 @@
 'use client';
 
-import { type TextareaHTMLAttributes, forwardRef } from 'react';
+import { type TextareaHTMLAttributes, forwardRef, useId } from 'react';
 import { cn } from '@/lib/utils';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -9,16 +9,19 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ label, error, className, ...props }, ref) => {
+  ({ label, error, className, id, ...props }, ref) => {
+    const generatedId = useId();
+    const controlId = id || generatedId;
     return (
       <div className="space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-slate-300">
+          <label htmlFor={controlId} className="block text-sm font-medium text-[var(--text-primary)]">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
+          id={controlId}
           className={cn(
             'w-full rounded-xl border border-white/12 bg-[#0f1a2d]/86 px-4 py-3',
             'text-slate-100 placeholder:text-slate-500',

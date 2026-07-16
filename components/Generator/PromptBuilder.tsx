@@ -81,10 +81,10 @@ export function PromptBuilder() {
                 Pro Mode
               </button>
               <span className="rounded-full border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-[var(--text-secondary)]">
-                12 AI models
+                Multiple model formats
               </span>
               <span className="rounded-full border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-[var(--text-secondary)]">
-                Live syntax translation
+                Local formatting preview
               </span>
             </div>
           </div>
@@ -104,8 +104,8 @@ export function PromptBuilder() {
             </SectionShell>
 
             <SectionShell className="space-y-4">
-              <h2 className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em]">Main Concept</h2>
               <TextArea
+                label="Main concept"
                 value={state.mainConcept}
                 onChange={(e) => actions.setMainConcept(e.target.value)}
                 placeholder="Example: cinematic portrait of a neon street chef, rain-soaked alley, dramatic rim light"
@@ -148,8 +148,8 @@ export function PromptBuilder() {
 
                 {computed.supportsNegativePrompt && (
                   <SectionShell className="space-y-4">
-                    <h2 className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em]">Negative Prompt</h2>
                     <TextArea
+                      label="Negative prompt"
                       value={state.negativePrompt}
                       onChange={(e) => actions.setNegativePrompt(e.target.value)}
                       placeholder="Example: blurry, low detail, warped hands, text artifacts, oversaturated skin"
