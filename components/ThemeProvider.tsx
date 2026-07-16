@@ -5,7 +5,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState,
   useSyncExternalStore,
   type ReactNode,
 } from 'react';
@@ -21,6 +20,7 @@ interface ThemeContextValue {
 }
 
 const STORAGE_KEY = 'theme-preference';
+const THEME_EVENT = 'theme-preference-change';
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function readStoredTheme(): Theme {
@@ -44,8 +44,20 @@ function subscribeToSystemTheme(onChange: () => void) {
   return () => media.removeEventListener('change', onChange);
 }
 
+function subscribeToTheme(onChange: () => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY) onChange();
+  };
+  window.addEventListener('storage', handleStorage);
+  window.addEventListener(THEME_EVENT, onChange);
+  return () => {
+    window.removeEventListener('storage', handleStorage);
+    window.removeEventListener(THEME_EVENT, onChange);
+  };
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
+  const theme = useSyncExternalStore<Theme>(subscribeToTheme, readStoredTheme, () => 'system');
   const systemTheme = useSyncExternalStore<ResolvedTheme>(
     subscribeToSystemTheme,
     getSystemTheme,
@@ -59,15 +71,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [resolvedTheme]);
 
   const setTheme = useCallback((newTheme: Theme) => {
-    setThemeState(newTheme);
     const resolved = newTheme === 'system' ? getSystemTheme() : newTheme;
     document.documentElement.dataset.theme = resolved;
     document.documentElement.style.colorScheme = resolved;
     try {
       window.localStorage.setItem(STORAGE_KEY, newTheme);
     } catch {
-      // The explicit in-memory preference still applies for this page view.
+      // The document theme still applies for this page view.
     }
+    window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 
   const toggleTheme = useCallback(() => {

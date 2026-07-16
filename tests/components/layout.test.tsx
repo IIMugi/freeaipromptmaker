@@ -24,7 +24,7 @@ describe('global layout', () => {
     render(<Footer />);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.queryByText(/newsletter|twitter/i)).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /github repository/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /source repository/i })).toBeInTheDocument();
   });
 
   it('defines a skip link and one main landmark in the root shell', () => {

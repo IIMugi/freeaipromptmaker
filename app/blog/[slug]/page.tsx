@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2, Check, X } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import type { BlogPost } from '@/lib/blog';
-import { MarkdownRenderer, RelatedPosts, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
+import { MarkdownRenderer, RelatedPosts, CtaButtons, Breadcrumbs } from '@/components/Blog';
 import { getEditorialPolicy } from '@/lib/editorial';
 import { articleJsonLd, canonicalUrl } from '@/lib/seo';
 
@@ -306,7 +306,6 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <>
       {/* Read Progress Bar */}
-      <ReadProgressBar />
       
       {articleSchema ? (
         <script
@@ -331,6 +330,52 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1 max-w-3xl">
+            {/* Put the page topic first for readers and mobile rendering. */}
+            <header className="mb-8">
+              {post.category && (
+                <span className="mb-4 inline-block rounded-full bg-violet-500/20 px-3 py-1 text-sm text-violet-400">
+                  {post.category}
+                </span>
+              )}
+
+              <h1 className="mb-4 text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+                {post.title}
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                <span className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {post.author}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(post.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {post.readTime}
+                </span>
+              </div>
+
+              {post.tags.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="flex items-center gap-1 rounded bg-slate-800 px-2 py-1 text-xs text-slate-300"
+                    >
+                      <Tag className="h-3 w-3" />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </header>
+
             {!editorialPolicy.index ? (
               <aside
                 className="mb-6 rounded-xl border border-amber-400/35 bg-amber-400/10 p-4 text-sm text-amber-100"
@@ -342,7 +387,10 @@ export default async function BlogPostPage({ params }: PageProps) {
               </aside>
             ) : null}
 
-            <dl className="mb-8 grid gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm sm:grid-cols-3">
+            <dl
+              className="mb-8 grid gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm sm:grid-cols-3"
+              aria-label="Editorial details"
+            >
               <div>
                 <dt className="text-[var(--text-tertiary)]">Editorial status</dt>
                 <dd className="mt-1 font-medium text-[var(--text-primary)]">
@@ -368,7 +416,6 @@ export default async function BlogPostPage({ params }: PageProps) {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
-                  priority
                 />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900/50" />
@@ -389,55 +436,6 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </div>
               )}
             </div>
-
-            {/* Header */}
-            <header className="mb-8">
-              {/* Category Badge */}
-              {post.category && (
-                <span className="inline-block px-3 py-1 bg-violet-500/20 text-violet-400 rounded-full text-sm mb-4">
-                  {post.category}
-                </span>
-              )}
-
-              <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4 leading-tight">
-                {post.title}
-              </h1>
-
-              {/* Meta Info */}
-              <div className="flex flex-wrap items-center gap-4 text-slate-400 text-sm">
-                <span className="flex items-center gap-1">
-                  <User className="w-4 h-4" />
-                  {post.author}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(post.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {post.readTime}
-                </span>
-              </div>
-
-              {/* Tags */}
-              {post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="flex items-center gap-1 px-2 py-1 bg-slate-800 text-slate-300 rounded text-xs"
-                    >
-                      <Tag className="w-3 h-3" />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </header>
 
           {/* TOC */}
           {tocItems.length >= 3 && (

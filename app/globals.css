@@ -21,7 +21,7 @@
   /* Text  */
   --text-primary: #ffffff;
   --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
+  --text-tertiary: #94a3b8;
   --text-inverted: #02040a;
 
   /* Borders — 3 levels */
@@ -74,29 +74,29 @@
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-tertiary: #94a3b8;
+  --text-tertiary: #52627a;
   --text-inverted: #f8f9fc;
 
   --border-subtle: rgba(15, 23, 42, 0.06);
   --border-default: rgba(15, 23, 42, 0.10);
   --border-strong: rgba(15, 23, 42, 0.18);
 
-  --accent-primary: #0891b2;
+  --accent-primary: #0e7490;
   --accent-primary-soft: rgba(8, 145, 178, 0.08);
   --accent-primary-strong: rgba(8, 145, 178, 0.16);
-  --accent-secondary: #059669;
+  --accent-secondary: #047857;
   --accent-secondary-soft: rgba(5, 150, 105, 0.08);
-  --accent-violet: #7c3aed;
+  --accent-violet: #6d28d9;
   --accent-violet-soft: rgba(124, 58, 237, 0.08);
-  --accent-amber: #d97706;
+  --accent-amber: #a16207;
   --accent-amber-soft: rgba(217, 119, 6, 0.06);
-  --accent-rose: #e11d48;
+  --accent-rose: #be123c;
   --accent-rose-soft: rgba(225, 29, 72, 0.06);
 
-  --success: #16a34a;
-  --warning: #d97706;
-  --error: #dc2626;
-  --danger: #dc2626;
+  --success: #15803d;
+  --warning: #a16207;
+  --error: #b91c1c;
+  --danger: #b91c1c;
   --focus-ring: #0e7490;
 
   --glass-bg: rgba(255, 255, 255, 0.72);
@@ -113,8 +113,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-display), var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-code), ui-monospace, monospace;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
 }
 
 /* ═══════════════════════════════════════════

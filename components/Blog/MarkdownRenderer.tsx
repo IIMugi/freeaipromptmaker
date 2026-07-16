@@ -1,5 +1,3 @@
-'use client';
-
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -72,7 +70,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           hr: () => <hr className="divider" />,
           strong: ({ children }) => <strong>{children}</strong>,
           em: ({ children }) => <em>{children}</em>,
-          pre: ({ children }) => <pre className="code-block">{children}</pre>,
+          pre: ({ children }) => <pre className="code-block" tabIndex={0}>{children}</pre>,
           code: ({ className, children }) => {
             const isInline = !className;
             if (isInline) {

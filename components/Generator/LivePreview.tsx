@@ -1,7 +1,6 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { Check, Copy, CopyPlus, History, Pin, Sparkles, Star, Trash2, Wand2 } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { cn } from '@/lib/utils';
@@ -97,20 +96,15 @@ export function LivePreview({
         <DraftRow label="Model Syntax" value={draft.modelSyntax} highlight />
       </div>
 
-      <motion.div layout className="relative min-h-[120px] p-4 bg-[#0d1a30] rounded-xl border border-white/12">
+      <div className="relative min-h-[120px] rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
         {prompt ? (
-          <motion.p
-            key={prompt}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-white font-mono text-sm leading-relaxed whitespace-pre-wrap"
-          >
+          <p className="font-mono text-sm leading-relaxed text-[var(--text-primary)] whitespace-pre-wrap">
             {prompt}
-          </motion.p>
+          </p>
         ) : (
-          <p className="text-slate-500 italic">Start typing your concept to generate a prompt instantly...</p>
+          <p className="italic text-[var(--text-secondary)]">Start typing your concept to generate a prompt instantly...</p>
         )}
-      </motion.div>
+      </div>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <Button
@@ -130,9 +124,9 @@ export function LivePreview({
           onClick={() => onCopyVariant('with-negative')}
           disabled={!prompt}
           icon={copyVariantState === 'with-negative' ? <Check className="w-4 h-4" /> : <CopyPlus className="w-4 h-4" />}
-          aria-label="Copy prompt and negative prompt"
+          aria-label="Copy with negative"
         >
-          Copy + Neg
+          Copy with negative
         </Button>
 
         <Button
@@ -141,7 +135,7 @@ export function LivePreview({
           onClick={() => onCopyVariant('json')}
           disabled={!prompt}
           icon={copyVariantState === 'json' ? <Check className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-          aria-label="Copy prompt as JSON payload"
+          aria-label="Copy JSON"
         >
           Copy JSON
         </Button>
@@ -151,14 +145,8 @@ export function LivePreview({
         {copyMessage || 'Copy controls become available when a prompt exists.'}
       </p>
 
-      <AnimatePresence>
-        {showHistory && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
+      {showHistory ? (
+          <div className="overflow-hidden">
             <div className="mt-4 p-4 bg-[#0d1a30]/80 rounded-xl border border-white/12">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-medium text-white">Prompt History</h4>
@@ -222,9 +210,8 @@ export function LivePreview({
                 </div>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        ) : null}
     </div>
   );
 }

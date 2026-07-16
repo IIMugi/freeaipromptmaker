@@ -249,7 +249,7 @@ export function ImageReverseEngineer() {
               {previewUrl ? (
                 <Image src={previewUrl} alt="Selected image preview" fill unoptimized className="object-contain" />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+                <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-300">
                   Selected image preview will appear here.
                 </div>
               )}

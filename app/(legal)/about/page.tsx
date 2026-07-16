@@ -34,10 +34,10 @@ export default function AboutPage() {
         </Section>
         <Section title="Inspect or report an issue">
           The source and issue history are public. Visit the{' '}
-          <a className="text-[var(--accent-primary)] hover:underline" href={SITE.social.github} target="_blank" rel="noopener noreferrer">
+          <a className="text-[var(--accent-primary)] underline underline-offset-2" href={SITE.social.github} target="_blank" rel="noopener noreferrer">
             GitHub repository
           </a>{' '}
-          or read the <Link className="text-[var(--accent-primary)] hover:underline" href="/content-standards">content standards</Link>.
+          or read the <Link className="text-[var(--accent-primary)] underline underline-offset-2" href="/content-standards">content standards</Link>.
         </Section>
       </div>
     </article>

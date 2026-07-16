@@ -80,7 +80,7 @@ export function CookieConsent() {
             href="/cookies"
             className="ml-auto text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:underline"
           >
-            Learn more
+            Learn more about analytics cookies
           </Link>
         </div>
       </div>

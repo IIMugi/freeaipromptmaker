@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'motion/react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Box,
@@ -153,12 +152,9 @@ export function StyleCards({
               const summary = style.value.split(',').slice(0, 2).join(', ');
 
               return (
-                <motion.button
+                <button
                   key={style.id}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => onToggleStyle(style.id)}
-                  aria-label={`${isSelected ? 'Remove' : 'Add'} ${style.name} style`}
                   aria-pressed={isSelected}
                   className={cn(
                     'rounded-xl border p-3 text-left transition-all duration-200',
@@ -189,7 +185,7 @@ export function StyleCards({
                   </div>
                   <p className="mt-2 text-sm font-medium">{style.name}</p>
                   <p className="mt-1 text-[11px] text-slate-400 leading-4">{summary}</p>
-                </motion.button>
+                </button>
               );
             })}
           </div>

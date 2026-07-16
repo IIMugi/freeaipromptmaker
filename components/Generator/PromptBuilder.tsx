@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import { Clock3, Copy, Eye, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { TextArea, Badge, SectionShell } from '@/components/UI';
@@ -93,7 +92,7 @@ export function PromptBuilder() {
         <AnimateHint text={state.modelSwitchHint} />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="space-y-6">
             <SectionShell>
               <ModelSelector
                 selected={state.model}
@@ -124,7 +123,7 @@ export function PromptBuilder() {
             </SectionShell>
 
             {state.mode === 'pro' ? (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-6 overflow-hidden">
+              <div className="space-y-6 overflow-hidden">
                 <SectionShell>
                   <LightingCamera
                     lighting={state.lighting}
@@ -161,7 +160,7 @@ export function PromptBuilder() {
                     </p>
                   </SectionShell>
                 )}
-              </motion.div>
+              </div>
             ) : (
               <SectionShell>
                 <p className="text-sm text-[var(--text-secondary)]">
@@ -170,13 +169,10 @@ export function PromptBuilder() {
                 </p>
               </SectionShell>
             )}
-          </motion.div>
+          </div>
 
-          <motion.aside
+          <aside
             ref={previewRef}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
             className="lg:sticky lg:top-28 lg:self-start"
           >
             <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg-dense)] p-5 md:p-6 shadow-[var(--shadow-card)] backdrop-blur-xl">
@@ -199,7 +195,7 @@ export function PromptBuilder() {
                 onRemixHistory={actions.handleRemixHistory}
               />
             </div>
-          </motion.aside>
+          </aside>
         </div>
 
         {/* Mobile sticky bottom toolbar */}
@@ -242,14 +238,11 @@ export function PromptBuilder() {
 function AnimateHint({ text }: { text: string }) {
   if (!text) return null;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -6 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
+    <div
       className="inline-flex items-center gap-2 rounded-xl border border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)] px-4 py-2.5 text-sm font-medium text-[var(--accent-primary)] shadow-[var(--shadow-glow)]"
     >
       <SlidersHorizontal className="h-4 w-4" />
       {text}
-    </motion.div>
+    </div>
   );
 }

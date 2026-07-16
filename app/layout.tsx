@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
@@ -10,23 +9,6 @@ import { GoogleAnalytics } from '@/components/Analytics';
 import { SITE } from '@/lib/site';
 import { websiteJsonLd } from '@/lib/seo';
 import './globals.css';
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: '--font-display',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
-
-const inter = Inter({
-  variable: '--font-body',
-  subsets: ['latin'],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-code',
-  subsets: ['latin'],
-  weight: ['400'],
-});
 
 const themeInitScript = `(function(){try{var key='theme-preference';var stored=localStorage.getItem(key);var valid=stored==='light'||stored==='dark'||stored==='system'?stored:'system';var dark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=valid==='system'?(dark?'dark':'light'):valid;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved;}catch(e){document.documentElement.dataset.theme='light';document.documentElement.style.colorScheme='light';}})();`;
 
@@ -98,9 +80,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body
-        className={`${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+      <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider>
           <a
             href="#main-content"
@@ -114,7 +94,7 @@ export default function RootLayout({
           </ConsentGate>
           <BreadcrumbsJSON />
           <Header />
-          <main id="main-content" className="flex-1 w-full pt-20">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 w-full pt-20">{children}</main>
           <Footer />
           <CookieConsent />
         </ThemeProvider>

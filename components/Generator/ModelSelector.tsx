@@ -49,84 +49,84 @@ const modelBrandMap: Record<
   flux: {
     short: 'FLX',
     bestFor: 'Fast photorealism',
-    tone: 'text-[#00e5ff] bg-[#00e5ff]/10 border-[#00e5ff]/20',
+    tone: 'text-[var(--accent-primary)] bg-[var(--accent-primary-soft)] border-[var(--accent-primary-strong)]',
     icon: Rocket,
     badge: 'Speed',
   },
   'flux-pro': {
     short: 'FLX+',
     bestFor: 'Commercial detail',
-    tone: 'text-[#00ffa3] bg-[#00ffa3]/10 border-[#00ffa3]/20',
+    tone: 'text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/40',
     icon: Gem,
     badge: 'Quality',
   },
   'midjourney-v7': {
     short: 'MJ7',
     bestFor: 'High-end art quality',
-    tone: 'text-[#b388ff] bg-[#b388ff]/10 border-[#b388ff]/20',
+    tone: 'text-[var(--accent-violet)] bg-[var(--accent-violet-soft)] border-[var(--accent-violet)]/40',
     icon: Wand2,
     badge: 'Quality',
   },
   midjourney: {
     short: 'MJ6',
     bestFor: 'Reliable visual style',
-    tone: 'text-[#ea80fc] bg-[#ea80fc]/10 border-[#ea80fc]/20',
+    tone: 'text-[var(--accent-violet)] bg-[var(--accent-violet-soft)] border-[var(--accent-violet)]/40',
     icon: Brush,
     badge: 'Quality',
   },
   'stable-diffusion': {
     short: 'SDXL',
     bestFor: 'Maximum control',
-    tone: 'text-[#1de9b6] bg-[#1de9b6]/10 border-[#1de9b6]/20',
+    tone: 'text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/40',
     icon: Layers3,
     badge: 'Control',
   },
   'dall-e': {
     short: 'D3',
     bestFor: 'Natural language prompts',
-    tone: 'text-[#ffea00] bg-[#ffea00]/10 border-[#ffea00]/20',
+    tone: 'text-[var(--warning)] bg-[var(--warning)]/10 border-[var(--warning)]/40',
     icon: Speech,
     badge: 'Text',
   },
   'nano-banana': {
     short: 'NB',
     bestFor: 'Text + edits',
-    tone: 'text-[#c6ff00] bg-[#c6ff00]/10 border-[#c6ff00]/20',
+    tone: 'text-[var(--warning)] bg-[var(--warning)]/10 border-[var(--warning)]/40',
     icon: PenSquare,
     badge: 'Text',
   },
   firefly: {
     short: 'AF3',
     bestFor: 'Adobe workflows',
-    tone: 'text-[#ff5252] bg-[#ff5252]/10 border-[#ff5252]/20',
+    tone: 'text-[var(--error)] bg-[var(--error)]/10 border-[var(--error)]/40',
     icon: Camera,
     badge: 'Control',
   },
   ideogram: {
     short: 'ID',
     bestFor: 'Typography and logos',
-    tone: 'text-[#ff4081] bg-[#ff4081]/10 border-[#ff4081]/20',
+    tone: 'text-[var(--accent-rose)] bg-[var(--accent-rose-soft)] border-[var(--accent-rose)]/40',
     icon: ImageIcon,
     badge: 'Text',
   },
   leonardo: {
     short: 'LIO',
     bestFor: 'Character concepting',
-    tone: 'text-[#448aff] bg-[#448aff]/10 border-[#448aff]/20',
+    tone: 'text-[var(--accent-primary)] bg-[var(--accent-primary-soft)] border-[var(--accent-primary-strong)]',
     icon: Shield,
     badge: 'Control',
   },
   recraft: {
     short: 'RC',
     bestFor: 'Vector and icon outputs',
-    tone: 'text-[#64ffda] bg-[#64ffda]/10 border-[#64ffda]/20',
+    tone: 'text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/40',
     icon: ScanEye,
     badge: 'Control',
   },
   gpt4o: {
     short: '4O',
     bestFor: 'Conversation-led iteration',
-    tone: 'text-[#e0e0e0] bg-[#e0e0e0]/10 border-[#e0e0e0]/20',
+    tone: 'text-[var(--text-primary)] bg-[var(--surface-raised)] border-[var(--border-default)]',
     icon: Bot,
     badge: 'Text',
   },
@@ -152,10 +152,10 @@ function getRecommendedModels(mainConcept?: string): AIModel[] {
 }
 
 function badgeTone(label: 'Speed' | 'Quality' | 'Control' | 'Text') {
-  if (label === 'Speed') return 'bg-[var(--info)]/10 text-[var(--info)] border-[var(--info)]/40';
-  if (label === 'Quality') return 'bg-violet-500/10 text-violet-300 border-violet-500/40';
-  if (label === 'Control') return 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/40';
-  return 'bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/40';
+  if (label === 'Speed') return 'bg-[var(--surface-raised)] text-[var(--text-primary)] border-[var(--accent-primary-strong)]';
+  if (label === 'Quality') return 'bg-[var(--surface-raised)] text-[var(--text-primary)] border-[var(--accent-violet)]/40';
+  if (label === 'Control') return 'bg-[var(--surface-raised)] text-[var(--text-primary)] border-[var(--success)]/40';
+  return 'bg-[var(--surface-raised)] text-[var(--text-primary)] border-[var(--warning)]/40';
 }
 
 export function ModelSelector({
@@ -304,7 +304,6 @@ function ModelCard({ model, selected, onClick, compact = false, className }: Mod
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      aria-label={`Select ${model.name} model${selected ? ' (selected)' : ''}`}
       className={cn(
         'group relative flex flex-col justify-start overflow-hidden rounded-xl border p-3 text-left transition-all duration-200 active:scale-95 will-change-transform',
         selected

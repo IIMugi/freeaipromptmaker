@@ -8,7 +8,7 @@ export function HeroSection() {
       <div className="max-w-4xl">
         <p className="text-sm font-medium text-[var(--accent-primary)]">Local prompt formatter</p>
         <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl">
-          Structure a clearer image prompt before you open the model.
+          Build a clearer image prompt.
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
           Choose a target model, describe the image, add optional style and camera cues, then copy
