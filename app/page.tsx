@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const latestPosts = getAllPosts().slice(0, 4);
+  const latestPosts = getAllPosts({ hubOnly: true }).slice(0, 4);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 pb-20">

@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
+import { getEditorialPolicy, getEditorialRecord } from '@/lib/editorial';
+import type { EditorialState } from '@/lib/editorial';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
@@ -55,6 +57,10 @@ export interface BlogPost {
   imageCreditUrl?: string;
   pros?: string[];
   cons?: string[];
+  editorialState: EditorialState;
+  lastVerified?: string;
+  testedVersion?: string;
+  sources: string[];
 }
 
 export interface BlogPostMeta {
@@ -68,12 +74,20 @@ export interface BlogPostMeta {
   difficulty?: string;
   readTime: string;
   image?: string;
+  editorialState: EditorialState;
+  lastVerified?: string;
+  testedVersion?: string;
+  sources: string[];
+}
+
+interface GetAllPostsOptions {
+  hubOnly?: boolean;
 }
 
 /**
  * Tüm blog postlarının meta bilgilerini al
  */
-export function getAllPosts(): BlogPostMeta[] {
+export function getAllPosts({ hubOnly = false }: GetAllPostsOptions = {}): BlogPostMeta[] {
   // posts klasörü yoksa boş dizi döndür
   if (!fs.existsSync(postsDirectory)) {
     return [];
@@ -88,6 +102,7 @@ export function getAllPosts(): BlogPostMeta[] {
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const { data, content } = matter(fileContents);
+      const editorial = getEditorialRecord(slug);
       
       // Okuma süresini hesapla
       const stats = readingTime(content);
@@ -102,16 +117,21 @@ export function getAllPosts(): BlogPostMeta[] {
       return {
         slug,
         title: data.title || 'Untitled',
-        date: data.date || new Date().toISOString(),
+        date: data.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || '',
         description: data.description || '',
         tags: data.tags || [],
-        author: data.author || 'Free AI Prompt Maker',
+        author: data.author || '',
         category,
         difficulty: data.difficulty,
         readTime: data.readTime || stats.text,
         image,
+        editorialState: editorial.state,
+        lastVerified: editorial.lastVerified,
+        testedVersion: editorial.testedVersion,
+        sources: editorial.sources || [],
       };
     })
+    .filter((post) => !hubOnly || getEditorialPolicy(post.editorialState).inHub)
     // Tarihe göre sırala (yeniden eskiye)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
@@ -138,14 +158,15 @@ export function getPostBySlug(slug: string): BlogPost | null {
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
   const stats = readingTime(content);
+  const editorial = getEditorialRecord(slug);
 
   return {
     slug,
     title: data.title || 'Untitled',
-    date: data.date || new Date().toISOString(),
+    date: data.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || '',
     description: data.description || '',
     tags: data.tags || [],
-    author: data.author || 'Free AI Prompt Maker',
+    author: data.author || '',
     category: data.category,
     difficulty: data.difficulty,
     readTime: data.readTime || stats.text,
@@ -155,6 +176,10 @@ export function getPostBySlug(slug: string): BlogPost | null {
     imageCreditUrl: data.imageCreditUrl,
     pros: Array.isArray(data.pros) ? data.pros : undefined,
     cons: Array.isArray(data.cons) ? data.cons : undefined,
+    editorialState: editorial.state,
+    lastVerified: editorial.lastVerified,
+    testedVersion: editorial.testedVersion,
+    sources: editorial.sources || [],
   };
 }
 
@@ -196,7 +221,7 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPos
   const currentPost = getPostBySlug(currentSlug);
   if (!currentPost) return [];
 
-  const allPosts = getAllPosts().filter((post) => post.slug !== currentSlug);
+  const allPosts = getAllPosts({ hubOnly: true }).filter((post) => post.slug !== currentSlug);
   
   // Skor hesapla - aynı kategori veya tag varsa artır
   const scoredPosts = allPosts.map((post) => {

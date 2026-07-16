@@ -7,6 +7,7 @@ import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import type { BlogPost } from '@/lib/blog';
 import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
 import { SidebarAd, EndOfContentAd } from '@/components/Ads';
+import { getEditorialPolicy } from '@/lib/editorial';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
 
@@ -215,12 +216,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const canonicalUrl = new URL(`/blog/${slug}`, siteUrl).toString();
+  const policy = getEditorialPolicy(post.editorialState);
 
   return {
     title: post.title,
     description: post.description,
     keywords: post.tags,
-    authors: [{ name: post.author }],
+    authors: post.author ? [{ name: post.author }] : undefined,
+    robots: { index: policy.index, follow: true },
     alternates: {
       canonical: canonicalUrl,
     },
@@ -252,6 +255,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const relatedPosts = getRelatedPosts(slug, 3);
+  const editorialPolicy = getEditorialPolicy(post.editorialState);
   const contentWithoutTopH1 = post.content.replace(/^#\s+.*\r?\n?/, '').trimStart();
 
   const slugify = (text: string) =>
@@ -410,6 +414,17 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1 max-w-3xl">
+            {!editorialPolicy.index ? (
+              <aside
+                className="mb-6 rounded-xl border border-amber-400/35 bg-amber-400/10 p-4 text-sm text-amber-100"
+                aria-label="Editorial review status"
+              >
+                {post.editorialState === 'archived'
+                  ? 'This guide is archived and is kept only for reference.'
+                  : 'This guide is being reviewed for accuracy, sources, and current tool versions. It is excluded from search and guide listings until verification is complete.'}
+              </aside>
+            ) : null}
+
             {/* Featured Image */}
             <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
               {post.image ? (
@@ -562,7 +577,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
 
             {/* Dynamic In-Article Ads (based on content length) */}
-            <DynamicAdInjector contentLength={contentWithoutTopH1.length} />
+            {editorialPolicy.index ? (
+              <DynamicAdInjector contentLength={contentWithoutTopH1.length} />
+            ) : null}
 
           {/* CTA block */}
           <CtaButtons items={ctas} />
@@ -581,7 +598,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* End of Content Ad */}
-          <EndOfContentAd />
+          {editorialPolicy.index ? <EndOfContentAd /> : null}
 
             {/* Share Section */}
             <div className="mt-12 pt-8 border-t border-slate-700">
@@ -630,11 +647,13 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* Sidebar */}
-          <aside className="hidden lg:block w-[300px] flex-shrink-0">
-            <div className="sticky top-24">
-              <SidebarAd />
-            </div>
-          </aside>
+          {editorialPolicy.index ? (
+            <aside className="hidden lg:block w-[300px] flex-shrink-0">
+              <div className="sticky top-24">
+                <SidebarAd />
+              </div>
+            </aside>
+          ) : null}
         </div>
       </article>
     </>

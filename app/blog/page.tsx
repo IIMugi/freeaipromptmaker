@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
-  const posts = getAllPosts();
+  const posts = getAllPosts({ hubOnly: true });
 
   return <BlogIndexClient posts={posts} />;
 }

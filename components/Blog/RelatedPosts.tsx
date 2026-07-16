@@ -15,7 +15,9 @@ interface RelatedPostsProps {
  * SEO: İç linkler, dwell time artırma, crawlability
  */
 export function RelatedPosts({ posts, currentSlug }: RelatedPostsProps) {
-  const filteredPosts = posts.filter((p) => p.slug !== currentSlug).slice(0, 3);
+  const filteredPosts = posts
+    .filter((post) => post.editorialState === 'verified' && post.slug !== currentSlug)
+    .slice(0, 3);
 
   if (filteredPosts.length === 0) {
     return null;

@@ -1,0 +1,761 @@
+﻿{
+    "2025-11-27-midjourney-v6-complete-prompt-guide":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2025-11-27-stable-diffusion-negative-prompts-guide":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2025-11-28-dall-e-3-photorealism-prompt-guide":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2025-11-29-guide-consistent-characters-ai-art":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2025-11-29-stable-diffusion-negative-prompts-guide":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2025-11-30-ai-art-styles-guide":  {
+                                           "state":  "needs-review"
+                                       },
+    "2025-12-01-ai-art-composition-guide":  {
+                                                "state":  "needs-review"
+                                            },
+    "2025-12-01-dalle-3-prompting-tips-secrets":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2025-12-02-midjourney-vs-dalle-3-vs-stable-diffusion":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2025-12-03-fix-ai-art-hands-faces-text-guide":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2025-12-04-level-up-campaign-ai-art-dnd-ttrpg":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2025-12-05-ai-animation-video-prompts-guide":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2025-12-05-cyberpunk-ai-art-prompts-collection":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2025-12-06-midjourney-style-reference-sref-guide":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2025-12-12-ai-portrait-character-prompts-guide":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2025-12-13-ai-landscape-prompts-nature-fantasy":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2025-12-13-art-style-keywords-ai-generators":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2025-12-14-perfect-ai-art-prompt-structure-formula":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2025-12-15-ai-prompt-mistakes-image-quality":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2025-12-15-photorealistic-ai-art-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2025-12-21-midjourney-consistent-characters-guide":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2025-12-22-stable-diffusion-controlnet-guide":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2025-12-23-master-dall-e-3-chatgpt-image-guide":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2025-12-23-unlock-pro-ai-art-quality-settings":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2025-12-24-unlock-ai-video-leonardo-motion":  {
+                                                       "state":  "needs-review"
+                                                   },
+    "2025-12-25-ai-prompt-weighting-guide":  {
+                                                 "state":  "needs-review"
+                                             },
+    "2025-12-25-master-anime-ai-art-prompts-styles":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2025-12-26-master-inpainting-outpainting-ai-art-editing":  {
+                                                                    "state":  "needs-review"
+                                                                },
+    "2025-12-27-best-stable-diffusion-models-sdxl-1-5-checkpoints-loras":  {
+                                                                               "state":  "needs-review"
+                                                                           },
+    "2025-12-27-generate-first-ai-image-beginners-guide":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2025-12-28-midjourney-image-prompts-guide":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2025-12-29-master-dall-e-3-in-app-editing":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2025-12-29-master-stable-diffusion-img2img":  {
+                                                       "state":  "needs-review"
+                                                   },
+    "2025-12-30-print-ready-ai-art-commercial-use":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2025-12-31-master-visual-consistency-ai-art-project-cohesion":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2025-12-31-train-custom-ai-models-leonardo-ai-guide":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-01-01-master-ai-art-lighting-prompts":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-01-01-master-watercolor-ai-art-prompts-techniques":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-01-02-midjourney-stable-diffusion-dall-e-3-comparison":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-01-03-master-descriptive-ai-art-prompts":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-01-03-master-midjourney-in-app-editing-pan-zoom-vary-region":  {
+                                                                             "state":  "needs-review"
+                                                                         },
+    "2026-01-04-stable-diffusion-regional-prompting-guide":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2026-01-05-dall-e-3-text-generation-guide":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-01-05-master-ai-art-settings-quality-detail":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-01-06-master-consistent-characters-leonardo-ai":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-01-07-master-ai-art-camera-angles-cinematic-prompts-composition":  {
+                                                                                 "state":  "needs-review"
+                                                                             },
+    "2026-01-07-master-oil-painting-ai-art-prompts":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-01-08-master-pixel-art-ai-prompts-styles-techniques":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-01-09-ai-art-generator-pricing-midjourney-stable-diffusion-dalle3-costs":  {
+                                                                                         "state":  "needs-review"
+                                                                                     },
+    "2026-01-09-ai-art-iteration-refine-prompts-beginners":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2026-01-10-master-midjourney-artist-styles-ai-art":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2026-01-11-dall-e-3-character-development-sheets-storyboards":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-01-11-master-comfyui-stable-diffusion-workflow":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-01-12-streamline-ai-art-workflow-generate-faster":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-01-13-master-ai-art-prompt-blending":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-13-master-leonardo-ai-upscalers-enhance-image-quality":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-01-14-master-comic-book-ai-art-prompts-techniques":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-01-15-best-ai-video-generators-comparison":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-01-15-master-ai-art-color-theory":  {
+                                                  "state":  "needs-review"
+                                              },
+    "2026-01-16-ai-art-settings-aspect-ratio-seed-cfg-guide":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-01-17-master-midjourney-remix-mode":  {
+                                                    "state":  "needs-review"
+                                                },
+    "2026-01-17-stable-diffusion-lora-guide":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-01-18-dall-e-3-storytelling-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-19-ai-art-copyright-commercial-use-guide":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-01-19-master-leonardo-ai-canvas-guide":  {
+                                                       "state":  "needs-review"
+                                                   },
+    "2026-01-21-master-ai-art-composition-prompts":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-01-21-master-steampunk-ai-art-prompts-styles":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2026-01-22-master-ai-art-post-processing":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-23-ai-art-upscalers-comparison-guide":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-01-23-master-ai-object-prompts-detailed-props":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-01-24-master-midjourney-sref-consistent-styles":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-01-25-master-dall-e-3-depth-of-field-ai-art":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-01-25-stable-diffusion-wildcards-guide":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-01-26-master-ai-prompt-management-library":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-01-27-master-layered-ai-art-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-27-master-leonardo-ai-alchemy-guide":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-01-28-master-fantasy-ai-art-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-29-ai-art-editing-comparison-midjourney-sd-dall-e3":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-01-29-master-seamless-ai-textures-patterns-guide":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-01-30-ai-art-idea-generation-guide":  {
+                                                    "state":  "needs-review"
+                                                },
+    "2026-01-31-master-midjourney-chaos-weird":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-01-31-master-stable-diffusion-samplers":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-02-01-ai-art-speed-hacks-optimize-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-02-01-master-dall-e-3-style-consistency":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-02-02-master-leonardo-ai-prompt-tools-magic-prompt-generator":  {
+                                                                              "state":  "needs-review"
+                                                                          },
+    "2026-02-03-master-dynamic-action-prompts-ai-art":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-02-03-master-surreal-ai-art-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-02-04-master-ai-art-material-prompts-realistic-textures":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-02-05-ai-art-reference-guide-inspiration-prompts":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-02-05-short-vs-long-ai-prompts":  {
+                                                "state":  "needs-review"
+                                            },
+    "2026-02-06-master-3d-render-ai-art-midjourney":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-02-07-master-dalle3-environment-prompts-immersive-scenes":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-02-07-stable-diffusion-textual-inversion-guide":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-02-08-master-ai-art-credits-optimize-usage":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-02-09-master-leonardo-ai-models":  {
+                                                 "state":  "needs-review"
+                                             },
+    "2026-02-09-master-stained-glass-ai-art-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-02-10-master-impressionist-ai-art":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-02-11-best-free-ai-art-generators-compared":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-02-11-master-ai-architecture-prompts-guide":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-02-12-master-ai-art-subject-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-02-13-best-stable-diffusion-extensions":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-02-13-master-midjourney-niji-mode-anime-manga-art-guide":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-02-14-master-dall-e-3-logo-icon-design":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-02-15-fixing-ai-art-troubleshooting-distortions-artifacts":  {
+                                                                           "state":  "needs-review"
+                                                                       },
+    "2026-02-15-master-leonardo-ai-tiling-seamless-patterns-textures-guide":  {
+                                                                                  "state":  "needs-review"
+                                                                              },
+    "2026-02-16-master-ai-art-lenses-prompts-guide":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-02-17-master-ai-art-game-development-assets-concepts-worlds":  {
+                                                                             "state":  "needs-review"
+                                                                         },
+    "2026-02-17-master-pop-art-ai-art-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-02-18-easiest-ai-art-generator-midjourney-sd-dall-e3-beginners":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-02-19-master-ai-art-terms-beginner-glossary":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-02-19-master-midjourney-upscaling-high-resolution-ai-art":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-02-20-master-consistent-characters-stable-diffusion":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-02-21-dalle-3-negative-prompts-guide":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-02-21-master-ai-art-prompt-experimentation-ab-testing":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-02-22-master-leonardo-ai-negative-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-02-23-master-ai-art-emotion-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-02-23-master-art-nouveau-ai-art":  {
+                                                 "state":  "needs-review"
+                                             },
+    "2026-02-24-master-ai-art-weather-time-prompts":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-02-25-ai-img2img-comparison-midjourney-stable-diffusion-dalle3":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-02-25-ai-prompt-building-beginners-guide":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-02-26-master-midjourney-permutation-prompts":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-02-27-dalle-3-subject-focus-prompts":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-02-27-stable-diffusion-upscaling-guide":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-02-28-improve-ai-art-quality-diagnose-refine":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2026-03-01-master-ai-art-prompt-ordering":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-03-01-master-leonardo-ai-image-settings":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-03-02-master-art-deco-ai-art-prompts-styles":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-03-03-ai-art-character-consistency-comparison-midjourney-sd-dall-e-3":  {
+                                                                                      "state":  "needs-review"
+                                                                                  },
+    "2026-03-03-master-childrens-book-ai-art-prompts-styles":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-03-04-essential-ai-prompt-elements-beginners-guide":  {
+                                                                    "state":  "needs-review"
+                                                                },
+    "2026-03-05-master-midjourney-style-tuner-custom-ai-art-style":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-03-05-optimize-stable-diffusion-speed-performance":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-03-06-master-dall-e-3-product-visualization":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-03-07-master-leonardo-ai-image-to-image":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-03-07-optimize-ai-art-speed-quality":  {
+                                                     "state":  "needs-review"
+                                                 },
+    "2026-03-08-master-ai-prompts-eliminate-art-flaws":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-03-09-generate-abstract-ai-art-prompts-styles":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-03-09-master-low-poly-ai-art-prompts-stylized-3d-designs":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-03-10-ai-art-iteration-speed-test-midjourney-sd-dall-e3":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-03-11-master-ai-art-spatial-prompts-control-placement":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-03-11-master-midjourney-stylize-parameter-guide":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2026-03-12-master-stable-diffusion-vae-colors-details":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-03-13-how-to-assess-ai-art-quality-criteria":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-03-13-master-dall-e-3-variations-ai-art":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-03-14-master-leonardo-ai-masking-guide":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-03-15-master-gothic-ai-art-prompts-dark-elegant-visions":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-03-15-master-historical-ai-art-prompts-recreate-era":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-03-16-master-ai-art-effects-glitch-double-exposure-prompts":  {
+                                                                            "state":  "needs-review"
+                                                                        },
+    "2026-03-17-mastering-ai-art-style-consistency-midjourney-sd-dall-e3":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-03-18-ai-art-from-scratch-beginner-prompt-guide":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2026-03-19-master-midjourney-multi-prompting-guide":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-03-19-master-stable-diffusion-3d-render-ai-art":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-03-20-master-dalle-3-artist-styles-guide":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-03-21-leonardo-ai-creature-design-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-03-21-master-ai-art-perspective-prompts-dynamic-depth":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-03-22-master-ai-art-fidelity-prompts-crispness-softness-detail":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-03-23-master-ai-art-reflections-refractions":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-03-23-master-vector-ai-art-prompts-scalable-clean-designs":  {
+                                                                           "state":  "needs-review"
+                                                                       },
+    "2026-03-24-ai-art-control-midjourney-sd-dall-e-3-comparison":  {
+                                                                        "state":  "needs-review"
+                                                                    },
+    "2026-03-25-master-midjourney-character-reference-cref-consistent-ai-art":  {
+                                                                                    "state":  "needs-review"
+                                                                                },
+    "2026-03-25-simple-to-stunning-ai-prompts-add-detail":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-03-26-train-custom-loras-stable-diffusion":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-03-27-cost-effective-ai-art-guide":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-03-27-master-dall-e-3-photography-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-03-28-master-concept-art-leonardo-ai-workflow":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-03-29-ai-art-rendering-prompts-professional-quality":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-03-29-master-minimalist-ai-art-prompts":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-03-31-ai-art-symbolism-prompts-deeper-meaning":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-04-01-ai-negative-prompts-comparison-midjourney-sd-dalle3-leonardo":  {
+                                                                                    "state":  "needs-review"
+                                                                                },
+    "2026-04-01-turn-mental-images-into-ai-art-prompts":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2026-04-02-master-midjourney-tile-parameter-seamless-patterns-textures":  {
+                                                                                   "state":  "needs-review"
+                                                                               },
+    "2026-04-03-dall-e-3-conversational-prompting-art-refinement":  {
+                                                                        "state":  "needs-review"
+                                                                    },
+    "2026-04-03-stable-diffusion-prompt-syntax-guide":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-04-04-master-ai-art-organization-portfolio-projects":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-04-05-decoding-ai-art-read-images-master-prompts":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-04-05-master-leonardo-ai-photoreal-hyperrealistic-art":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-04-06-ai-line-art-clean-outlines-prompts":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-04-11-master-cinematic-lighting-ai-art-prompts":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-04-15-ai-text-in-images-comparison":  {
+                                                    "state":  "needs-review"
+                                                },
+    "2026-04-18-how-to-fix-ai-art-prompts-beginners-guide":  {
+                                                                 "state":  "needs-review"
+                                                             },
+    "2026-04-19-master-automatic1111-stable-diffusion-web-ui-guide":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-04-19-master-midjourney-negative-prompts-guide":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-04-21-ai-comics-storyboards-sequential-art-guide":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-04-21-master-seamless-patterns-textures-dall-e-3":  {
+                                                                  "state":  "needs-review"
+                                                              },
+    "2026-04-25-master-leonardo-ai-prop-consistency-generate-matching-objects":  {
+                                                                                     "state":  "needs-review"
+                                                                                 },
+    "2026-04-26-master-nuance-ai-art-prompts":  {
+                                                    "state":  "needs-review"
+                                                },
+    "2026-05-01-generate-social-media-ai-art-prompts-strategies":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-05-01-master-ink-sketch-ai-art-prompts-pen-ink":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-05-02-master-ai-art-refinement-midjourney-sd-dall-e-3-leonardo":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-05-03-ai-character-poses-gestures-prompts-expressive-art":  {
+                                                                          "state":  "needs-review"
+                                                                      },
+    "2026-05-03-midjourney-focal-points-visual-hierarchy":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-05-08-stable-diffusion-advanced-inpainting-outpainting":  {
+                                                                        "state":  "needs-review"
+                                                                    },
+    "2026-05-09-dall-e-3-infographics-data-visualization-guide":  {
+                                                                      "state":  "needs-review"
+                                                                  },
+    "2026-05-09-master-clean-ai-art-prompts-noise-artifacts":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-05-10-leonardo-ai-game-art-assets":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-05-11-master-ai-art-interaction-prompts":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-05-13-generate-isometric-ai-art-prompts-styles":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-05-13-master-ai-hair-prompts-styles-textures-dynamics":  {
+                                                                       "state":  "needs-review"
+                                                                   },
+    "2026-05-15-ai-photorealism-comparison-midjourney-stable-diffusion-dall-e3-leonardo":  {
+                                                                                               "state":  "needs-review"
+                                                                                           },
+    "2026-05-15-master-ai-art-resolution-aspect-ratio-beginner":  {
+                                                                      "state":  "needs-review"
+                                                                  },
+    "2026-05-16-master-midjourney-blend-command-images":  {
+                                                              "state":  "needs-review"
+                                                          },
+    "2026-05-17-master-dall-e-3-ui-web-design-prompts":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-05-17-master-sdxl-prompting-guide":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-05-19-leonardo-ai-merchandise-design-guide":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-05-19-sell-ai-art-monetization-guide":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-05-21-ai-prompt-templates-reusable-blueprints":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-05-23-master-street-art-ai-prompts":  {
+                                                    "state":  "needs-review"
+                                                },
+    "2026-05-24-master-ai-fashion-clothing-prompts":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-05-25-ai-art-lighting-comparison-midjourney-sd-dalle3-leonardo":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-05-27-ai-art-prompt-anatomy-for-beginners":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-05-28-master-midjourney-describe-command":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-05-29-master-dalle3-typography-art-custom-lettering":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-05-29-master-stable-diffusion-model-merging-custom-checkpoints":  {
+                                                                                "state":  "needs-review"
+                                                                            },
+    "2026-05-30-master-ai-art-seeds-unlock-variations-quality":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-05-31-master-incremental-ai-prompting-build-complex-scenes":  {
+                                                                            "state":  "needs-review"
+                                                                        },
+    "2026-05-31-master-leonardo-ai-loras-guide":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-06-01-master-vaporwave-ai-art-prompts":  {
+                                                       "state":  "needs-review"
+                                                   },
+    "2026-06-02-master-ai-art-compositing-guide":  {
+                                                       "state":  "needs-review"
+                                                   },
+    "2026-06-03-abstract-ai-art-generator-comparison":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-06-04-ai-art-prompt-thesaurus-best-words":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-06-05-master-midjourney-depth-of-field-prompts":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-06-06-stable-diffusion-low-vram-guide-optimize-performance":  {
+                                                                            "state":  "needs-review"
+                                                                        },
+    "2026-06-09-master-dall-e-3-diagrams-schematics":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-06-13-leonardo-ai-product-mockups-design-visualization":  {
+                                                                        "state":  "needs-review"
+                                                                    },
+    "2026-06-13-master-ai-art-selection":  {
+                                               "state":  "needs-review"
+                                           },
+    "2026-06-14-master-ai-art-subject-focus-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-06-15-master-ukiyo-e-ai-art-prompts-styles":  {
+                                                            "state":  "needs-review"
+                                                        },
+    "2026-06-17-master-volumetric-lighting-ai-art":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-06-19-ai-art-workflow-tools-comparison-midjourney-sd-dalle-leonardo":  {
+                                                                                     "state":  "needs-review"
+                                                                                 },
+    "2026-06-21-mastering-ai-art-adjectives-detailed-prompts":  {
+                                                                    "state":  "needs-review"
+                                                                },
+    "2026-06-21-master-midjourney-storytelling-sequences":  {
+                                                                "state":  "needs-review"
+                                                            },
+    "2026-06-26-master-dreambooth-stable-diffusion-custom-models":  {
+                                                                        "state":  "needs-review"
+                                                                    },
+    "2026-06-27-master-dalle-3-shadows-prompts":  {
+                                                      "state":  "needs-review"
+                                                  },
+    "2026-06-28-run-ai-art-locally-guide-offline-generation":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-06-29-master-leonardo-ai-character-expressions-emotions-moods":  {
+                                                                               "state":  "needs-review"
+                                                                           },
+    "2026-06-30-master-allegorical-ai-art-prompts-subtext-meaning":  {
+                                                                         "state":  "needs-review"
+                                                                     },
+    "2026-07-01-master-studio-ghibli-ai-art-prompts":  {
+                                                           "state":  "needs-review"
+                                                       },
+    "2026-07-02-master-miniature-macro-ai-art-prompts":  {
+                                                             "state":  "needs-review"
+                                                         },
+    "2026-07-03-ai-3d-art-generators-compared-midjourney-sd-dall-e-3":  {
+                                                                            "state":  "needs-review"
+                                                                        },
+    "2026-07-04-natural-language-ai-prompts-guide":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-07-05-master-midjourney-raw-mode-unstylized-ai-art":  {
+                                                                    "state":  "needs-review"
+                                                                },
+    "2026-07-06-stable-diffusion-game-assets-sprite-sheets-turnarounds":  {
+                                                                              "state":  "needs-review"
+                                                                          },
+    "2026-07-07-dall-e-3-object-editing-guide-modify-ai-art":  {
+                                                                   "state":  "needs-review"
+                                                               },
+    "2026-07-08-develop-unique-ai-art-style":  {
+                                                   "state":  "needs-review"
+                                               },
+    "2026-07-09-ai-art-time-manipulation-prompts":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-07-09-master-leonardo-ai-depth-of-field":  {
+                                                         "state":  "needs-review"
+                                                     },
+    "2026-07-10-master-tattoo-style-ai-art-prompts":  {
+                                                          "state":  "needs-review"
+                                                      },
+    "2026-07-11-ai-art-special-effects-midjourney-sd-dall-e3-comparison":  {
+                                                                               "state":  "needs-review"
+                                                                           },
+    "2026-07-11-master-paper-cutout-ai-art-prompts-techniques":  {
+                                                                     "state":  "needs-review"
+                                                                 },
+    "2026-07-13-break-down-vision-ai-art-prompts":  {
+                                                        "state":  "needs-review"
+                                                    },
+    "2026-07-13-master-midjourney-color-schemes-prompts":  {
+                                                               "state":  "needs-review"
+                                                           },
+    "2026-07-15-stable-diffusion-combine-loras-tis-checkpoints":  {
+                                                                      "state":  "needs-review"
+                                                                  },
+    "2026-07-16-dalle-3-multi-object-placement-guide":  {
+                                                            "state":  "needs-review"
+                                                        }
+}
