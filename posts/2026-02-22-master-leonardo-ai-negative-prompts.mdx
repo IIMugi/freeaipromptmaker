@@ -10,7 +10,7 @@ category: "leonardo"
 
 # Leonardo AI Negative Prompts: A Bounded Troubleshooting Reference
 
-A negative prompt is a list of concepts the selected image model should make less likely. Leonardo's prompting help calls it a first defence against unwanted details and then recommends changing the model, aspect ratio, or style when an element persists. It also points to Canvas for manual removal.
+A negative prompt is a list of concepts the selected image model should make less likely. Leonardo's prompting help calls it a first defence against unwanted details and then lists changing the model, aspect ratio, or—with Alchemy—style when an element persists. It also points to Canvas for manual removal.
 
 **Input-location documentation checked: 2026-07-16.** The supplied prompting article documents the negative-prompt feature but was modified on 2023-06-30. The current Image Creation article was modified on 2026-02-17, yet its text does not identify a stable negative-prompt field location. The live label or placement must therefore be confirmed in the current signed-in interface; this guide does not invent a permanent click path.
 
@@ -38,9 +38,9 @@ Keep the positive prompt focused on what the scene should contain. Do not place 
 
 ## Unwanted-element diagnosis table
 
-The issue-to-term mappings are editorial starting hypotheses, not vendor guidance.
+Both the issue-to-term and issue-to-next-variable mappings are editorial starting hypotheses.
 
-| Observed issue | Editorial term hypothesis | What stays fixed | Next single variable if it persists |
+| Observed issue | Editorial term hypothesis | What stays fixed | Editorial next-variable hypothesis |
 |---|---|---|---|
 | Extra hand or digit | `extra fingers, duplicate hands` | Positive prompt, model, dimensions, style | Model |
 | Duplicate subject | `duplicate person, cloned subject` | Positive prompt, model, dimensions, style | Aspect ratio |
@@ -63,7 +63,7 @@ Start with one or two terms that name the observed problem. Add another term onl
 
 ## One-variable troubleshooting sequence
 
-This is an editorial experiment design, not a vendor-prescribed order. The prompting source lists model, aspect ratio, and—with Alchemy—style as alternatives when an unwanted element persists; it does not order those alternatives. The worksheet imposes the following sequence so only one recorded variable changes at a time:
+This sequence is an editorial experiment design created for reproducibility. The prompting source lists model, aspect ratio, and—with Alchemy—style as unordered alternatives when an unwanted element persists; it does not prescribe a sequence. The worksheet imposes the following progression so only one recorded variable changes at a time:
 
 1. **Negative prompt:** add one precise unwanted term. Keep the positive prompt, model, aspect ratio, and style fixed.
 2. **Model:** if the element persists, restore the previous negative input and change only the exact model selection. Use the [Leonardo model-selection reference](/blog/2026-02-09-master-leonardo-ai-models) to record the model and remember that settings vary by model.
@@ -102,6 +102,6 @@ Use Canvas only after the generation-variable record is complete. Save the actio
 
 ## Primary sources
 
-- [Prompting Tips & Tricks](https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks) — official prompting article, modified 2023-06-30; negative-prompt purpose and the model/aspect-ratio/style/Canvas escalation path.
+- [Prompting Tips & Tricks](https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks) — official prompting article, modified 2023-06-30; negative-prompt purpose; model, aspect-ratio, and—with Alchemy—style alternatives; and the Canvas fallback.
 - [How to Generate Images with Leonardo.Ai](https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai) — official current-interface article, modified 2026-02-17; Image Creation access and model-dependent controls.
 - [How To Use Canvas Editor Tool](https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool) — official Canvas article, modified 2026-02-18; generation frame, Draw Mask, Erase, and prompted regeneration.

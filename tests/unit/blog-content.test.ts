@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
+import remarkParse from 'remark-parse';
+import { unified } from 'unified';
 import { describe, expect, it } from 'vitest';
 import editorialStatus from '@/data/editorial-status.json';
 
@@ -9,12 +11,70 @@ const postFiles = fs
   .readdirSync(postsDirectory)
   .filter((fileName) => /\.(md|mdx)$/.test(fileName));
 
-const hasInlineImage = (text: string) => {
-  const prose = text
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`[^`\n]*`/g, '');
+interface MarkdownNode {
+  type: string;
+  value?: string;
+  children?: MarkdownNode[];
+  position?: {
+    start: { offset?: number };
+    end: { offset?: number };
+  };
+}
 
-  return /!\[[^\]]*\]\s*(?:\([^)]*\)|\[[^\]]*\])|<(?:img|image|picture)\b/i.test(prose);
+const markdownParser = unified().use(remarkParse);
+
+interface OffsetSpan {
+  start: number;
+  end: number;
+}
+
+const findDelimitedSpans = (source: string, opening: string, closing: string) => {
+  const spans: OffsetSpan[] = [];
+  let cursor = 0;
+
+  while (cursor < source.length) {
+    const start = source.indexOf(opening, cursor);
+    if (start < 0) break;
+    const closingStart = source.indexOf(closing, start + opening.length);
+    if (closingStart < 0) break;
+    const end = closingStart + closing.length;
+    spans.push({ start, end });
+    cursor = end;
+  }
+
+  return spans;
+};
+
+const findCommentSpans = (source: string) => [
+  ...findDelimitedSpans(source, '{/*', '*/}'),
+  ...findDelimitedSpans(source, '<!--', '-->'),
+];
+
+const isInsideCommentSpan = (node: MarkdownNode, commentSpans: readonly OffsetSpan[]) => {
+  const start = node.position?.start.offset;
+  const end = node.position?.end.offset;
+  if (start === undefined || end === undefined) return false;
+
+  return commentSpans.some((span) => start >= span.start && end <= span.end);
+};
+
+const hasInlineImageNode = (
+  node: MarkdownNode,
+  commentSpans: readonly OffsetSpan[],
+): boolean => {
+  if (isInsideCommentSpan(node, commentSpans)) return false;
+  if (node.type === 'image' || node.type === 'imageReference') return true;
+
+  if (node.type === 'html') {
+    if (/<(?:img|image|picture)\b/i.test(node.value ?? '')) return true;
+  }
+
+  return (node.children ?? []).some((child) => hasInlineImageNode(child, commentSpans));
+};
+
+const hasInlineImage = (text: string) => {
+  const tree = markdownParser.parse(text) as unknown as MarkdownNode;
+  return hasInlineImageNode(tree, findCommentSpans(text));
 };
 
 const stableDiffusionCandidates = [
@@ -160,9 +220,12 @@ const rankingOrHype = /#\s*1\b|\btop[- ]ranked\b|\branked\s+(?:#?\s*1|first)\b|\
 const popularityOrAudienceClaim = /\b(?:most popular|widely (?:used|adopted)|popular with|used by (?:millions|thousands)|trusted by (?:millions|thousands)|millions of (?:users|creators)|for everyone)\b/i;
 const priceOrRatingClaim = /[$€£¥]\s*\d|\b(?:USD|EUR|GBP|TRY)\s*\d|\b(?:costs?|priced at|price of)\s+\d+(?:\.\d+)?(?:\s+per\s+\w+)?\b|\b\d+(?:\.\d{1,2})?\s*(?:dollars?|euros?|pounds?)\b|\b(?:free|paid|premium)\s+tier\b|\bpricing plan\b|\b\d(?:\.\d+)?\s*\/\s*(?:5|10|100)\b|\b(?:one|two|three|four|five)[ -]star\b|\b(?:rated|rating of)\s+\d(?:\.\d+)?(?:\s+out of\s+(?:5|10))?/i;
 const benchmarkClaim = /\b\d+(?:\.\d+)?%\s+(?:faster|slower|better|fewer|improvement|increase|decrease)\b|\b\d+(?:\.\d+)?x\s+faster\b|\btwice\s+as\s+(?:fast|slow)\b/i;
-const fabricatedTesting = /\b(?:i|we)(?:\s+(?:have\s+)?|'ve\s+)(?:personally\s+)?(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
+const fabricatedTesting = /\b(?:i|we)(?:'ve|\s+(?:have|had))?\s+(?:(?:personally|independently|carefully)\s+)?(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
 const unsupportedModeCostClaim = /\bfast\s+is\s+cheaper\b|\bultra\s+uses\s+more\s+(?:tokens|credits)\b/i;
-const fabricatedTestingLimitations = [/\bwe tested no prompts\b/gi] as const;
+// This bounded family enumerates only reviewed auxiliaries, adverbs, and explicit no-work clauses.
+const fabricatedTestingLimitations = [
+  /\b(?:i|we)(?:'ve|\s+(?:have|had))?\s+(?:(?:personally|independently|carefully)\s+)?tested\s+(?:(?:no|zero)\s+prompts|nothing)\b/gi,
+] as const;
 
 const affirmativeGuaranteeClaims = [
   /\b(?:i|we)\s+guarantee\b/i,
@@ -274,6 +337,9 @@ describe('guide corpus', () => {
       { label: 'documented modes only', text: 'Fast and Ultra are documented generation-mode labels.' },
       { label: 'no mode-cost comparison', text: 'This guide makes no token or credit comparison.' },
       { label: 'explicit no-testing boundary', text: 'We tested no prompts.' },
+      { label: 'first-person no-testing boundary', text: 'I tested no prompts.' },
+      { label: 'zero-prompt testing boundary', text: 'We tested zero prompts.' },
+      { label: 'nothing-tested boundary', text: 'We carefully tested nothing.' },
       { label: 'limited adoption', text: 'not widely used' },
       { label: 'limited popularity', text: 'not the most popular' },
       { label: 'limited audience', text: 'not for everyone' },
@@ -315,6 +381,9 @@ describe('guide corpus', () => {
       { label: 'failure benchmark', text: 'It has 35% fewer failures.' },
       { label: 'first-person finding', text: 'We found fewer failures.' },
       { label: 'auxiliary first-person testing', text: 'We have tested every model.' },
+      { label: 'independent auxiliary testing', text: 'We have independently tested every model.' },
+      { label: 'careful contracted comparison', text: "I've carefully compared every model." },
+      { label: 'past-perfect first-person testing', text: 'We had tested every model.' },
       { label: 'curly personally tested', text: 'I’ve personally tested every model.' },
       { label: 'ascii personally tested', text: "I've personally tested every model." },
       { label: 'curly contracted first-person testing', text: 'I’ve tested every model.' },
@@ -446,11 +515,20 @@ describe('guide corpus', () => {
     expect(content).not.toContain('In the negative-prompt input exposed by the current interface');
     expect(content).toContain('Editorial convention, not vendor syntax:');
     expect(content).toContain('comma-separated bare terms');
-    expect(content).toContain('The issue-to-term mappings are editorial starting hypotheses, not vendor guidance.');
-    expect(content).toContain('| Observed issue | Editorial term hypothesis | What stays fixed | Next single variable if it persists |');
-    expect(content).toContain('This is an editorial experiment design, not a vendor-prescribed order.');
+    expect(content).toContain('Both the issue-to-term and issue-to-next-variable mappings are editorial starting hypotheses.');
+    expect(content).toContain('| Observed issue | Editorial term hypothesis | What stays fixed | Editorial next-variable hypothesis |');
+    expect(content).toContain('This sequence is an editorial experiment design created for reproducibility.');
     expect(content).not.toContain('Follow the source order');
-    expect(content).toContain('with Alchemy');
+    expect(content).not.toMatch(/vendor(?:-prescribed)?\s+(?:path|order)/i);
+
+    const blocks = content.trim().split(/\n\s*\n/);
+    const intro = blocks[1] ?? '';
+    expect(intro).toContain('with Alchemy');
+    const primarySources = content.split(/^## Primary sources\s*$/m)[1] ?? '';
+    const promptingSource = primarySources
+      .split('\n')
+      .find((line) => line.includes('8067671-prompting-tips-tricks')) ?? '';
+    expect(promptingSource).toContain('with Alchemy');
 
     const progression = [
       '1. **Negative prompt:**',
@@ -492,14 +570,26 @@ describe('guide corpus', () => {
   it('detects bounded Markdown, HTML, and MDX inline-image forms', () => {
     const inlineImages = [
       '![inline alt](https://example.com/image.png)',
-      '![reference alt][image-id]',
+      '![reference alt][image-id]\n\n[image-id]: https://example.com/image.png',
+      '![collapsed reference][]\n\n[collapsed reference]: https://example.com/image.png',
+      '![diagram]\n\n[diagram]: https://example.com/image.png',
       '<img src="/image.png" alt="HTML image" />',
       '<Image src="/image.png" alt="MDX image" />',
       '<picture><source srcSet="/image.webp" /></picture>',
+      '{/* comment */} <Image src="/active-between-comments.png" /> {/* comment */}',
+      '{/* comment */}<Image src="/active-before-empty-comment.png" />{/**/}',
+      '{/* comment */} ![active diagram]\n\n[active diagram]: /active-reference.png',
     ];
     const allowedNonImages = [
       '[ordinary link](https://example.com)',
-      '`<Image />` is discussed as code.',
+      '\\![escaped alt](https://example.com/image.png)',
+      '<!-- <img src="/commented.png" /> -->',
+      '{/* <Image src="/commented.png" /> */}',
+      '{/* ![commented diagram][commented-id] */}\n\n[commented-id]: /commented-reference.png',
+      '~~~mdx\n<Image src="/tilde-fence.png" />\n~~~',
+      '    <Image src="/indented-code.png" />',
+      '``<Image src="/double-tick.png" />`` is discussed as code.',
+      '```mdx\n<Image src="/fenced-code.png" />\n```',
     ];
 
     for (const fixture of inlineImages) expect(hasInlineImage(fixture), fixture).toBe(true);
