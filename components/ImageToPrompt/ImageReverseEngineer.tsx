@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'motion/react';
 import { Copy, ImageUp, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { copyToClipboard, cn } from '@/lib/utils';
+import { detectImageType, MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
 
 interface ReversePromptResult {
   styleDna: {
@@ -21,33 +21,19 @@ interface ReversePromptResult {
   remixes: string[];
 }
 
-const maxFileSize = 8 * 1024 * 1024;
+type AnalysisState = 'idle' | 'validating' | 'uploading' | 'success' | 'unavailable' | 'error';
 
 export function ImageReverseEngineer() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [isDragging, setIsDragging] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [state, setState] = useState<AnalysisState>('idle');
   const [result, setResult] = useState<ReversePromptResult | null>(null);
-  const [error, setError] = useState('');
-  const [analysisNote, setAnalysisNote] = useState('');
+  const [message, setMessage] = useState('');
   const [copyState, setCopyState] = useState<'prompt' | 'bundle' | null>(null);
 
-  const accept = 'image/png,image/jpeg,image/webp';
-
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreviewUrl('');
-      return;
-    }
-
-    const url = URL.createObjectURL(selectedFile);
-    setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
-
-  const canAnalyze = Boolean(selectedFile) && !isLoading;
-
+  const busy = state === 'validating' || state === 'uploading';
+  const canAnalyze = Boolean(selectedFile) && !busy;
   const tokenBadges = useMemo(() => {
     if (!result) return [];
     return [
@@ -58,70 +44,85 @@ export function ImageReverseEngineer() {
     ].filter(Boolean);
   }, [result]);
 
-  const handleFile = (file: File | null) => {
-    setError('');
+  const resetResult = () => {
     setResult(null);
-    setAnalysisNote('');
+    setMessage('');
+    setState('idle');
+    setCopyState(null);
+  };
+
+  const handleFile = (file: File | null) => {
+    resetResult();
     if (!file) return;
-
-    const validType = ['image/png', 'image/jpeg', 'image/webp'].includes(file.type);
-    if (!validType) {
-      setError('Only PNG, JPG, and WEBP images are supported.');
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      setState('error');
+      setMessage('Only PNG, JPG, and WEBP images are supported.');
+      return;
+    }
+    if (file.size > MAX_IMAGE_FILE_SIZE) {
+      setState('error');
+      setMessage('Maximum file size is 8MB.');
       return;
     }
 
-    if (file.size > maxFileSize) {
-      setError('Maximum file size is 8MB.');
-      return;
-    }
-
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const reset = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(null);
+    setPreviewUrl('');
+    resetResult();
   };
 
   const analyzeImage = async () => {
     if (!selectedFile) return;
+    setResult(null);
+    setMessage('Checking the selected image…');
+    setState('validating');
 
-    setIsLoading(true);
-    setError('');
-    setAnalysisNote('');
+    const detectedType = detectImageType(new Uint8Array(await selectedFile.arrayBuffer()));
+    if (!detectedType || detectedType !== selectedFile.type) {
+      setState('error');
+      setMessage('The file contents do not match a supported image format.');
+      return;
+    }
+
+    setState('uploading');
+    setMessage('Sending the image for analysis…');
+    const formData = new FormData();
+    formData.append('image', selectedFile);
 
     try {
-      const formData = new FormData();
-      formData.append('image', selectedFile);
+      const response = await fetch('/api/image-to-prompt', { method: 'POST', body: formData });
+      const payload = (await response.json().catch(() => null)) as
+        | { code?: string; data?: ReversePromptResult }
+        | null;
 
-      const response = await fetch('/api/image-to-prompt', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(payload?.error || 'Image analysis failed.');
+      if (response.status === 503 || payload?.code === 'analysis_unavailable') {
+        setState('unavailable');
+        setMessage('Image analysis is currently unavailable. Your selected file is preserved.');
+        return;
+      }
+      if (!response.ok || !payload?.data) {
+        setState('error');
+        setMessage('Image analysis failed. Please check the file and try again.');
+        return;
       }
 
-      const payload = (await response.json()) as {
-        data: ReversePromptResult;
-        degraded?: boolean;
-        reason?: string;
-      };
       setResult(payload.data);
-
-      if (payload.degraded) {
-        setAnalysisNote(
-          'Vision model is unavailable in this environment. Showing a smart fallback draft you can still remix.'
-        );
-      }
-    } catch (analysisError) {
-      console.error('[ImageReverseEngineer]', analysisError);
-      setError(analysisError instanceof Error ? analysisError.message : 'Unexpected analysis error.');
-    } finally {
-      setIsLoading(false);
+      setState('success');
+      setMessage('Image analysis completed.');
+    } catch {
+      setState('error');
+      setMessage('Image analysis could not be reached. Please try again.');
     }
   };
 
   const handleCopy = async (variant: 'prompt' | 'bundle') => {
-    if (!result) return;
-
+    if (state !== 'success' || !result) return;
     const output =
       variant === 'prompt'
         ? result.prompt
@@ -133,23 +134,20 @@ export function ImageReverseEngineer() {
               styleDna: result.styleDna,
             },
             null,
-            2
+            2,
           );
-
-    const copied = await copyToClipboard(output);
-    if (!copied) return;
-
-    setCopyState(variant);
-    setTimeout(() => setCopyState(null), 1800);
+    if (await copyToClipboard(output)) setCopyState(variant);
   };
 
-  const handleShare = async () => {
-    if (!result) return;
-
-    const shareText = `Reverse engineered this image into prompt DNA with Free AI Prompt Maker:\n\n${result.prompt}`;
+  const handleShare = () => {
+    if (state !== 'success' || !result) return;
     const shareUrl = `${window.location.origin}/image-to-prompt`;
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const text = `Image prompt created with Free AI Prompt Maker:\n\n${result.prompt}`;
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
   };
 
   return (
@@ -158,23 +156,20 @@ export function ImageReverseEngineer() {
         <div className="grid gap-7 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">
-              <Sparkles className="h-3.5 w-3.5" />
-              Viral Feature
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              Optional vision analysis
             </div>
-            <h1 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-              Image-to-Prompt Reverse Engineer
-            </h1>
+            <h1 className="mt-4 text-3xl font-semibold text-white md:text-5xl">Image to prompt</h1>
             <p className="mt-3 max-w-2xl text-sm text-slate-300 md:text-base">
-              Upload any image. We extract subject, lighting, lens, mood, and style DNA, then generate
-              a ready prompt, negative prompt, and 3 remix variants.
+              When analysis is configured, upload a supported image to request a prompt, negative
+              prompt, and variations from the vision provider. No result is fabricated when the
+              provider is unavailable.
             </p>
 
             <div
               className={cn(
                 'mt-6 rounded-2xl border-2 border-dashed p-6 transition',
-                isDragging
-                  ? 'border-cyan-300/60 bg-cyan-300/10'
-                  : 'border-white/15 bg-[#0d182b]/70'
+                isDragging ? 'border-cyan-300/60 bg-cyan-300/10' : 'border-white/15 bg-[#0d182b]/70',
               )}
               onDragOver={(event) => {
                 event.preventDefault();
@@ -187,49 +182,51 @@ export function ImageReverseEngineer() {
                 handleFile(event.dataTransfer.files?.[0] || null);
               }}
             >
-              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 text-center">
+              <label htmlFor="image-analysis-upload" className="flex cursor-pointer flex-col items-center justify-center gap-2 text-center">
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-300/15 text-cyan-100">
-                  <ImageUp className="h-5 w-5" />
+                  <ImageUp className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="text-sm text-slate-200">Drop image or click to upload</span>
                 <span className="text-xs text-slate-400">PNG, JPG, WEBP up to 8MB</span>
-                <input
-                  type="file"
-                  accept={accept}
-                  className="hidden"
-                  onChange={(event) => handleFile(event.target.files?.[0] || null)}
-                />
               </label>
+              <input
+                id="image-analysis-upload"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="sr-only"
+                onChange={(event) => handleFile(event.target.files?.[0] || null)}
+              />
             </div>
 
-            {error && (
-              <p className="mt-3 rounded-lg border border-rose-300/30 bg-rose-300/10 px-3 py-2 text-sm text-rose-100">
-                {error}
+            {message ? (
+              <p
+                role="status"
+                className={cn(
+                  'mt-3 rounded-lg border px-3 py-2 text-sm',
+                  state === 'error'
+                    ? 'border-rose-300/30 bg-rose-300/10 text-rose-100'
+                    : 'border-cyan-300/30 bg-cyan-300/10 text-cyan-100',
+                )}
+              >
+                {message}
               </p>
-            )}
-            {analysisNote && (
-              <p className="mt-3 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-3 py-2 text-sm text-cyan-100">
-                {analysisNote}
-              </p>
-            )}
+            ) : null}
 
             <div className="mt-4 flex flex-wrap gap-2">
               <Button
                 onClick={analyzeImage}
                 disabled={!canAnalyze}
-                icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                icon={busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
               >
-                {isLoading ? 'Analyzing...' : 'Reverse Engineer Prompt'}
+                {busy
+                  ? state === 'validating'
+                    ? 'Validating…'
+                    : 'Analyzing…'
+                  : state === 'unavailable' || state === 'error'
+                    ? 'Try analysis again'
+                    : 'Analyze image'}
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setSelectedFile(null);
-                  setResult(null);
-                  setError('');
-                }}
-                disabled={isLoading}
-              >
+              <Button variant="secondary" onClick={reset} disabled={busy || !selectedFile}>
                 Reset
               </Button>
             </div>
@@ -237,12 +234,12 @@ export function ImageReverseEngineer() {
 
           <div className="glass rounded-2xl p-4">
             <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Preview</p>
-            <div className="mt-3 relative min-h-[320px] overflow-hidden rounded-xl border border-white/12 bg-[#0a1325]">
+            <div className="relative mt-3 min-h-[320px] overflow-hidden rounded-xl border border-white/12 bg-[#0a1325]">
               {previewUrl ? (
-                <Image src={previewUrl} alt="Uploaded style reference" fill className="object-cover" />
+                <Image src={previewUrl} alt="Selected image preview" fill unoptimized className="object-contain" />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
-                  Uploaded image preview will appear here.
+                  Selected image preview will appear here.
                 </div>
               )}
             </div>
@@ -250,49 +247,25 @@ export function ImageReverseEngineer() {
         </div>
       </section>
 
-      {result && (
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="section-shell mt-8 rounded-3xl p-6 md:p-8"
-        >
+      {state === 'success' && result ? (
+        <section className="section-shell mt-8 rounded-3xl p-6 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-2xl font-semibold text-white">Style DNA</h2>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                onClick={() => handleCopy('prompt')}
-                icon={<Copy className="h-4 w-4" />}
-                variant={copyState === 'prompt' ? 'success' : 'primary'}
-              >
-                {copyState === 'prompt' ? 'Copied' : 'Copy Prompt'}
+            <h2 className="text-2xl font-semibold text-white">Analysis result</h2>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" onClick={() => handleCopy('prompt')} icon={<Copy className="h-4 w-4" />}>
+                {copyState === 'prompt' ? 'Copied' : 'Copy prompt'}
               </Button>
-              <Button
-                size="sm"
-                onClick={() => handleCopy('bundle')}
-                icon={<Copy className="h-4 w-4" />}
-                variant={copyState === 'bundle' ? 'success' : 'secondary'}
-              >
-                {copyState === 'bundle' ? 'Copied' : 'Copy Bundle'}
+              <Button size="sm" variant="secondary" onClick={() => handleCopy('bundle')}>
+                {copyState === 'bundle' ? 'Copied' : 'Copy bundle'}
               </Button>
-              <Button size="sm" variant="ghost" onClick={handleShare}>
-                Share on X
-              </Button>
+              <Button size="sm" variant="ghost" onClick={handleShare}>Share on X</Button>
             </div>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            {tokenBadges.map((token) => (
-              <span
-                key={token}
-                className="rounded-full border border-cyan-300/35 bg-cyan-300/12 px-3 py-1 text-xs text-cyan-100"
-              >
+            {[...tokenBadges, ...result.styleDna.styleTags].map((token) => (
+              <span key={token} className="rounded-full border border-cyan-300/35 bg-cyan-300/12 px-3 py-1 text-xs text-cyan-100">
                 {token}
-              </span>
-            ))}
-            {result.styleDna.styleTags.map((tag) => (
-              <span key={tag} className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1 text-xs text-slate-200">
-                {tag}
               </span>
             ))}
           </div>
@@ -303,28 +276,23 @@ export function ImageReverseEngineer() {
               <pre className="mt-2 whitespace-pre-wrap font-mono text-sm text-white">{result.prompt}</pre>
             </div>
             <div className="rounded-2xl border border-white/12 bg-[#0d182b]/70 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Negative Prompt</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Negative prompt</p>
               <pre className="mt-2 whitespace-pre-wrap font-mono text-sm text-slate-200">{result.negativePrompt}</pre>
             </div>
           </div>
 
           <div className="mt-4 rounded-2xl border border-white/12 bg-[#0d182b]/70 p-4">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Remix Variations</p>
-            <div className="mt-2 space-y-2">
-              {result.remixes.map((remix, index) => (
-                <button
-                  key={remix}
-                  type="button"
-                  onClick={() => copyToClipboard(remix)}
-                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-sm text-slate-100 hover:bg-white/[0.08]"
-                >
-                  <span className="text-cyan-200">Variation {index + 1}:</span> {remix}
-                </button>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Variations</p>
+            <ul className="mt-2 space-y-2">
+              {result.remixes.map((remix) => (
+                <li key={remix} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-100">
+                  {remix}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-        </motion.section>
-      )}
+        </section>
+      ) : null}
     </div>
   );
 }

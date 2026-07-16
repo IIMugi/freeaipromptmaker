@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { detectImageType, MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const maxFileSize = 8 * 1024 * 1024;
-const allowedMimeTypes = new Set(['image/png', 'image/jpeg', 'image/webp']);
-const rateWindowMs = 10 * 60 * 1000;
-const maxRequestsPerWindow = 20;
-const rateLimitCleanupThreshold = 500;
 
 interface ReversePromptResult {
   styleDna: {
@@ -37,51 +32,37 @@ interface RateLimitResult {
   resetAt: number;
 }
 
+const rateWindowMs = 10 * 60 * 1000;
+const maxRequestsPerWindow = 20;
 const globalForRateLimit = globalThis as typeof globalThis & {
   __imageToPromptRateStore?: Map<string, RateLimitState>;
 };
-
 const rateStore = globalForRateLimit.__imageToPromptRateStore ?? new Map<string, RateLimitState>();
-if (!globalForRateLimit.__imageToPromptRateStore) {
-  globalForRateLimit.__imageToPromptRateStore = rateStore;
-}
+globalForRateLimit.__imageToPromptRateStore = rateStore;
 
 function getClientIdentifier(request: Request) {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  const realIp = request.headers.get('x-real-ip');
-  const cfIp = request.headers.get('cf-connecting-ip');
-
-  const raw = forwardedFor?.split(',')[0]?.trim() || realIp || cfIp || 'anonymous';
+  const raw =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    request.headers.get('cf-connecting-ip') ||
+    'anonymous';
   return raw.replace(/[^a-zA-Z0-9:.\-]/g, '').slice(0, 120) || 'anonymous';
 }
 
 function consumeRateLimit(clientId: string): RateLimitResult {
   const now = Date.now();
-
-  if (rateStore.size > rateLimitCleanupThreshold) {
-    for (const [key, entry] of rateStore.entries()) {
-      if (entry.resetAt <= now) rateStore.delete(key);
-    }
-  }
-
   const existing = rateStore.get(clientId);
-
   if (!existing || existing.resetAt <= now) {
-    const nextState: RateLimitState = {
-      count: 1,
-      resetAt: now + rateWindowMs,
-    };
-    rateStore.set(clientId, nextState);
-
+    const next = { count: 1, resetAt: now + rateWindowMs };
+    rateStore.set(clientId, next);
     return {
       allowed: true,
       retryAfterSeconds: 0,
       remaining: maxRequestsPerWindow - 1,
       limit: maxRequestsPerWindow,
-      resetAt: nextState.resetAt,
+      resetAt: next.resetAt,
     };
   }
-
   if (existing.count >= maxRequestsPerWindow) {
     return {
       allowed: false,
@@ -91,10 +72,7 @@ function consumeRateLimit(clientId: string): RateLimitResult {
       resetAt: existing.resetAt,
     };
   }
-
   existing.count += 1;
-  rateStore.set(clientId, existing);
-
   return {
     allowed: true,
     retryAfterSeconds: 0,
@@ -104,62 +82,21 @@ function consumeRateLimit(clientId: string): RateLimitResult {
   };
 }
 
-function buildHeaders(rateLimit: RateLimitResult, retryAfterSeconds?: number) {
-  const headers = new Headers();
-  headers.set('Cache-Control', 'no-store, max-age=0');
-  headers.set('X-RateLimit-Limit', String(rateLimit.limit));
-  headers.set('X-RateLimit-Remaining', String(Math.max(0, rateLimit.remaining)));
-  headers.set('X-RateLimit-Reset', String(Math.floor(rateLimit.resetAt / 1000)));
-
-  if (retryAfterSeconds && retryAfterSeconds > 0) {
-    headers.set('Retry-After', String(retryAfterSeconds));
-  }
-
-  return headers;
-}
-
-function jsonResponse(
-  payload: Record<string, unknown>,
-  status: number,
-  rateLimit: RateLimitResult,
-  retryAfterSeconds?: number
-) {
-  return NextResponse.json(payload, {
-    status,
-    headers: buildHeaders(rateLimit, retryAfterSeconds),
-  });
-}
-
-function createFallbackResult(fileName: string): ReversePromptResult {
-  const inferredSubject =
-    fileName
-      .replace(/\.[a-z0-9]+$/i, '')
-      .replace(/[-_]+/g, ' ')
-      .trim() || 'reference image subject';
-
-  const basePrompt = `${inferredSubject}, cinematic composition, high detail, controlled lighting, clean background`;
-
+function responseHeaders(rateLimit: RateLimitResult) {
   return {
-    styleDna: {
-      subject: inferredSubject,
-      lighting: 'Soft directional lighting',
-      lens: '50mm style framing',
-      mood: 'Polished cinematic mood',
-      palette: 'Cool highlights with deep contrast',
-      styleTags: ['cinematic', 'clean', 'high-detail'],
-    },
-    prompt: basePrompt,
-    negativePrompt: 'blurry, low detail, noisy artifacts, warped anatomy, watermark, text',
-    remixes: [
-      `${basePrompt}, moody low-key variation`,
-      `${basePrompt}, bright editorial variation`,
-      `${basePrompt}, minimal background variation`,
-    ],
+    'Cache-Control': 'no-store, max-age=0',
+    'X-RateLimit-Limit': String(rateLimit.limit),
+    'X-RateLimit-Remaining': String(Math.max(0, rateLimit.remaining)),
+    'X-RateLimit-Reset': String(Math.floor(rateLimit.resetAt / 1000)),
   };
 }
 
-function getGeminiKey(): string | null {
-  const envKeys = [
+function json(payload: Record<string, unknown>, status: number, rateLimit: RateLimitResult) {
+  return NextResponse.json(payload, { status, headers: responseHeaders(rateLimit) });
+}
+
+function getGeminiKey() {
+  const keys = [
     process.env.GEMINI_API_KEY,
     process.env.GEMINI_API_KEY_1,
     process.env.GEMINI_API_KEY_2,
@@ -172,164 +109,103 @@ function getGeminiKey(): string | null {
     process.env.GEMINI_API_KEY_9,
     process.env.GEMINI_API_KEY_10,
   ];
-
-  for (const key of envKeys) {
-    if (typeof key === 'string' && key.trim().length > 0) {
-      return key.trim();
-    }
-  }
-
-  return null;
+  return keys.find((key) => typeof key === 'string' && key.trim())?.trim() || null;
 }
 
-function parseJsonPayload(raw: string): unknown {
+function parseJson(raw: string) {
   const cleaned = raw.trim().replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
-
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(cleaned) as unknown;
   } catch {
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    if (start === -1 || end === -1 || end <= start) {
-      return null;
-    }
-    const candidate = cleaned.slice(start, end + 1);
-    try {
-      return JSON.parse(candidate);
-    } catch {
-      return null;
-    }
+    return null;
   }
 }
 
-function toSafeString(value: unknown, fallback: string) {
-  return typeof value === 'string' && value.trim().length > 0 ? value.trim() : fallback;
+function text(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+function strings(value: unknown, max: number) {
+  if (!Array.isArray(value)) return null;
+  const normalized = value
+    .filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+    .map((item) => item.trim())
+    .slice(0, max);
+  return normalized.length ? normalized : null;
 }
 
 function normalizeResult(value: unknown): ReversePromptResult | null {
   if (!value || typeof value !== 'object') return null;
   const source = value as Record<string, unknown>;
-  const styleSource =
-    source.styleDna && typeof source.styleDna === 'object'
-      ? (source.styleDna as Record<string, unknown>)
-      : {};
+  if (!source.styleDna || typeof source.styleDna !== 'object') return null;
+  const style = source.styleDna as Record<string, unknown>;
 
-  const styleTags = Array.isArray(styleSource.styleTags)
-    ? styleSource.styleTags.filter((item): item is string => typeof item === 'string').slice(0, 8)
-    : [];
-
-  const remixes = Array.isArray(source.remixes)
-    ? source.remixes.filter((item): item is string => typeof item === 'string').slice(0, 3)
-    : [];
-
-  const normalized: ReversePromptResult = {
+  const result = {
     styleDna: {
-      subject: toSafeString(styleSource.subject, 'Primary subject not detected'),
-      lighting: toSafeString(styleSource.lighting, 'Neutral lighting'),
-      lens: toSafeString(styleSource.lens, 'Natural perspective'),
-      mood: toSafeString(styleSource.mood, 'Balanced'),
-      palette: toSafeString(styleSource.palette, 'Neutral color palette'),
-      styleTags,
+      subject: text(style.subject),
+      lighting: text(style.lighting),
+      lens: text(style.lens),
+      mood: text(style.mood),
+      palette: text(style.palette),
+      styleTags: strings(style.styleTags, 8),
     },
-    prompt: toSafeString(source.prompt, ''),
-    negativePrompt: toSafeString(source.negativePrompt, 'blurry, low detail, artifacting'),
-    remixes,
+    prompt: text(source.prompt),
+    negativePrompt: text(source.negativePrompt),
+    remixes: strings(source.remixes, 3),
   };
 
-  if (!normalized.prompt) return null;
-  if (normalized.remixes.length === 0) {
-    normalized.remixes = [
-      `${normalized.prompt}, dramatic lighting variation`,
-      `${normalized.prompt}, cinematic composition variation`,
-      `${normalized.prompt}, minimal clean background variation`,
-    ];
+  if (
+    !result.styleDna.subject ||
+    !result.styleDna.lighting ||
+    !result.styleDna.lens ||
+    !result.styleDna.mood ||
+    !result.styleDna.palette ||
+    !result.styleDna.styleTags ||
+    !result.prompt ||
+    !result.negativePrompt ||
+    !result.remixes
+  ) {
+    return null;
   }
-  if (normalized.styleDna.styleTags.length === 0) {
-    normalized.styleDna.styleTags = ['cinematic', 'detailed', 'high contrast'];
-  }
-
-  return normalized;
+  return result as ReversePromptResult;
 }
 
 export async function POST(request: Request) {
-  const clientId = getClientIdentifier(request);
-  const rateLimit = consumeRateLimit(clientId);
-
+  const rateLimit = consumeRateLimit(getClientIdentifier(request));
   if (!rateLimit.allowed) {
-    return jsonResponse(
-      {
-        error: 'Rate limit exceeded. Please wait before sending more images.',
-      },
-      429,
-      rateLimit,
-      rateLimit.retryAfterSeconds
-    );
+    const response = json({ code: 'rate_limit_exceeded' }, 429, rateLimit);
+    response.headers.set('Retry-After', String(rateLimit.retryAfterSeconds));
+    return response;
   }
 
+  let formData: FormData;
   try {
-    const formData = await request.formData();
-    const input = formData.get('image');
+    formData = await request.formData();
+  } catch {
+    return json({ code: 'invalid_request' }, 400, rateLimit);
+  }
 
-    if (!(input instanceof File)) {
-      return jsonResponse({ error: 'Image file is required.' }, 400, rateLimit);
-    }
+  const input = formData.get('image');
+  if (!(input instanceof File)) return json({ code: 'image_required' }, 400, rateLimit);
+  if (input.size > MAX_IMAGE_FILE_SIZE) return json({ code: 'image_too_large' }, 400, rateLimit);
 
-    if (!allowedMimeTypes.has(input.type)) {
-      return jsonResponse(
-        { error: 'Unsupported file type. Use PNG, JPG, or WEBP.' },
-        400,
-        rateLimit
-      );
-    }
+  const bytes = new Uint8Array(await input.arrayBuffer());
+  const detectedType = detectImageType(bytes);
+  if (!detectedType || detectedType !== input.type) {
+    return json({ code: 'invalid_image_signature' }, 400, rateLimit);
+  }
 
-    if (input.size > maxFileSize) {
-      return jsonResponse({ error: 'Image is too large. Max size is 8MB.' }, 400, rateLimit);
-    }
+  const apiKey = getGeminiKey();
+  if (!apiKey) return json({ code: 'analysis_unavailable' }, 503, rateLimit);
 
-    const apiKey = getGeminiKey();
-    if (!apiKey) {
-      return jsonResponse(
-        {
-          data: createFallbackResult(input.name),
-          degraded: true,
-          reason: 'missing_api_key',
-        },
-        200,
-        rateLimit
-      );
-    }
-
+  try {
     const ai = new GoogleGenAI({ apiKey });
-    const bytes = Buffer.from(await input.arrayBuffer()).toString('base64');
-
-    const response = await ai.models.generateContent({
+    const providerResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
-        {
-          inlineData: {
-            data: bytes,
-            mimeType: input.type,
-          },
-        },
-        `Analyze this image and output strict JSON only.
-Schema:
-{
-  "styleDna": {
-    "subject": "short string",
-    "lighting": "short string",
-    "lens": "short string",
-    "mood": "short string",
-    "palette": "short string",
-    "styleTags": ["tag1", "tag2", "tag3"]
-  },
-  "prompt": "single production-ready image prompt",
-  "negativePrompt": "comma separated artifacts to avoid",
-  "remixes": ["variation one", "variation two", "variation three"]
-}
-Rules:
-- Keep each field concise.
-- Prompt must be ready for Midjourney/Flux/DALL-E style tools.
-- Return only JSON and no markdown.`,
+        { inlineData: { data: Buffer.from(bytes).toString('base64'), mimeType: detectedType } },
+        `Analyze the image and return only JSON matching this schema:
+{"styleDna":{"subject":"","lighting":"","lens":"","mood":"","palette":"","styleTags":[""]},"prompt":"","negativePrompt":"","remixes":[""]}`,
       ],
       config: {
         temperature: 0.4,
@@ -337,34 +213,10 @@ Rules:
         responseMimeType: 'application/json',
       },
     });
-
-    const raw = response.text || '';
-    const parsed = normalizeResult(parseJsonPayload(raw));
-
-    if (!parsed) {
-      return jsonResponse(
-        {
-          data: createFallbackResult(input.name),
-          degraded: true,
-          reason: 'invalid_model_payload',
-        },
-        200,
-        rateLimit
-      );
-    }
-
-    return jsonResponse({ data: parsed }, 200, rateLimit);
-  } catch (error) {
-    console.error('[api/image-to-prompt]', error);
-    const fallback = createFallbackResult('uploaded-image');
-    return jsonResponse(
-      {
-        data: fallback,
-        degraded: true,
-        reason: 'model_request_failed',
-      },
-      200,
-      rateLimit
-    );
+    const result = normalizeResult(parseJson(providerResponse.text || ''));
+    if (!result) return json({ code: 'invalid_provider_response' }, 502, rateLimit);
+    return json({ data: result }, 200, rateLimit);
+  } catch {
+    return json({ code: 'analysis_provider_error' }, 502, rateLimit);
   }
 }
