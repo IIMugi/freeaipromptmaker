@@ -12,7 +12,15 @@
                                                           "state":  "needs-review"
                                                       },
     "2025-11-29-stable-diffusion-negative-prompts-guide":  {
-                                                               "state":  "needs-review"
+                                                               "state":  "verified",
+                                                               "lastVerified":  "2026-07-16",
+                                                               "testedVersion":  "Stability AI API, AUTOMATIC1111 Web UI, Diffusers SD3 docs checked 2026-07-16",
+                                                               "sources":  [
+                                                                               "https://platform.stability.ai/docs/api-reference",
+                                                                               "https://github.com/AUTOMATIC1111/stable-diffusion-webui#features",
+                                                                               "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Negative-prompt",
+                                                                               "https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/stable_diffusion_3"
+                                                                           ]
                                                            },
     "2025-11-30-ai-art-styles-guide":  {
                                            "state":  "needs-review"
