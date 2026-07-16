@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { permanentRedirects } from './data/redirects';
 
 const securityHeaders = [
   {
@@ -39,6 +40,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...permanentRedirects.map((redirect) => ({ ...redirect, permanent: true })),
       {
         source: '/:path*',
         has: [

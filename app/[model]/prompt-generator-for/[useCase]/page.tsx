@@ -8,8 +8,7 @@ import {
   modelDisplayNames,
 } from '@/data/prompt-use-cases';
 import type { AIModel } from '@/lib/prompt-builder';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
+import { canonicalUrl } from '@/lib/seo';
 
 interface PageProps {
   params: Promise<{ model: string; useCase: string }>;
@@ -33,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const modelName = modelDisplayNames[model];
-  const canonical = `${siteUrl}/${model}/prompt-generator-for/${entry.slug}`;
+  const canonical = canonicalUrl(`/${model}/prompt-generator-for/${entry.slug}`);
 
   return {
     title: `${modelName} Prompt Generator for ${entry.title}`,

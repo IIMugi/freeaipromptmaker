@@ -9,6 +9,7 @@ import { ConsentGate } from '@/components/Consent/ConsentGate';
 import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
 import { ScrollTracker, GoogleAnalytics } from '@/components/Analytics';
 import { SITE } from '@/lib/site';
+import { websiteJsonLd } from '@/lib/seo';
 import './globals.css';
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -88,33 +89,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
-        {/* SEO: Schema.org SoftwareApplication */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'SoftwareApplication',
-              name: SITE.name,
-              applicationCategory: 'DesignApplication',
-              operatingSystem: 'Web',
-              url: SITE.origin,
-              description: SITE.description,
-            }),
-          }}
-        />
-
-        {/* SEO: Organization Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: SITE.name,
-              url: SITE.origin,
-              sameAs: [SITE.social.github],
-            }),
+            __html: JSON.stringify(websiteJsonLd()),
           }}
         />
       </head>

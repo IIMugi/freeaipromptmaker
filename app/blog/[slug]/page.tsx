@@ -8,8 +8,7 @@ import type { BlogPost } from '@/lib/blog';
 import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
 import { SidebarAd, EndOfContentAd } from '@/components/Ads';
 import { getEditorialPolicy } from '@/lib/editorial';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
+import { articleJsonLd, canonicalUrl } from '@/lib/seo';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -215,7 +214,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Post Not Found' };
   }
 
-  const canonicalUrl = new URL(`/blog/${slug}`, siteUrl).toString();
+  const canonical = canonicalUrl(`/blog/${slug}`);
   const policy = getEditorialPolicy(post.editorialState);
 
   return {
@@ -225,13 +224,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     authors: post.author ? [{ name: post.author }] : undefined,
     robots: { index: policy.index, follow: true },
     alternates: {
-      canonical: canonicalUrl,
+      canonical,
     },
     openGraph: {
       title: post.title,
       description: post.description,
       type: 'article',
-      url: canonicalUrl,
+      url: canonical,
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
@@ -256,6 +255,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const relatedPosts = getRelatedPosts(slug, 3);
   const editorialPolicy = getEditorialPolicy(post.editorialState);
+  const pageUrl = canonicalUrl(`/blog/${slug}`);
   const contentWithoutTopH1 = post.content.replace(/^#\s+.*\r?\n?/, '').trimStart();
 
   const slugify = (text: string) =>
@@ -326,52 +326,15 @@ export default async function BlogPostPage({ params }: PageProps) {
     },
   ];
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqEntries.map((item) => ({
-      '@type': 'Question',
-      name: item.q,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.a,
-      },
-    })),
-  };
-
-  // Article Schema
-  const articleSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: {
-      '@type': 'Organization',
-      name: post.author,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Free AI Prompt Maker',
-    },
-    keywords: post.tags.join(', '),
-    image: post.image ? [post.image] : undefined,
-  };
-
-  // HowTo Schema (for tutorial-style content)
-  const howToSchema = post.category === 'tutorials' || post.title.toLowerCase().includes('guide')
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'HowTo',
-        name: post.title,
+  const articleSchema = editorialPolicy.index
+    ? articleJsonLd({
+        title: post.title,
         description: post.description,
-        step: tocItems.map((item, index) => ({
-          '@type': 'HowToStep',
-          position: index + 1,
-          name: item.title,
-          url: `${siteUrl}/blog/${slug}#${item.id}`,
-        })),
-      }
+        pathname: `/blog/${slug}`,
+        datePublished: post.date,
+        dateModified: post.lastVerified,
+        image: post.image,
+      })
     : null;
 
   return (
@@ -379,24 +342,12 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* Read Progress Bar */}
       <ReadProgressBar />
       
-      {/* Schema.org Article */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
-      {/* FAQ Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
-      {/* HowTo Schema (if applicable) */}
-      {howToSchema && (
+      {articleSchema ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
         />
-      )}
+      ) : null}
 
       <article className="max-w-7xl mx-auto px-4 py-8">
         {/* Back Button */}
@@ -607,7 +558,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <span className="text-slate-400">Share this article</span>
                 <div className="flex gap-2">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${siteUrl}/blog/${slug}`)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(pageUrl)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors"
@@ -615,7 +566,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     Twitter
                   </a>
                   <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${siteUrl}/blog/${slug}`)}`}
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors"
