@@ -94,22 +94,50 @@ const affirmativeGuaranteeClaims = [
   /\bit\s+not only\s+guarantees\b/i,
 ] as const;
 
+const rankingAndHypeLimitations = [
+  rankingLimitation,
+  /\bnot\s+top[- ]ranked\b/gi,
+  /\bnot\s+universally?\s+(?:compatible|supported|applicable)\b/gi,
+  /\bdoes not produce perfect outputs?\b/gi,
+] as const;
+
+const popularityAndAudienceLimitations = [
+  /\bnot\s+(?:widely (?:used|adopted)|the most popular|for everyone)\b/gi,
+] as const;
+
+interface EditorialClaimFamily {
+  name: string;
+  patterns: readonly RegExp[];
+  limitations?: readonly RegExp[];
+}
+
 // This automation intentionally detects only reviewable phrase families.
 // Novel grammar remains a manual editorial-review concern rather than inferred NLP.
-const boundedEditorialClaimFamilies = [
+const boundedEditorialClaimFamilies: readonly EditorialClaimFamily[] = [
   { name: 'affirmative guarantees', patterns: affirmativeGuaranteeClaims },
-  { name: 'rankings and hype', patterns: [rankingOrHype] },
-  { name: 'popularity and audience', patterns: [popularityOrAudienceClaim] },
+  {
+    name: 'rankings and hype',
+    patterns: [rankingOrHype],
+    limitations: rankingAndHypeLimitations,
+  },
+  {
+    name: 'popularity and audience',
+    patterns: [popularityOrAudienceClaim],
+    limitations: popularityAndAudienceLimitations,
+  },
   { name: 'pricing and ratings', patterns: [priceOrRatingClaim] },
   { name: 'benchmarks', patterns: [benchmarkClaim] },
   { name: 'fabricated testing', patterns: [fabricatedTesting] },
 ] as const;
 
-const hasUnsupportedClaim = (text: string) => {
-  const proseWithoutRankingLimitations = text.replace(rankingLimitation, '');
-  return boundedEditorialClaimFamilies.some((family) =>
-    family.patterns.some((pattern) => pattern.test(proseWithoutRankingLimitations)));
-};
+const hasUnsupportedClaim = (text: string) => boundedEditorialClaimFamilies.some((family) => {
+  const reviewText = (family.limitations ?? []).reduce(
+    (result, limitation) => result.replace(limitation, ''),
+    text,
+  );
+
+  return family.patterns.some((pattern) => pattern.test(reviewText));
+});
 
 describe('guide corpus', () => {
   it('has an explicit editorial status for every guide', () => {
@@ -154,6 +182,12 @@ describe('guide corpus', () => {
       { label: 'direct ranking disclaimer', text: 'This is not the best extension for every workflow.' },
       { label: 'qualified ranking disclaimer', text: 'This is not necessarily the best extension.' },
       { label: 'comparison limitation', text: 'No pricing or benchmark comparison was performed.' },
+      { label: 'limited adoption', text: 'not widely used' },
+      { label: 'limited popularity', text: 'not the most popular' },
+      { label: 'limited audience', text: 'not for everyone' },
+      { label: 'limited compatibility', text: 'not universally compatible' },
+      { label: 'limited output', text: 'does not produce perfect outputs' },
+      { label: 'limited ranking', text: 'not top-ranked' },
     ];
     const prohibited = [
       { label: 'direct guarantee', text: 'This guarantees consistent placement.' },
@@ -190,6 +224,12 @@ describe('guide corpus', () => {
       { label: 'first-person finding', text: 'We found fewer failures.' },
       { label: 'test finding', text: 'Our tests showed cleaner output.' },
       { label: 'testing finding', text: 'Our testing showed fewer failures.' },
+      { label: 'affirmative adoption', text: 'widely used' },
+      { label: 'affirmative popularity', text: 'the most popular' },
+      { label: 'affirmative audience', text: 'for everyone' },
+      { label: 'affirmative compatibility', text: 'universally compatible' },
+      { label: 'affirmative output', text: 'produces perfect outputs' },
+      { label: 'affirmative ranking', text: 'top-ranked' },
     ];
 
     for (const fixture of allowed) {
