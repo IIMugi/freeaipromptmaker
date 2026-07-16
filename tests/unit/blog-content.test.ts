@@ -78,12 +78,81 @@ const stableDiffusionCandidates = [
   },
 ] as const;
 
+const leonardoAndMidjourneyCandidates = [
+  {
+    slug: '2026-02-09-master-leonardo-ai-models',
+    title: 'Leonardo AI Model Selection Reference (2026 Interface)',
+    requiredMarkers: [
+      'Interface documentation dated: 2026-02-17',
+      'Catalog snapshot checked: 2026-07-16',
+      'Leonardo Lucid Origin',
+      'Leonardo Lucid Realism',
+      'Leonardo Phoenix 1.0',
+      'Fast',
+      'Ultra',
+      '## Prompt-control worksheet',
+      '| Intent to document | Model entry to inspect | Vendor-documented application | Record before generating |',
+      'Concept art, social media visuals',
+      'High-end product mockups, cinematic portraits',
+      'Stylized illustrations, vector-style stickers',
+      'Creating custom LoRAs',
+      'Detailed infographics',
+    ],
+    sourceUrls: [
+      'https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai',
+      'https://docs.leonardo.ai/me/docs/list-of-models',
+      'https://leonardo.ai/news/ai-image-models',
+    ],
+    internalLinks: ['/blog/2026-02-22-master-leonardo-ai-negative-prompts'],
+  },
+  {
+    slug: '2026-02-22-master-leonardo-ai-negative-prompts',
+    title: 'Leonardo AI Negative Prompts: A Bounded Troubleshooting Reference',
+    requiredMarkers: [
+      'Input-location documentation checked: 2026-07-16',
+      'starting hypotheses',
+      'negative prompts do not guarantee removal',
+      '## One-variable troubleshooting sequence',
+      'negative prompt',
+      'aspect ratio',
+      'Canvas',
+    ],
+    sourceUrls: [
+      'https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks',
+      'https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai',
+      'https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool',
+    ],
+    internalLinks: ['/blog/2026-02-09-master-leonardo-ai-models'],
+  },
+  {
+    slug: '2025-11-27-midjourney-v6-complete-prompt-guide',
+    title: 'Midjourney V6.1 Parameter Reference (Legacy Model)',
+    requiredMarkers: [
+      'V8.1 is the current default',
+      'V6.1 is a legacy model',
+      'V6.1 was released on 2024-07-30',
+      'default until 2025-06-16',
+      'Documentation snapshot checked: 2026-07-16',
+      '--v 6.1',
+      '## Prompt text versus parameters',
+      '## V6.1 compatibility table',
+      '## Migration checklist',
+      'Unversioned prompts are state-dependent and nonportable.',
+    ],
+    sourceUrls: [
+      'https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version',
+      'https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List',
+    ],
+    internalLinks: [],
+  },
+] as const;
+
 const rankingLimitation = /\bnot(?:\s+\w+){0,3}\s+the\s+best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b/gi;
 const rankingOrHype = /#\s*1\b|\btop[- ]ranked\b|\branked\s+(?:#?\s*1|first)\b|\b(?:ranked|rated|named|declared)\s+(?:as\s+)?(?:the\s+)?best\b|\b(?:the\s+)?best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b|\bperfect(?:ly)?\s+(?:outputs?|results?|quality|placement|compatibility|images?)\b|\b(?:universally?|game[- ]changer)\b/i;
 const popularityOrAudienceClaim = /\b(?:most popular|widely (?:used|adopted)|popular with|used by (?:millions|thousands)|trusted by (?:millions|thousands)|millions of (?:users|creators)|for everyone)\b/i;
 const priceOrRatingClaim = /[$€£¥]\s*\d|\b(?:USD|EUR|GBP|TRY)\s*\d|\b(?:costs?|priced at|price of)\s+\d+(?:\.\d+)?(?:\s+per\s+\w+)?\b|\b\d+(?:\.\d{1,2})?\s*(?:dollars?|euros?|pounds?)\b|\b(?:free|paid|premium)\s+tier\b|\bpricing plan\b|\b\d(?:\.\d+)?\s*\/\s*(?:5|10|100)\b|\b(?:one|two|three|four|five)[ -]star\b|\b(?:rated|rating of)\s+\d(?:\.\d+)?(?:\s+out of\s+(?:5|10))?/i;
 const benchmarkClaim = /\b\d+(?:\.\d+)?%\s+(?:faster|slower|better|fewer|improvement|increase|decrease)\b|\b\d+(?:\.\d+)?x\s+faster\b|\btwice\s+as\s+(?:fast|slow)\b/i;
-const fabricatedTesting = /\b(?:i|we)\s+(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
+const fabricatedTesting = /\b(?:i|we)(?:\s+|['’]ve\s+)(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
 
 const affirmativeGuaranteeClaims = [
   /\b(?:i|we)\s+guarantee\b/i,
@@ -222,6 +291,9 @@ describe('guide corpus', () => {
       { label: 'written multiplier benchmark', text: 'It runs twice as fast.' },
       { label: 'failure benchmark', text: 'It has 35% fewer failures.' },
       { label: 'first-person finding', text: 'We found fewer failures.' },
+      { label: 'curly contracted first-person testing', text: 'I’ve tested every model.' },
+      { label: 'ascii contracted first-person comparison', text: "I've compared every model." },
+      { label: 'curly contracted first-person generation', text: 'We’ve generated images with every model.' },
       { label: 'test finding', text: 'Our tests showed cleaner output.' },
       { label: 'testing finding', text: 'Our testing showed fewer failures.' },
       { label: 'affirmative adoption', text: 'widely used' },
@@ -272,5 +344,50 @@ describe('guide corpus', () => {
       expect(proseWithoutUrls).not.toMatch(inventedExperience);
       expect(hasUnsupportedClaim(proseWithoutUrls)).toBe(false);
     }
+  });
+
+  it('prepares the Leonardo and Midjourney reference candidates from bounded primary sources', () => {
+    const limitation = 'No independent image-generation comparison was performed for this guide.';
+    const evidenceBoundary = ['**Documented:**', '**Locally checked:**', '**Not tested:**'];
+    const legacyCopy = /hey there|fellow ai art|unlock (?:the true|new|unprecedented)|master every parameter|stunning ai art|secret sauce|artistic superpower|\uFFFD|PromptMaster/i;
+    const inventedExperience = /\b(?:i know i(?:'|’)ve|i(?:'|’)ve (?:found|tried|learned|experienced|tested|compared|benchmarked|generated)|in my experience|my go-to|in my opinion|what works for me|trust me|for me,? this)\b/i;
+
+    for (const candidate of leonardoAndMidjourneyCandidates) {
+      const raw = fs.readFileSync(path.join(postsDirectory, `${candidate.slug}.mdx`), 'utf8');
+      const { data, content } = matter(raw);
+
+      expect(data).toMatchObject({ title: candidate.title, author: 'Free AI Prompt Maker' });
+      expect(data).not.toHaveProperty('image');
+      expect(data).not.toHaveProperty('imageCredit');
+      expect(data).not.toHaveProperty('imageCreditUrl');
+      expect(content).toContain(limitation);
+      expect(content).toMatch(/^## Primary sources\s*$/m);
+
+      for (const boundary of evidenceBoundary) expect(content).toContain(boundary);
+      for (const marker of candidate.requiredMarkers) expect(content).toContain(marker);
+      for (const link of candidate.internalLinks) expect(content).toContain(`](${link})`);
+
+      const primarySources = content.split(/^## Primary sources\s*$/m)[1] ?? '';
+      const sourceUrls = primarySources.match(/https:\/\/[^\s)]+/g) ?? [];
+      expect(new Set(sourceUrls).size).toBeGreaterThanOrEqual(2);
+      for (const sourceUrl of candidate.sourceUrls) expect(primarySources).toContain(sourceUrl);
+
+      const proseWithoutUrls = raw
+        .replace(/\]\([^)]+\)/g, ']()')
+        .replace(/https:\/\/[^\s)"']+/g, '');
+      expect(proseWithoutUrls).not.toMatch(legacyCopy);
+      expect(proseWithoutUrls).not.toMatch(inventedExperience);
+      expect(hasUnsupportedClaim(proseWithoutUrls)).toBe(false);
+    }
+  });
+
+  it('marks unversioned Midjourney prompts as state-dependent and nonportable', () => {
+    const raw = fs.readFileSync(
+      path.join(postsDirectory, '2025-11-27-midjourney-v6-complete-prompt-guide.mdx'),
+      'utf8',
+    );
+    const { content } = matter(raw);
+
+    expect(content).toContain('Unversioned prompts are state-dependent and nonportable.');
   });
 });
