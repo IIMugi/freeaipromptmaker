@@ -15,7 +15,6 @@ import {
   Sparkles,
   Tag,
 } from 'lucide-react';
-import { AdUnit } from '@/components/Ads/AdUnit';
 import type { BlogPostMeta } from '@/lib/blog';
 
 const POSTS_PER_PAGE = 12;
@@ -167,15 +166,6 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
           </div>
         </div>
       </section>
-
-      <div className="mt-8">
-        <AdUnit
-          slot="BLOG_TOP_RESPONSIVE"
-          format="auto"
-          minHeight={250}
-          className="rounded-2xl border border-white/10 bg-slate-900/40"
-        />
-      </div>
 
       <section className="section-shell mt-8 p-5 sm:p-6">
         <div className="flex flex-col gap-4">

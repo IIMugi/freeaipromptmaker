@@ -3,7 +3,6 @@ import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
-import { AdSenseScript } from '@/components/Ads/AdSenseScript';
 import { CookieConsent } from '@/components/Consent/CookieConsent';
 import { ConsentGate } from '@/components/Consent/ConsentGate';
 import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
@@ -100,9 +99,8 @@ export default function RootLayout({
         className={`${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <ThemeProvider>
-          {/* AdSense Script + Analytics (after consent) */}
+          {/* Optional analytics loads only after explicit consent. */}
           <ConsentGate>
-            <AdSenseScript />
             <GoogleAnalytics />
           </ConsentGate>
           <ScrollTracker />

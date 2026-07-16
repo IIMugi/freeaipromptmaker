@@ -5,8 +5,7 @@ import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2, Check, X } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
 import type { BlogPost } from '@/lib/blog';
-import { MarkdownRenderer, RelatedPosts, DynamicAdInjector, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
-import { SidebarAd, EndOfContentAd } from '@/components/Ads';
+import { MarkdownRenderer, RelatedPosts, CtaButtons, ReadProgressBar, Breadcrumbs } from '@/components/Blog';
 import { getEditorialPolicy } from '@/lib/editorial';
 import { articleJsonLd, canonicalUrl } from '@/lib/seo';
 
@@ -528,10 +527,6 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
 
             {/* Dynamic In-Article Ads (based on content length) */}
-            {editorialPolicy.index ? (
-              <DynamicAdInjector contentLength={contentWithoutTopH1.length} />
-            ) : null}
-
           {/* CTA block */}
           <CtaButtons items={ctas} />
 
@@ -549,8 +544,6 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* End of Content Ad */}
-          {editorialPolicy.index ? <EndOfContentAd /> : null}
-
             {/* Share Section */}
             <div className="mt-12 pt-8 border-t border-slate-700">
               <div className="flex items-center gap-4">
@@ -598,13 +591,6 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* Sidebar */}
-          {editorialPolicy.index ? (
-            <aside className="hidden lg:block w-[300px] flex-shrink-0">
-              <div className="sticky top-24">
-                <SidebarAd />
-              </div>
-            </aside>
-          ) : null}
         </div>
       </article>
     </>
