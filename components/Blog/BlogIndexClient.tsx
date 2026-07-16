@@ -145,7 +145,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
               Verified prompt guides
             </h1>
             <p className="max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
-              Only guides that complete the current source and model-version review appear here.
+              Source-checked prompt and tool references with explicit version and limitation notes.
             </p>
           </div>
 
@@ -399,11 +399,10 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
 
       <section className="section-shell mt-10 p-8 text-center sm:p-10">
         <h2 className="text-2xl font-semibold text-white sm:text-3xl">
-          Want better images from the same prompt?
+          Use the local prompt formatter
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-          Build cleaner prompts with model-aware controls, then test your output quality in fewer
-          iterations.
+          Format a prompt locally, then copy it into the tool you choose.
         </p>
         <Link
           href="/#generator"

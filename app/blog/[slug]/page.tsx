@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, User, Share2, Check, X } from 'lucide-react';
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/blog';
-import type { BlogPost } from '@/lib/blog';
 import { MarkdownRenderer, RelatedPosts, CtaButtons, Breadcrumbs } from '@/components/Blog';
 import { getEditorialPolicy } from '@/lib/editorial';
 import { articleJsonLd, canonicalUrl } from '@/lib/seo';
@@ -13,190 +12,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-const PROS_CONS_BY_TOPIC: Record<string, { pros: string[]; cons: string[] }> = {
-  midjourney: {
-    pros: [
-      'Strong style control with parameters and seeds',
-      'High aesthetic quality with minimal post-work',
-      'Great for concept art and stylized visuals',
-    ],
-    cons: [
-      'Requires iterative prompting to match intent',
-      'Less precise control than node-based workflows',
-      'Subscription required for regular use',
-    ],
-  },
-  'stable-diffusion': {
-    pros: [
-      'Deep control with models, LoRAs, and ControlNet',
-      'Can run locally for privacy and cost control',
-      'Huge community resources and models',
-    ],
-    cons: [
-      'Setup and tuning take time',
-      'Quality varies by model and settings',
-      'Hardware needs for fast iteration',
-    ],
-  },
-  'dall-e': {
-    pros: [
-      'Excellent natural language prompt understanding',
-      'Reliable text rendering in images',
-      'Simple workflow in ChatGPT',
-    ],
-    cons: [
-      'Less granular style control',
-      'Safety filters can limit edge cases',
-      'Best access requires a paid plan',
-    ],
-  },
-  leonardo: {
-    pros: [
-      'Strong for character and game asset workflows',
-      'Friendly UI with model presets',
-      'Free tier for quick tests',
-    ],
-    cons: [
-      'Token limits for heavy usage',
-      'Advanced tools are paid',
-      'Model choice impacts consistency',
-    ],
-  },
-  flux: {
-    pros: [
-      'Photorealistic output with clean anatomy',
-      'Fast generation on supported platforms',
-      'Open weights variants for flexibility',
-    ],
-    cons: [
-      'Ecosystem still maturing',
-      'Availability depends on provider',
-      'Prompt tuning still required',
-    ],
-  },
-  'prompt-techniques': {
-    pros: [
-      'Improves consistency across models',
-      'Helps debug why outputs fail',
-      'Scales from beginner to advanced',
-    ],
-    cons: [
-      'More structure can reduce spontaneity',
-      'Model-specific syntax still varies',
-      'Requires iteration to internalize',
-    ],
-  },
-  'art-styles': {
-    pros: [
-      'Fast way to explore visual directions',
-      'Style keywords transfer across tools',
-      'Easy to build a reusable style library',
-    ],
-    cons: [
-      'Some styles can look generic',
-      'Model bias can overpower niche aesthetics',
-      'Needs references for consistent series',
-    ],
-  },
-  tutorials: {
-    pros: [
-      'Step-by-step reduces trial and error',
-      'Examples are easy to copy and adapt',
-      'Builds a repeatable workflow',
-    ],
-    cons: [
-      'Steps may change with model updates',
-      'Time investment to practice',
-      'Some tools or features are paywalled',
-    ],
-  },
-  comparisons: {
-    pros: [
-      'Clarifies tradeoffs between models',
-      'Helps match tool to use case',
-      'Saves testing time',
-    ],
-    cons: [
-      'Rapid updates can age quickly',
-      'Quality differences can be subjective',
-      'Pricing and limits shift often',
-    ],
-  },
-  'beginner-guides': {
-    pros: [
-      'Low-friction entry points',
-      'Covers core concepts quickly',
-      'Reduces early mistakes',
-    ],
-    cons: [
-      'Simplifies advanced nuance',
-      'Still requires hands-on practice',
-      'Model differences still matter',
-    ],
-  },
-  video: {
-    pros: [
-      'Adds motion storytelling fast',
-      'Great for short-form concepts',
-      'Pairs well with image workflows',
-    ],
-    cons: [
-      'Render times and credit limits',
-      'Motion control is less precise',
-      'Artifacts are common in long clips',
-    ],
-  },
-  default: {
-    pros: [
-      'Actionable steps you can apply immediately',
-      'Examples reduce trial and error',
-      'Works across major image models',
-    ],
-    cons: [
-      'Results vary by model and version',
-      'Requires iteration for best quality',
-      'Some steps depend on paid tiers',
-    ],
-  },
-};
-
-function guessProsConsCategory(post: BlogPost) {
-  const text = `${post.category || ''} ${post.slug} ${post.title} ${post.tags.join(' ')}`.toLowerCase();
-
-  if (text.includes('midjourney')) return 'midjourney';
-  if (text.includes('stable diffusion') || text.includes('stable-diffusion') || text.includes('sdxl') || text.includes('controlnet')) {
-    return 'stable-diffusion';
-  }
-  if (text.includes('dall-e') || text.includes('dalle')) return 'dall-e';
-  if (text.includes('leonardo')) return 'leonardo';
-  if (text.includes('flux')) return 'flux';
-  if (text.includes('comparison') || text.includes(' vs ')) return 'comparisons';
-  if (text.includes('beginner') || text.includes('first')) return 'beginner-guides';
-  if (text.includes('style') || text.includes('painting') || text.includes('pixel') || text.includes('watercolor') || text.includes('anime')) {
-    return 'art-styles';
-  }
-  if (text.includes('prompt') || text.includes('prompting')) return 'prompt-techniques';
-  if (text.includes('tutorial') || text.includes('guide') || text.includes('how to')) return 'tutorials';
-  if (text.includes('video') || text.includes('motion')) return 'video';
-
-  return null;
-}
-
-function getProsCons(post: BlogPost) {
-  const pros = Array.isArray(post.pros) ? post.pros.filter((item) => typeof item === 'string') : [];
-  const cons = Array.isArray(post.cons) ? post.cons.filter((item) => typeof item === 'string') : [];
-
-  if (pros.length || cons.length) {
-    return { pros, cons };
-  }
-
-  const categoryKey = guessProsConsCategory(post);
-  if (categoryKey && PROS_CONS_BY_TOPIC[categoryKey]) {
-    return PROS_CONS_BY_TOPIC[categoryKey];
-  }
-
-  return PROS_CONS_BY_TOPIC.default;
-}
+const QUARANTINED_DESCRIPTION =
+  'This preserved guide URL is withheld from publication while its claims, sources, and current tool version are reviewed.';
 
 // Static generation için tüm slug'ları al
 export async function generateStaticParams() {
@@ -215,6 +32,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const canonical = canonicalUrl(`/blog/${slug}`);
   const policy = getEditorialPolicy(post.editorialState);
+
+  if (!policy.index) {
+    return {
+      title: post.title,
+      description: QUARANTINED_DESCRIPTION,
+      keywords: [],
+      authors: [],
+      robots: { index: false, follow: true },
+      alternates: {
+        canonical,
+      },
+      openGraph: {
+        title: post.title,
+        description: QUARANTINED_DESCRIPTION,
+        type: 'website',
+        url: canonical,
+        images: [],
+      },
+      twitter: {
+        card: 'summary',
+        title: post.title,
+        description: QUARANTINED_DESCRIPTION,
+        images: [],
+      },
+    };
+  }
 
   return {
     title: post.title,
@@ -252,8 +95,70 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const relatedPosts = getRelatedPosts(slug, 3);
   const editorialPolicy = getEditorialPolicy(post.editorialState);
+
+  if (!editorialPolicy.index) {
+    const relatedPosts = getRelatedPosts(slug, 3);
+
+    return (
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        <Link
+          href="/blog"
+          className="mb-4 inline-flex items-center gap-2 text-slate-400 transition-colors hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Blog
+        </Link>
+
+        <Breadcrumbs title={post.title} category={post.category} />
+
+        <div className="max-w-3xl">
+          <header className="mb-8">
+            {post.category ? (
+              <span className="mb-4 inline-block rounded-full bg-violet-500/20 px-3 py-1 text-sm text-violet-400">
+                {post.category}
+              </span>
+            ) : null}
+            <h1 className="text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+              {post.title}
+            </h1>
+          </header>
+
+          <aside
+            className="mb-6 rounded-xl border border-amber-400/35 bg-amber-400/10 p-4 text-sm text-amber-100"
+            aria-label="Editorial review status"
+          >
+            This earlier guide body is withheld while its claims, sources, and current tool version
+            are reviewed.
+          </aside>
+
+          <dl
+            className="mb-8 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm"
+            aria-label="Editorial details"
+          >
+            <div>
+              <dt className="text-[var(--text-tertiary)]">Editorial status</dt>
+              <dd className="mt-1 font-medium text-[var(--text-primary)]">
+                {post.editorialState === 'archived' ? 'Archived' : 'Needs review'}
+              </dd>
+            </div>
+          </dl>
+
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 rounded-xl border border-violet-400/35 bg-violet-500/10 px-4 py-2.5 text-sm font-medium text-violet-200 transition-colors hover:bg-violet-500/20"
+          >
+            Browse verified prompt guides
+            <ArrowLeft className="h-4 w-4 rotate-180" />
+          </Link>
+
+          <RelatedPosts posts={relatedPosts} currentSlug={slug} />
+        </div>
+      </main>
+    );
+  }
+
+  const relatedPosts = getRelatedPosts(slug, 3);
   const pageUrl = canonicalUrl(`/blog/${slug}`);
   const contentWithoutTopH1 = post.content.replace(/^#\s+.*\r?\n?/, '').trimStart();
 
@@ -277,7 +182,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }));
 
   const keyTakeaways = tocHeadings.slice(0, 4);
-  const prosCons = getProsCons(post);
+  const prosCons = { pros: post.pros ?? [], cons: post.cons ?? [] };
 
   const ctas: Array<{ title: string; href: string; description?: string }> = [
     {
