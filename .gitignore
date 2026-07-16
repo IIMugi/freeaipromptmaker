@@ -12,6 +12,12 @@
 
 # testing
 /coverage
+/test-results/
+/work/playwright-report/
+/playwright/.cache/
+
+# isolated implementation worktrees
+/.worktrees/
 
 # next.js
 /.next/
