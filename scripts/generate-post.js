@@ -20,6 +20,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
+export function assertDraftMode() {
+  const output = process.env.CONTENT_DRAFT_OUTPUT;
+  if (!output) throw new Error('CONTENT_DRAFT_OUTPUT is required; publishing is disabled.');
+  return output;
+}
+
 // ============================================
 // API KEY ROTATION SİSTEMİ
 // ============================================
@@ -627,52 +633,11 @@ Write the blog post now in markdown format:
 }
 
 /**
- * Taslağı daha doğal, insan tonunda yeniden yaz (Gemini 2.5 Pro)
- */
-async function humanizeContent(draft, topic) {
-  console.log('🧑 İçerik humanize ediliyor...');
-
-  const prompt = `
-You are a professional editor and experienced blogger. Your task is to make this blog post sound more natural and human-written.
-
-Original post:
-${draft}
-
-Rewrite guidelines:
-1. Add personal touches - phrases like "I've found that...", "In my experience...", "What works for me..."
-2. Vary sentence structure - mix short punchy sentences with longer ones
-3. Include conversational asides in parentheses where appropriate
-4. Remove any remaining AI-ish phrases
-5. Add subtle humor or personality where it fits naturally
-6. Keep ALL technical accuracy and prompt examples exactly as they are
-7. Maintain the same structure, headings, and sections
-8. Keep all markdown formatting intact
-9. Ensure the internal link to the Prompt Generator remains
-
-The goal: Make this indistinguishable from a post written by an experienced human blogger who genuinely enjoys AI art.
-
-CRITICAL: Do NOT include meta-commentary like "Here is the rewritten post..." or "Of course! Here is...". Start directly with the blog content.
-
-Return ONLY the rewritten post in markdown format (no preamble):
-`;
-
-  const response = await callGeminiWithRetry(prompt);
-
-  // Clean up any meta-commentary that might have slipped through
-  return response
-    .replace(/^(Here is the rewritten blog post.*?\n\n)/i, '')
-    .replace(/^(Of course!.*?Here is.*?\n\n)/i, '')
-    .replace(/^(_\*\*# )/m, '# ')  // Remove leading _** if present
-    .trim();
-}
-
-/**
  * MDX dosyası oluştur
  */
 async function createMDXFile(content, topic, imageData) {
   const today = new Date().toISOString().split('T')[0];
-  const filename = `${today}-${topic.slug}.mdx`;
-  const filepath = path.join(CONFIG.postsDir, filename);
+  const filepath = path.resolve(assertDraftMode());
 
   // Image frontmatter kısmı
   const imageFrontmatter = imageData ? `
@@ -704,7 +669,7 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${categoryFron
   const fullContent = frontmatter + content;
 
   // posts klasörü yoksa oluştur
-  await fs.mkdir(CONFIG.postsDir, { recursive: true });
+  await fs.mkdir(path.dirname(filepath), { recursive: true });
 
   // Dosyayı yaz
   await fs.writeFile(filepath, fullContent);
@@ -717,6 +682,7 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${categoryFron
  * Ana fonksiyon
  */
 async function main() {
+  assertDraftMode();
   console.log('🚀 PromptMaster AI Auto-Blogger başlatılıyor...');
   console.log(`📊 ${API_KEYS.length} API key yüklendi\n`);
 
@@ -745,18 +711,12 @@ async function main() {
     const draft = await generateDraft(topic);
     console.log('✅ Taslak oluşturuldu\n');
 
-    // 4. Humanize et (Gemini 2.5 Pro)
-    const humanizedContent = await humanizeContent(draft, topic);
-    console.log('✅ İçerik humanize edildi\n');
-
-    // 5. MDX dosyası oluştur (resim ile)
-    const filepath = await createMDXFile(humanizedContent, topic, imageData);
-
-    // 6. Konuyu published olarak işaretle
-    await markTopicAsPublished(topic.id);
+    // 4. MDX inceleme taslağı oluştur (resim ile)
+    const filepath = await createMDXFile(draft, topic, imageData);
 
     console.log('\n🎉 Blog yazısı başarıyla oluşturuldu!');
     console.log(`📄 Dosya: ${filepath}`);
+    console.log('Taslak yayınlanmadı; editoryal inceleme gerekiyor.');
     console.log(`🔑 Kullanılan key sayısı: ${exhaustedKeys.size + 1}`);
 
   } catch (error) {

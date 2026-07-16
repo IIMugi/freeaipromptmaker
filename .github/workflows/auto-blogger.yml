@@ -1,48 +1,32 @@
-name: Auto Blog Generator
+name: Manual topic draft
 
 on:
-  # Her 2 günde bir UTC 08:00'da çalış
-  schedule:
-    - cron: '0 8 */2 * *'
-  
-  # Manuel tetikleme (test için)
   workflow_dispatch:
-    inputs:
-      force_run:
-        description: 'Force run even if no pending topics'
-        required: false
-        default: 'false'
 
-env:
-  NODE_VERSION: '20'
+permissions:
+  contents: read
 
 jobs:
-  generate-post:
+  generate-draft:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write
-    
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository without write credentials
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          persist-credentials: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          node-version: '20'
+          cache: npm
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🤖 Generate blog post
+      - name: Generate an unpublished review draft
         env:
-          # 10 API Key Rotation
+          CONTENT_DRAFT_OUTPUT: work/content-drafts/topic-draft.mdx
           GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
@@ -53,38 +37,12 @@ jobs:
           GEMINI_API_KEY_8: ${{ secrets.GEMINI_API_KEY_8 }}
           GEMINI_API_KEY_9: ${{ secrets.GEMINI_API_KEY_9 }}
           GEMINI_API_KEY_10: ${{ secrets.GEMINI_API_KEY_10 }}
-        run: node scripts/generate-post.js
+        run: npm run generate-post
 
-      - name: 📊 Check for changes
-        id: git-check
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: 📤 Commit and push
-        if: steps.git-check.outputs.changes == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "Auto Blogger Bot"
-          git config user.email "bot@promptmaster.ai"
-          
-          # Configure git with token for push
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          
-          git add posts/ data/content-planner.json || true
-          git commit -m "📝 Auto-generated blog post [skip ci]"
-          git push origin main
-
-      - name: 🔔 Summary
-        run: |
-          echo "### 🤖 Auto-Blogger Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.git-check.outputs.changes }}" == "true" ]; then
-            echo "✅ New blog post generated and published!" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "ℹ️ No new posts to generate (all topics published)" >> $GITHUB_STEP_SUMMARY
-          fi
+      - name: Upload draft for editorial review
+        uses: actions/upload-artifact@v4
+        with:
+          name: unpublished-topic-draft
+          path: work/content-drafts/topic-draft.mdx
+          if-no-files-found: error
+          retention-days: 7

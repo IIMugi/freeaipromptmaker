@@ -22,6 +22,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
+export function assertDraftMode() {
+  const output = process.env.CONTENT_DRAFT_OUTPUT;
+  if (!output) throw new Error('CONTENT_DRAFT_OUTPUT is required; publishing is disabled.');
+  return output;
+}
+
 // ============================================
 // API KEY ROTATION
 // ============================================
@@ -103,7 +109,6 @@ async function callGemini(prompt, maxRetries = 3) {
 
 const CONTENT_HISTORY_PATH = './data/content-history.json';
 const CONTENT_PLANNER_PATH = './data/content-planner.json';
-const POSTS_DIR = './posts';
 
 // İçerik kategorileri - çeşitlilik için
 const CONTENT_CATEGORIES = [
@@ -278,38 +283,8 @@ Write in markdown:
 `;
 
   const draft = await callGemini(draftPrompt);
-  console.log('✅ Taslak oluşturuldu');
-  
-  // Humanize
-  console.log('🧑 Humanize ediliyor...');
-  const humanizePrompt = `
-Rewrite this blog post to sound more natural and human:
-
-${draft}
-
-Guidelines:
-- Add personal touches ("I've found...", "In my experience...")
-- Vary sentence structure
-- Keep ALL technical content and examples exactly as is
-- Keep markdown formatting
-- Maintain the internal link to Prompt Generator
-
-CRITICAL: 
-- Start DIRECTLY with the blog content (first heading or paragraph)
-- DO NOT include any meta text like "Here is the rewritten post" or "Of course!"
-- DO NOT add any introductory text about what you're doing
-- Just output the blog content itself, nothing else
-
-Output the rewritten blog post:
-`;
-
-  let humanized = await callGemini(humanizePrompt);
-  console.log('✅ Humanize edildi');
-  
-  // Post-process: Remove any AI artifacts
-  humanized = cleanAIArtifacts(humanized);
-  
-  return humanized;
+  console.log('✅ İnceleme taslağı oluşturuldu');
+  return cleanAIArtifacts(draft);
 }
 
 /**
@@ -337,8 +312,7 @@ function cleanAIArtifacts(content) {
  */
 async function saveBlogPost(content, topic) {
   const today = new Date().toISOString().split('T')[0];
-  const filename = `${today}-${topic.slug}.mdx`;
-  const filepath = path.join(POSTS_DIR, filename);
+  const filepath = path.resolve(assertDraftMode());
   
   // Use proper description or generate one from title
   const seoDescription = topic.description || 
@@ -357,7 +331,7 @@ readTime: "${topic.estimatedReadTime || '10 min'}"
 
 `;
 
-  await fs.mkdir(POSTS_DIR, { recursive: true });
+  await fs.mkdir(path.dirname(filepath), { recursive: true });
   await fs.writeFile(filepath, frontmatter + content);
   
   console.log(`✅ Dosya kaydedildi: ${filepath}`);
@@ -368,6 +342,7 @@ readTime: "${topic.estimatedReadTime || '10 min'}"
  * Ana fonksiyon
  */
 async function main() {
+  assertDraftMode();
   console.log('🚀 Free AI Prompt Maker - Akıllı İçerik Yöneticisi');
   console.log(`📊 ${API_KEYS.length} API key yüklendi\n`);
   
@@ -401,21 +376,9 @@ async function main() {
     // 6. Kaydet
     const filepath = await saveBlogPost(content, topic);
     
-    // 7. Geçmişi güncelle
-    history.publishedTopics.push(topic.id);
-    history.publishedTitles.push(topic.title);
-    history.publishedKeywords.push(...topic.keywords);
-    history.lastCategory = category;
-    history.totalPosts += 1;
-    history.lastPublishDate = new Date().toISOString();
-    history.categoryRotation += 1;
-    
-    await saveContentHistory(history);
-    
     console.log('\n🎉 Başarılı!');
     console.log(`📄 Dosya: ${filepath}`);
-    console.log(`📊 Toplam post: ${history.totalPosts}`);
-    console.log(`📂 Sonraki kategori: ${CONTENT_CATEGORIES[(history.categoryRotation) % CONTENT_CATEGORIES.length]}`);
+    console.log('Taslak yayınlanmadı; editoryal inceleme gerekiyor.');
     
   } catch (error) {
     console.error('❌ Hata:', error.message);

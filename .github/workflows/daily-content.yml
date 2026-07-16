@@ -1,42 +1,32 @@
-name: Daily Content Generator
+name: Manual content draft
 
 on:
-  # Her gün UTC 07:00'da çalış (TR saat 10:00)
-  schedule:
-    - cron: '0 7 * * *'
-  
-  # Manuel tetikleme
   workflow_dispatch:
 
-env:
-  NODE_VERSION: '20'
+permissions:
+  contents: read
 
 jobs:
-  generate-daily-post:
+  generate-draft:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write
-    
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository without write credentials
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          persist-credentials: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          node-version: '20'
+          cache: npm
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🤖 Generate daily content
+      - name: Generate an unpublished review draft
         env:
+          CONTENT_DRAFT_OUTPUT: work/content-drafts/manual-draft.mdx
           GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
@@ -47,46 +37,12 @@ jobs:
           GEMINI_API_KEY_8: ${{ secrets.GEMINI_API_KEY_8 }}
           GEMINI_API_KEY_9: ${{ secrets.GEMINI_API_KEY_9 }}
           GEMINI_API_KEY_10: ${{ secrets.GEMINI_API_KEY_10 }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-        run: node scripts/generate-post.js
+        run: npm run daily-content
 
-      - name: 📊 Check for changes
-        id: git-check
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-            echo "New content generated!"
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
-            echo "No new content (already posted today or error)"
-          fi
-
-      - name: 📤 Commit and push
-        if: steps.git-check.outputs.changes == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "PromptMaster Bot"
-          git config user.email "bot@promptmaster.ai"
-          
-          # Configure git with token for push
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          
-          git add posts/ data/ || true
-          git commit -m "📝 Daily post: $(date +%Y-%m-%d) "
-          git push origin main
-
-      - name: 📈 Summary
-        run: |
-          echo "### 🤖 Daily Content Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Date:** $(date +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.git-check.outputs.changes }}" == "true" ]; then
-            echo "✅ New blog post generated and published!" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Check the posts/ directory for the new content." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "ℹ️ No new post today (already published or skipped)" >> $GITHUB_STEP_SUMMARY
-          fi
-
+      - name: Upload draft for editorial review
+        uses: actions/upload-artifact@v4
+        with:
+          name: unpublished-content-draft
+          path: work/content-drafts/manual-draft.mdx
+          if-no-files-found: error
+          retention-days: 7
