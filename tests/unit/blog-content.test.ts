@@ -9,6 +9,14 @@ const postFiles = fs
   .readdirSync(postsDirectory)
   .filter((fileName) => /\.(md|mdx)$/.test(fileName));
 
+const hasInlineImage = (text: string) => {
+  const prose = text
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`\n]*`/g, '');
+
+  return /!\[[^\]]*\]\s*(?:\([^)]*\)|\[[^\]]*\])|<(?:img|image|picture)\b/i.test(prose);
+};
+
 const stableDiffusionCandidates = [
   {
     slug: '2026-01-04-stable-diffusion-regional-prompting-guide',
@@ -152,7 +160,9 @@ const rankingOrHype = /#\s*1\b|\btop[- ]ranked\b|\branked\s+(?:#?\s*1|first)\b|\
 const popularityOrAudienceClaim = /\b(?:most popular|widely (?:used|adopted)|popular with|used by (?:millions|thousands)|trusted by (?:millions|thousands)|millions of (?:users|creators)|for everyone)\b/i;
 const priceOrRatingClaim = /[$€£¥]\s*\d|\b(?:USD|EUR|GBP|TRY)\s*\d|\b(?:costs?|priced at|price of)\s+\d+(?:\.\d+)?(?:\s+per\s+\w+)?\b|\b\d+(?:\.\d{1,2})?\s*(?:dollars?|euros?|pounds?)\b|\b(?:free|paid|premium)\s+tier\b|\bpricing plan\b|\b\d(?:\.\d+)?\s*\/\s*(?:5|10|100)\b|\b(?:one|two|three|four|five)[ -]star\b|\b(?:rated|rating of)\s+\d(?:\.\d+)?(?:\s+out of\s+(?:5|10))?/i;
 const benchmarkClaim = /\b\d+(?:\.\d+)?%\s+(?:faster|slower|better|fewer|improvement|increase|decrease)\b|\b\d+(?:\.\d+)?x\s+faster\b|\btwice\s+as\s+(?:fast|slow)\b/i;
-const fabricatedTesting = /\b(?:i|we)(?:\s+|['’]ve\s+)(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
+const fabricatedTesting = /\b(?:i|we)(?:\s+(?:have\s+)?|'ve\s+)(?:personally\s+)?(?:tested|compared|benchmarked|verified|ran|generated|installed|used|found)\b|\bour (?:tests?|testing)\s+(?:showed|found|demonstrated|confirmed)\b/i;
+const unsupportedModeCostClaim = /\bfast\s+is\s+cheaper\b|\bultra\s+uses\s+more\s+(?:tokens|credits)\b/i;
+const fabricatedTestingLimitations = [/\bwe tested no prompts\b/gi] as const;
 
 const affirmativeGuaranteeClaims = [
   /\b(?:i|we)\s+guarantee\b/i,
@@ -196,13 +206,23 @@ const boundedEditorialClaimFamilies: readonly EditorialClaimFamily[] = [
   },
   { name: 'pricing and ratings', patterns: [priceOrRatingClaim] },
   { name: 'benchmarks', patterns: [benchmarkClaim] },
-  { name: 'fabricated testing', patterns: [fabricatedTesting] },
+  {
+    name: 'fabricated testing',
+    patterns: [fabricatedTesting],
+    limitations: fabricatedTestingLimitations,
+  },
+  { name: 'nonnumeric mode-cost claims', patterns: [unsupportedModeCostClaim] },
 ] as const;
 
+const normalizeBoundedEditorialText = (text: string) => text
+  .normalize('NFKC')
+  .replace(/’/g, "'");
+
 const hasUnsupportedClaim = (text: string) => boundedEditorialClaimFamilies.some((family) => {
+  const normalizedText = normalizeBoundedEditorialText(text);
   const reviewText = (family.limitations ?? []).reduce(
     (result, limitation) => result.replace(limitation, ''),
-    text,
+    normalizedText,
   );
 
   return family.patterns.some((pattern) => pattern.test(reviewText));
@@ -251,6 +271,9 @@ describe('guide corpus', () => {
       { label: 'direct ranking disclaimer', text: 'This is not the best extension for every workflow.' },
       { label: 'qualified ranking disclaimer', text: 'This is not necessarily the best extension.' },
       { label: 'comparison limitation', text: 'No pricing or benchmark comparison was performed.' },
+      { label: 'documented modes only', text: 'Fast and Ultra are documented generation-mode labels.' },
+      { label: 'no mode-cost comparison', text: 'This guide makes no token or credit comparison.' },
+      { label: 'explicit no-testing boundary', text: 'We tested no prompts.' },
       { label: 'limited adoption', text: 'not widely used' },
       { label: 'limited popularity', text: 'not the most popular' },
       { label: 'limited audience', text: 'not for everyone' },
@@ -291,11 +314,17 @@ describe('guide corpus', () => {
       { label: 'written multiplier benchmark', text: 'It runs twice as fast.' },
       { label: 'failure benchmark', text: 'It has 35% fewer failures.' },
       { label: 'first-person finding', text: 'We found fewer failures.' },
+      { label: 'auxiliary first-person testing', text: 'We have tested every model.' },
+      { label: 'curly personally tested', text: 'I’ve personally tested every model.' },
+      { label: 'ascii personally tested', text: "I've personally tested every model." },
       { label: 'curly contracted first-person testing', text: 'I’ve tested every model.' },
       { label: 'ascii contracted first-person comparison', text: "I've compared every model." },
       { label: 'curly contracted first-person generation', text: 'We’ve generated images with every model.' },
       { label: 'test finding', text: 'Our tests showed cleaner output.' },
       { label: 'testing finding', text: 'Our testing showed fewer failures.' },
+      { label: 'fast cheaper claim', text: 'Fast is cheaper.' },
+      { label: 'ultra token claim', text: 'Ultra uses more tokens.' },
+      { label: 'ultra credit claim', text: 'Ultra uses more credits.' },
       { label: 'affirmative adoption', text: 'widely used' },
       { label: 'affirmative popularity', text: 'the most popular' },
       { label: 'affirmative audience', text: 'for everyone' },
@@ -389,5 +418,91 @@ describe('guide corpus', () => {
     const { content } = matter(raw);
 
     expect(content).toContain('Unversioned prompts are state-dependent and nonportable.');
+  });
+
+  it('orders Leonardo automatic and explicit selection before model-dependent settings', () => {
+    const raw = fs.readFileSync(
+      path.join(postsDirectory, '2026-02-09-master-leonardo-ai-models.mdx'),
+      'utf8',
+    );
+    const { content } = matter(raw);
+    const automatic = content.indexOf('**Automatic selection:**');
+    const explicit = content.indexOf('**Explicit selection:**');
+    const settings = content.indexOf('## Settings vary by model');
+
+    expect(automatic).toBeGreaterThanOrEqual(0);
+    expect(explicit).toBeGreaterThan(automatic);
+    expect(settings).toBeGreaterThan(explicit);
+  });
+
+  it('labels the Leonardo negative-prompt worksheet as conditional editorial hypotheses', () => {
+    const raw = fs.readFileSync(
+      path.join(postsDirectory, '2026-02-22-master-leonardo-ai-negative-prompts.mdx'),
+      'utf8',
+    );
+    const { content } = matter(raw);
+
+    expect(content).toContain('If a negative-prompt field is present in the signed-in interface');
+    expect(content).not.toContain('In the negative-prompt input exposed by the current interface');
+    expect(content).toContain('Editorial convention, not vendor syntax:');
+    expect(content).toContain('comma-separated bare terms');
+    expect(content).toContain('The issue-to-term mappings are editorial starting hypotheses, not vendor guidance.');
+    expect(content).toContain('| Observed issue | Editorial term hypothesis | What stays fixed | Next single variable if it persists |');
+    expect(content).toContain('This is an editorial experiment design, not a vendor-prescribed order.');
+    expect(content).not.toContain('Follow the source order');
+    expect(content).toContain('with Alchemy');
+
+    const progression = [
+      '1. **Negative prompt:**',
+      '2. **Model:**',
+      '3. **Aspect ratio:**',
+      '4. **Style:**',
+      '5. **Canvas:**',
+    ].map((marker) => content.indexOf(marker));
+    expect(progression.every((position) => position >= 0)).toBe(true);
+    expect(progression).toEqual([...progression].sort((left, right) => left - right));
+  });
+
+  it('keeps the Midjourney first screen, example, compatibility, and migration boundaries explicit', () => {
+    const raw = fs.readFileSync(
+      path.join(postsDirectory, '2025-11-27-midjourney-v6-complete-prompt-guide.mdx'),
+      'utf8',
+    );
+    const { content } = matter(raw);
+    const firstScreen = content.slice(0, 900);
+
+    expect(firstScreen).toContain('V8.1 is the current default; V6.1 is a legacy model.');
+    expect(content).toContain('quiet reading room, oak shelves, afternoon window light --v 6.1');
+    expect(content).toContain('The only positively confirmed V6.1 parameter in this reference is `--v 6.1`.');
+    expect(content).toContain('The V6 chart is not reinterpreted as V6.1-specific documentation.');
+    expect(content).toContain('Remove unsupported carryover before adding `--v 6.1`.');
+  });
+
+  it('contains no inline Markdown or HTML images in the six candidate bodies', () => {
+    const candidates = [...stableDiffusionCandidates, ...leonardoAndMidjourneyCandidates];
+
+    for (const candidate of candidates) {
+      const raw = fs.readFileSync(path.join(postsDirectory, `${candidate.slug}.mdx`), 'utf8');
+      const { content } = matter(raw);
+
+      expect(hasInlineImage(content), candidate.slug).toBe(false);
+    }
+  });
+
+  it('detects bounded Markdown, HTML, and MDX inline-image forms', () => {
+    const inlineImages = [
+      '![inline alt](https://example.com/image.png)',
+      '![reference alt][image-id]',
+      '<img src="/image.png" alt="HTML image" />',
+      '<Image src="/image.png" alt="MDX image" />',
+      '<picture><source srcSet="/image.webp" /></picture>',
+    ];
+    const allowedNonImages = [
+      '[ordinary link](https://example.com)',
+      '`<Image />` is discussed as code.',
+    ];
+
+    for (const fixture of inlineImages) expect(hasInlineImage(fixture), fixture).toBe(true);
+    for (const fixture of allowedNonImages) expect(hasInlineImage(fixture), fixture).toBe(false);
   });
 });

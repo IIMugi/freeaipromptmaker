@@ -14,7 +14,7 @@ A negative prompt is a list of concepts the selected image model should make les
 
 **Input-location documentation checked: 2026-07-16.** The supplied prompting article documents the negative-prompt feature but was modified on 2023-06-30. The current Image Creation article was modified on 2026-02-17, yet its text does not identify a stable negative-prompt field location. The live label or placement must therefore be confirmed in the current signed-in interface; this guide does not invent a permanent click path.
 
-**Documented:** negative prompts accept unwanted details, changing model/aspect ratio/style is the next diagnostic path, and Canvas provides mask/erase editing for a selected area.
+**Documented:** negative prompts accept unwanted details; the source lists changing the model, aspect ratio, or—with Alchemy—the style as alternatives; and Canvas provides mask/erase editing for a selected area.
 
 **Locally checked:** the diagnosis table, term lists, and worksheet below were checked as text-only procedures against the supplied official articles on 2026-07-16.
 
@@ -22,13 +22,15 @@ A negative prompt is a list of concepts the selected image model should make les
 
 ## Write terms, not negated sentences
 
-In the negative-prompt input exposed by the current interface, enter concise unwanted concepts as comma-separated terms. Prefer:
+If a negative-prompt field is present in the signed-in interface, this worksheet uses a deliberately narrow writing convention.
+
+**Editorial convention, not vendor syntax:** record comma-separated bare terms as starting hypotheses. Prefer:
 
 ```text
 extra fingers, duplicate limbs, background text
 ```
 
-Avoid sentences built around “no” or “without,” such as `no extra fingers` or `portrait without text`. The field already supplies the negative role; direct terms keep the worksheet easy to inspect.
+Avoid sentences built around “no” or “without,” such as `no extra fingers` or `portrait without text`. Bare terms make this editorial worksheet easier to inspect; the official source does not prescribe this syntax.
 
 Keep the positive prompt focused on what the scene should contain. Do not place the same concept in both inputs. If `red umbrella` appears in the positive prompt and `umbrella` appears in the negative input, the instructions conflict and the worksheet cannot isolate the cause.
 
@@ -36,7 +38,9 @@ Keep the positive prompt focused on what the scene should contain. Do not place 
 
 ## Unwanted-element diagnosis table
 
-| Observed issue | First negative terms to try | What stays fixed | Next single variable if it persists |
+The issue-to-term mappings are editorial starting hypotheses, not vendor guidance.
+
+| Observed issue | Editorial term hypothesis | What stays fixed | Next single variable if it persists |
 |---|---|---|---|
 | Extra hand or digit | `extra fingers, duplicate hands` | Positive prompt, model, dimensions, style | Model |
 | Duplicate subject | `duplicate person, cloned subject` | Positive prompt, model, dimensions, style | Aspect ratio |
@@ -59,12 +63,12 @@ Start with one or two terms that name the observed problem. Add another term onl
 
 ## One-variable troubleshooting sequence
 
-Follow the source order while changing one field at a time:
+This is an editorial experiment design, not a vendor-prescribed order. The prompting source lists model, aspect ratio, and—with Alchemy—style as alternatives when an unwanted element persists; it does not order those alternatives. The worksheet imposes the following sequence so only one recorded variable changes at a time:
 
 1. **Negative prompt:** add one precise unwanted term. Keep the positive prompt, model, aspect ratio, and style fixed.
 2. **Model:** if the element persists, restore the previous negative input and change only the exact model selection. Use the [Leonardo model-selection reference](/blog/2026-02-09-master-leonardo-ai-models) to record the model and remember that settings vary by model.
 3. **Aspect ratio:** return to the recorded model state and change only the visible aspect-ratio control.
-4. **Style:** return to the recorded aspect ratio and change only the style control, when that selected model exposes one.
+4. **Style:** return to the recorded aspect ratio and, with Alchemy and when the selected model exposes the control, change only the style. Otherwise record this step as not applicable.
 5. **Canvas:** if the unwanted element remains localized, open Canvas, place the generation frame over the area, then choose Draw Mask for a change that retains underlying information or Erase for removal before replacement.
 
 Do not change all five variables in one attempt. A multi-variable change cannot show which control was associated with the difference.
@@ -85,7 +89,7 @@ studio portrait of one violinist, plain grey background, waist-up framing
 | 1 | `duplicate hands` | same | same | same | none | Negative input is the only changed field |
 | 2 | same as step 1 | one recorded alternative | same | same | none | Model is the only changed field |
 | 3 | same as step 1 | restore baseline | one alternative | same | none | Aspect ratio is the only changed field |
-| 4 | same as step 1 | baseline | baseline | one alternative | none | Style is the only changed field |
+| 4 | same as step 1 | baseline | baseline | one Alchemy style alternative, if applicable | none | Style is the only changed field |
 | 5 | unchanged | baseline | baseline | baseline | mask or erase named area | Local edit is separated from generation controls |
 
 Before using this worksheet, replace every “record” placeholder with the values visible in the signed-in interface. If the chosen model hides the style control, mark it `not shown for selected model` rather than carrying over a value.

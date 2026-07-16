@@ -66,7 +66,7 @@ The first lacks the documented separator, the second returns to prompt text afte
 
 ## V6.1 compatibility table
 
-The supplied Version page labels its comparison column **V6**, not **V6.1**. This guide does not silently convert that family-level label into V6.1-specific confirmation. The table therefore distinguishes the one exact V6.1 selection shown by the documentation boundary from parameters that the current pages list only generally or under the V6-family column.
+The only positively confirmed V6.1 parameter in this reference is `--v 6.1`. The supplied Version page labels its comparison column **V6**, not **V6.1**. The V6 chart is not reinterpreted as V6.1-specific documentation. The table therefore distinguishes the exact V6.1 selection shown by the documentation boundary from parameters that the current pages list only generally or under the V6 column.
 
 | Parameter or feature | Exact V6.1 confirmation in the supplied pages | Treatment in this reference |
 |---|---|---|
@@ -82,7 +82,7 @@ This narrow table is intentional. Parameter names on a current all-version list 
 
 ## Migration checklist
 
-Use this when converting current prompt text into a deliberately legacy V6.1 record:
+Remove unsupported carryover before adding `--v 6.1`. Use this checklist when converting current prompt text into a deliberately legacy V6.1 record:
 
 1. Copy only the descriptive prompt text.
 2. Remove current-version carryover that is not confirmed for V6.1, including `--hd`, `--draft`, `--oref`, and `--exp`.
