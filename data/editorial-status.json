@@ -1,6 +1,12 @@
 {
     "2025-11-27-midjourney-v6-complete-prompt-guide":  {
-                                                           "state":  "needs-review"
+                                                           "state":  "verified",
+                                                           "lastVerified":  "2026-07-16",
+                                                           "testedVersion":  "Midjourney V6.1 (released 2024-07-30; default until 2025-06-16), documentation snapshot verified 2026-07-16 while V8.1 is current",
+                                                           "sources":  [
+                                                                           "https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version",
+                                                                           "https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List"
+                                                                       ]
                                                        },
     "2025-11-27-stable-diffusion-negative-prompts-guide":  {
                                                                "state":  "needs-review"
@@ -131,7 +137,14 @@
                                                                              "state":  "needs-review"
                                                                          },
     "2026-01-04-stable-diffusion-regional-prompting-guide":  {
-                                                                 "state":  "needs-review"
+                                                                 "state":  "verified",
+                                                                 "lastVerified":  "2026-07-16",
+                                                                 "testedVersion":  "Regional Prompter upstream main commit 3ed4cb30e10e510e4cd9b33cd9b11cda170859c2, documented against AUTOMATIC1111 1.10.1",
+                                                                 "sources":  [
+                                                                                 "https://github.com/hako-mikan/sd-webui-regional-prompter",
+                                                                                 "https://github.com/hako-mikan/sd-webui-regional-prompter/tree/3ed4cb30e10e510e4cd9b33cd9b11cda170859c2",
+                                                                                 "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
+                                                                             ]
                                                              },
     "2026-01-05-dall-e-3-text-generation-guide":  {
                                                       "state":  "needs-review"
@@ -224,7 +237,16 @@
                                                              "state":  "needs-review"
                                                          },
     "2026-01-25-stable-diffusion-wildcards-guide":  {
-                                                        "state":  "needs-review"
+                                                        "state":  "verified",
+                                                        "lastVerified":  "2026-07-16",
+                                                        "testedVersion":  "Dynamic Prompts upstream main commit de056ff8d80e4ad120e13a90cf200f3383f427c6, documented against AUTOMATIC1111 1.10.1",
+                                                        "sources":  [
+                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md",
+                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/tutorial.md",
+                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/SYNTAX.md",
+                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/tutorial.md",
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
+                                                                    ]
                                                     },
     "2026-01-26-master-ai-prompt-management-library":  {
                                                            "state":  "needs-review"
@@ -290,7 +312,14 @@
                                                             "state":  "needs-review"
                                                         },
     "2026-02-09-master-leonardo-ai-models":  {
-                                                 "state":  "needs-review"
+                                                 "state":  "verified",
+                                                 "lastVerified":  "2026-07-16",
+                                                 "testedVersion":  "Leonardo web image-creation interface documented 2026-02-17; model catalog snapshot verified 2026-07-16",
+                                                 "sources":  [
+                                                                 "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
+                                                                 "https://docs.leonardo.ai/me/docs/list-of-models",
+                                                                 "https://leonardo.ai/news/ai-image-models"
+                                                             ]
                                              },
     "2026-02-09-master-stained-glass-ai-art-prompts":  {
                                                            "state":  "needs-review"
@@ -308,7 +337,16 @@
                                                      "state":  "needs-review"
                                                  },
     "2026-02-13-best-stable-diffusion-extensions":  {
-                                                        "state":  "needs-review"
+                                                        "state":  "verified",
+                                                        "lastVerified":  "2026-07-16",
+                                                        "testedVersion":  "AUTOMATIC1111 1.10.1 and official extension documentation snapshot verified 2026-07-16",
+                                                        "sources":  [
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions",
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions",
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions/8d34abe419d089974d649893136544038d666cfa",
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions/721ba8fd97e333a641d60c970705200ebd63716d",
+                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
+                                                                    ]
                                                     },
     "2026-02-13-master-midjourney-niji-mode-anime-manga-art-guide":  {
                                                                          "state":  "needs-review"
@@ -350,7 +388,14 @@
                                                                        "state":  "needs-review"
                                                                    },
     "2026-02-22-master-leonardo-ai-negative-prompts":  {
-                                                           "state":  "needs-review"
+                                                           "state":  "verified",
+                                                           "lastVerified":  "2026-07-16",
+                                                           "testedVersion":  "Leonardo prompting help and 2026 image-creation interface snapshot verified 2026-07-16",
+                                                           "sources":  [
+                                                                           "https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks",
+                                                                           "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
+                                                                           "https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool"
+                                                                       ]
                                                        },
     "2026-02-23-master-ai-art-emotion-prompts":  {
                                                      "state":  "needs-review"

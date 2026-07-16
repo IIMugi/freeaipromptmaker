@@ -166,6 +166,34 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
         </div>
       </section>
 
+      <section
+        aria-labelledby="verified-topics-heading"
+        className="section-shell mt-8 p-5 sm:p-6"
+      >
+        <h2
+          id="verified-topics-heading"
+          className="text-xl font-semibold text-[var(--text-primary)] sm:text-2xl"
+        >
+          Verified topics
+        </h2>
+        <p className="mt-2 text-sm text-slate-300">
+          Guide counts by documented topic.
+        </p>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category) => (
+            <li
+              key={category.slug}
+              className="rounded-xl border border-white/10 bg-black/20 px-4 py-3"
+            >
+              <span className="font-medium text-white">{category.label}</span>
+              <span className="ml-2 text-sm text-slate-300">
+                {category.count} guide{category.count === 1 ? '' : 's'}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section className="section-shell mt-8 p-5 sm:p-6">
         <div className="flex flex-col gap-4">
           <label className="relative">

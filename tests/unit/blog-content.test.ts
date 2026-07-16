@@ -297,6 +297,76 @@ const leonardoAndMidjourneyCandidates = [
   },
 ] as const;
 
+const promotionExpectations = {
+  '2026-01-04-stable-diffusion-regional-prompting-guide': {
+    testedVersion:
+      'Regional Prompter upstream main commit 3ed4cb30e10e510e4cd9b33cd9b11cda170859c2, documented against AUTOMATIC1111 1.10.1',
+    sources: [
+      'https://github.com/hako-mikan/sd-webui-regional-prompter',
+      'https://github.com/hako-mikan/sd-webui-regional-prompter/tree/3ed4cb30e10e510e4cd9b33cd9b11cda170859c2',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1',
+    ],
+  },
+  '2026-01-25-stable-diffusion-wildcards-guide': {
+    testedVersion:
+      'Dynamic Prompts upstream main commit de056ff8d80e4ad120e13a90cf200f3383f427c6, documented against AUTOMATIC1111 1.10.1',
+    sources: [
+      'https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md',
+      'https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/tutorial.md',
+      'https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/SYNTAX.md',
+      'https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/tutorial.md',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1',
+    ],
+  },
+  '2026-02-13-best-stable-diffusion-extensions': {
+    testedVersion:
+      'AUTOMATIC1111 1.10.1 and official extension documentation snapshot verified 2026-07-16',
+    sources: [
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions/8d34abe419d089974d649893136544038d666cfa',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions/721ba8fd97e333a641d60c970705200ebd63716d',
+      'https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1',
+    ],
+  },
+  '2026-02-09-master-leonardo-ai-models': {
+    testedVersion:
+      'Leonardo web image-creation interface documented 2026-02-17; model catalog snapshot verified 2026-07-16',
+    sources: [
+      'https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai',
+      'https://docs.leonardo.ai/me/docs/list-of-models',
+      'https://leonardo.ai/news/ai-image-models',
+    ],
+  },
+  '2026-02-22-master-leonardo-ai-negative-prompts': {
+    testedVersion:
+      'Leonardo prompting help and 2026 image-creation interface snapshot verified 2026-07-16',
+    sources: [
+      'https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks',
+      'https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai',
+      'https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool',
+    ],
+  },
+  '2025-11-27-midjourney-v6-complete-prompt-guide': {
+    testedVersion:
+      'Midjourney V6.1 (released 2024-07-30; default until 2025-06-16), documentation snapshot verified 2026-07-16 while V8.1 is current',
+    sources: [
+      'https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version',
+      'https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List',
+    ],
+  },
+} as const;
+
+const expectedVerifiedSlugs = [
+  '2025-11-27-midjourney-v6-complete-prompt-guide',
+  '2025-11-29-stable-diffusion-negative-prompts-guide',
+  '2026-01-04-stable-diffusion-regional-prompting-guide',
+  '2026-01-25-stable-diffusion-wildcards-guide',
+  '2026-02-09-master-leonardo-ai-models',
+  '2026-02-13-best-stable-diffusion-extensions',
+  '2026-02-22-master-leonardo-ai-negative-prompts',
+] as const;
+
 const rankingLimitation = /\bnot(?:\s+\w+){0,3}\s+the\s+best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b/gi;
 const rankingOrHype = /#\s*1\b|\btop[- ]ranked\b|\branked\s+(?:#?\s*1|first)\b|\b(?:ranked|rated|named|declared)\s+(?:as\s+)?(?:the\s+)?best\b|\b(?:the\s+)?best\s+(?:choice|extension|tool|model|workflow|results?|quality)\b|\bperfect(?:ly)?\s+(?:outputs?|results?|quality|placement|compatibility|images?)\b|\b(?:universally?|game[- ]changer)\b/i;
 const popularityOrAudienceClaim = /\b(?:most popular|widely (?:used|adopted)|popular with|used by (?:millions|thousands)|trusted by (?:millions|thousands)|millions of (?:users|creators)|for everyone)\b/i;
@@ -377,6 +447,75 @@ describe('guide corpus', () => {
   it('has an explicit editorial status for every guide', () => {
     const slugs = postFiles.map((fileName) => fileName.replace(/\.(md|mdx)$/, ''));
     expect(Object.keys(editorialStatus).sort()).toEqual(slugs.sort());
+  });
+
+  it('promotes exactly the six reviewed candidates to a seven-guide verified corpus', () => {
+    const records = Object.entries(editorialStatus);
+    const verifiedSlugs = records
+      .filter(([, record]) => record.state === 'verified')
+      .map(([slug]) => slug)
+      .sort();
+
+    expect(records).toHaveLength(253);
+    expect(verifiedSlugs).toEqual([...expectedVerifiedSlugs].sort());
+    expect(records.filter(([, record]) => record.state === 'verified')).toHaveLength(7);
+    expect(records.filter(([, record]) => record.state === 'needs-review')).toHaveLength(246);
+  });
+
+  it('records exact documented versions and body-matching primary sources for every promotion', () => {
+    for (const [slug, expectation] of Object.entries(promotionExpectations)) {
+      const record = editorialStatus[slug as keyof typeof editorialStatus];
+      expect(record).toEqual({
+        state: 'verified',
+        lastVerified: '2026-07-16',
+        testedVersion: expectation.testedVersion,
+        sources: expectation.sources,
+      });
+    }
+
+    for (const slug of expectedVerifiedSlugs) {
+      const record: {
+        state: string;
+        lastVerified?: string;
+        testedVersion?: string;
+        sources?: readonly string[];
+      } = editorialStatus[slug as keyof typeof editorialStatus];
+      const raw = fs.readFileSync(path.join(postsDirectory, `${slug}.mdx`), 'utf8');
+      const { content } = matter(raw);
+      const primarySources = content.split(/^## Primary sources\s*$/m)[1] ?? '';
+      const bodySources = [...primarySources.matchAll(/\]\((https:\/\/[^)]+)\)/g)].map(
+        (match) => match[1],
+      );
+
+      expect(record.lastVerified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(record.testedVersion?.trim()).toBeTruthy();
+      expect(record.sources?.length).toBeGreaterThanOrEqual(2);
+      expect(record.sources).toEqual(bodySources);
+    }
+  });
+
+  it('derives accessible verified-topic labels and counts from the hub-only corpus', () => {
+    const hubSource = fs.readFileSync(
+      path.join(process.cwd(), 'components/Blog/BlogIndexClient.tsx'),
+      'utf8',
+    );
+    const topicCounts = new Map<string, number>();
+
+    for (const slug of expectedVerifiedSlugs) {
+      const raw = fs.readFileSync(path.join(postsDirectory, `${slug}.mdx`), 'utf8');
+      const { data } = matter(raw);
+      topicCounts.set(data.category, (topicCounts.get(data.category) ?? 0) + 1);
+    }
+
+    expect([...topicCounts.entries()].sort()).toEqual([
+      ['leonardo', 2],
+      ['midjourney', 1],
+      ['stable-diffusion', 4],
+    ]);
+    expect(hubSource).toContain('Verified topics');
+    expect(hubSource).toContain('aria-labelledby="verified-topics-heading"');
+    expect(hubSource).toContain('{categories.map((category) => (');
+    expect(hubSource).not.toMatch(/best|top-rated|for everyone|better images|output quality|fewer iterations/i);
   });
 
   it('contains no fabricated experience language in verified guides', () => {
