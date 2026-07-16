@@ -1,8 +1,9 @@
 import { ImageResponse } from 'next/og';
+import { SITE } from '@/lib/site';
 
 export const runtime = 'edge';
 
-export const alt = 'Free AI Prompt Maker - Visual Prompt Generator';
+export const alt = `${SITE.name} social preview`;
 export const size = {
     width: 1200,
     height: 630,
@@ -89,7 +90,7 @@ export default async function Image() {
                             WebkitBackgroundClip: 'text',
                         }}
                     >
-                        Free AI Prompt Maker
+                        {SITE.name}
                     </h1>
 
                     {/* Subtitle */}
@@ -101,7 +102,7 @@ export default async function Image() {
                             maxWidth: '800px',
                         }}
                     >
-                        Visual Prompt Generator for Midjourney, DALL-E & Stable Diffusion
+                        {SITE.description}
                     </p>
 
                     {/* Features */}
@@ -142,7 +143,7 @@ export default async function Image() {
                         fontSize: '20px',
                     }}
                 >
-                    freeaipromptmaker.com
+                    {new URL(SITE.origin).hostname}
                 </div>
             </div>
         ),
