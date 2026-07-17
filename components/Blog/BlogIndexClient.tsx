@@ -130,7 +130,7 @@ export function BlogIndexClient({ posts }: BlogIndexClientProps) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 pt-14 md:pt-16">
-      <section className="section-shell overflow-hidden p-6 sm:p-8 md:p-10">
+      <section className="section-shell relative overflow-hidden p-6 sm:p-8 md:p-10">
         <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
         <div className="absolute -left-28 bottom-0 h-56 w-56 rounded-full bg-emerald-400/10 blur-3xl" />
 

@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     const relatedPosts = getRelatedPosts(slug, 3);
 
     return (
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         <Link
           href="/blog"
           className="mb-4 inline-flex items-center gap-2 text-slate-400 transition-colors hover:text-white"
@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           <RelatedPosts posts={relatedPosts} currentSlug={slug} />
         </div>
-      </main>
+      </div>
     );
   }
 
