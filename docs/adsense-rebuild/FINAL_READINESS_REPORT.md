@@ -60,7 +60,7 @@ The 422-row decision matrix contains 275 `IMPROVE`, 144 `NOINDEX`, 1 `MERGE`, 1 
 | SEO and routing | Unsupported schema, duplicate intent, a malformed route, and multi-hop host/path behavior remained. | Verified-only sitemap/hub, truthful metadata, noindex duplicates, two one-hop redirects with query preservation, explicit 410, and a clean crawl. |
 | Accessibility and layout | Missing labels/focus/reduced-motion behavior, nested landmarks, and residual blog overflow remained. | Both-theme axe scans, skip focus, visible focus, Escape return, reduced motion, one-main assertions, and the 375/768/820/1280 matrix pass. |
 | Security | Dependency findings, production `unsafe-eval`, weak host/path redirects, and upload trust gaps remained. | Next 16.2.10/React 19.2.7, zero audit findings, production CSP without `unsafe-eval`, HSTS/framing controls, strict GA IDs, and full upload decode. |
-| Repository residue | Dead ad placements, injector code, an unused inferred-claims helper, and obsolete operational docs remained. | Dead runtime files were deleted and active product/AdSense/memory guidance was replaced with the current boundaries. |
+| Repository residue | Dead ad placements, injector code, an unused inferred-claims helper, unsafe draft paths/prompts, and obsolete operational docs remained. | Dead runtime files were deleted; drafts are confined to new ignored artifacts with explicit unverified/source/version/limitation requirements; active product/AdSense/memory guidance reflects current boundaries. |
 
 ## Final automated evidence
 
@@ -69,7 +69,7 @@ The ordered feature-branch clean-install gate completed on 2026-07-17:
 - `npm ci`: 643 packages installed; 644 audited; 0 vulnerabilities.
 - `npm run lint`: exit 0; no reported errors or warnings.
 - `npx tsc --noEmit`: exit 0.
-- `npm test`: 28 files, 106 tests passed.
+- `npm test`: 28 files, 112 tests passed.
 - `npm run build`: Next.js 16.2.10; 426 static pages generated.
 - `npm run test:e2e`: 51 Chromium tests passed against the production build.
 - `npm run audit:routes`: 423 routes, 30 sitemap URLs, 132 internal links, 17 assets, 0 issues.
@@ -106,7 +106,7 @@ The simulated mobile LCP remains above the 2.5-second target on both pages. This
 
 - Simulated mobile LCP is 2.820–2.875s rather than at most 2.5s; deploy, measure field data, and continue optimizing without claiming a pass.
 - Automated accessibility cannot replace a human screen-reader or low-vision session.
-- The image API limiter is instance-local; production infrastructure should add a distributed/platform limit if traffic warrants it.
+- The image API limiter is instance-local but its process memory is capped at 4,096 clients with expiry pruning and oldest-entry eviction; production infrastructure should still add a distributed/platform limit if traffic warrants it.
 - GA4 baseline coverage is incomplete and must not drive destructive URL decisions until validated.
 - Search Console needs time to recrawl redirects, noindex changes, schema removal, and the smaller verified-only sitemap.
 

@@ -52,6 +52,7 @@ No deployment, remote publication, DNS change, Google account setting change, si
 | `f618c3d` | Replaced unsupported use-case rankings and outcome claims with factual worksheets; removed nested publisher landmarks. |
 | `c4439c1` | Removed stale ad/injector/helper code, repository-mutating draft behavior, and obsolete active guidance. |
 | `55798c8` | Closed the final blog overflow and quarantine-landmark defects; added the full QA matrix and multi-run Lighthouse parser. |
+| `802fb94` | Confined generated drafts to new ignored artifacts, removed deceptive draft prompting, and bounded/pruned instance-local rate-limit state after final review. |
 
 ## URL and editorial result
 
@@ -73,7 +74,7 @@ The row-level decisions and fresh rendered inventory are in `CONTENT_DECISIONS.c
 | `npm ci` | 643 packages installed; 644 audited; 0 vulnerabilities. |
 | `npm run lint` | Exit 0; no reported errors or warnings. |
 | `npx tsc --noEmit` | Exit 0. |
-| `npm test` | 28 files, 106 tests passed. |
+| `npm test` | 28 files, 112 tests passed. |
 | `npm run build` | Next.js 16.2.10; 426 static pages generated. |
 | `npm run test:e2e` | 51 Chromium tests passed against the production build. |
 | `npm run audit:routes` | 423 routes, 30 sitemap URLs, 132 internal links, 17 assets; 0 issues. |
@@ -96,9 +97,9 @@ The three-run details and medians are in `LIGHTHOUSE_SUMMARY.json`. Simulated mo
 - **Technical SEO:** verified-only discovery, noindex near-duplicates, one-hop redirects, explicit 410, truthful metadata, and canonical/sitemap consistency pass the full crawl.
 - **Keyboard and low vision:** both-theme automated WCAG scans, focus visibility, skip focus, Escape focus return, labels, reduced motion, and viewport overflow checks pass.
 - **Mobile:** the final matrix caught and fixed a blog hero containing-block defect that caused 96px document overflow at every tested width.
-- **Security and privacy:** consent withdrawal, cookie cleanup, strict GA configuration, full image decode, production CSP without `unsafe-eval`, HSTS, framing controls, and clean dependency audits pass.
+- **Security and privacy:** consent withdrawal, cookie cleanup, strict GA configuration, full image decode, bounded/pruned instance-local rate-limit state, production CSP without `unsafe-eval`, HSTS, framing controls, and clean dependency audits pass.
 - **Skeptical practitioner:** unsupported model rankings, fake testing, outcome promises, stale pricing/quality claims, and universal negative-prompt statements are absent from verified or generic publisher surfaces.
-- **Repository residue:** unused ad placements, dynamic injection, duplicate inferred claims, mutating draft behavior, and stale active documentation were removed.
+- **Repository residue:** unused ad placements, dynamic injection, duplicate inferred claims, mutating draft behavior, deceptive draft prompts, and stale active documentation were removed. Draft output is confined to one new `.mdx` artifact under ignored `work/content-drafts` and cannot overwrite an existing draft.
 
 ## Deviations and limitations
 
