@@ -124,15 +124,15 @@ const CONTENT_CATEGORIES = [
 ];
 
 /**
- * İçerik geçmişini yükle veya oluştur
+ * İçerik geçmişini yükle veya geçici boş veri kullan
  */
 async function loadContentHistory() {
   try {
     const data = await fs.readFile(CONTENT_HISTORY_PATH, 'utf-8');
     return JSON.parse(data);
   } catch {
-    // Dosya yoksa yeni oluştur
-    const initialHistory = {
+    // Draft mode must not create or update repository planning files.
+    return {
       publishedTopics: [],
       publishedTitles: [],
       publishedKeywords: [],
@@ -141,8 +141,6 @@ async function loadContentHistory() {
       lastPublishDate: null,
       categoryRotation: 0
     };
-    await fs.writeFile(CONTENT_HISTORY_PATH, JSON.stringify(initialHistory, null, 2));
-    return initialHistory;
   }
 }
 

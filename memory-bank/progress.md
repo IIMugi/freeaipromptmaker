@@ -1,159 +1,29 @@
-# Progress Log: Free AI Prompt Maker
+# Progress
 
-## 📊 Genel İlerleme
+Last updated: 2026-07-17
 
-```
-Planlama      ████████████████████ 100%
-Kurulum       ████████████████████ 100%
-Frontend      ████████████████████ 100%
-Backend/API   ████████████████████ 100%
-AdSense Comp  ████████████████████ 100%
-Otomasyon     ████████████████████ 100%
-SEO           ████████████████████ 100%
-Deploy        ████████████████████ 100%
-GitHub        ████████████████████ 100%
-Yeni Modeller ████████████████████ 100% ✅
-Com. Gallery  ████████████████████ 100% ✅ YENİ!
-AdSense Onay  ░░░░░░░░░░░░░░░░░░░░   0% (2 hafta bekle)
-```
+## Readiness baseline
 
----
+- Production build currently renders 426 routes.
+- Editorial registry contains 253 article records: 7 verified and 246 `needs-review`.
+- The sitemap exposes the verified publisher subset plus meaningful product, use-case, and legal routes.
+- Model/use-case variants remain direct-link and followable but are noindexed to avoid treating near-duplicates as separate publisher pages.
+- Advertising remains disabled.
 
-## 🌐 CANLI SİTE BİLGİLERİ
+## Completed milestones
 
-| Bilgi | Değer |
-|-------|-------|
-| **Ana URL** | https://freeaipromptmaker.com |
-| **www URL** | https://www.freeaipromptmaker.com |
-| **Vercel URL** | https://n1sche.vercel.app |
-| **GitHub Repo** | https://github.com/IIMugi/freeaipromptmaker |
-| **SSL** | ✅ Aktif |
-| **Search Console** | ✅ Doğrulanmış |
-| **AI Modelleri** | ✅ 12 model |
+1. Baseline, route inventory, connected-data findings, and critical/important audit.
+2. Test foundation and manual draft-only content workflows.
+3. Editorial registry, quarantine routing, publisher-surface filtering, and rendered-content quality checks.
+4. Six guide promotions with source ledgers and bounded instructions.
+5. Analytics consent, upload validation, redirect, CSP, HSTS, and landmark fixes.
+6. Generic use-case content cleanup and stale runtime removal.
 
----
+## Pending milestones
 
-## ✅ TAMAMLANAN TÜM İŞLER
+1. Full viewport, theme, keyboard, reduced-motion, console, and network matrix.
+2. Three Lighthouse runs per selected route with medians recorded.
+3. Final route and content CSV refresh plus output-folder copies.
+4. Clean-install verification, final review, local merge, and repeated verification on `main`.
 
-### Session 8: Blog Images Fix (2025-12-09)
-- [x] Blog resim sorunu tespit edildi (Unsplash URL'leri render olmuyordu)
-- [x] Context7'den Next.js Image dokümantasyonu çekildi
-- [x] next.config.ts'e remotePatterns eklendi (images.unsplash.com)
-- [x] Blog listing sayfasında Next/Image kullanımı
-- [x] Blog detay sayfasında Next/Image kullanımı
-- [x] Featured post ve cards için hover efektleri
-- [x] Gradient overlay ve photo credits
-- [x] Resmi olmayan postlar için gradient placeholder fallback
-- [x] Local test (localhost:3001) ✅
-- [x] Git push (commit: bd45957, a1ffe5b) ✅
-- [ ] Production deploy + doğrulama (Vercel) — bekleniyor
-
-### Session 9: Security Patch (2025-12-09)
-- [x] Vercel build hatası: “Vulnerable version of Next.js detected”
-- [x] npm view → latest 16.0.8; Context7 upgrade docs okundu
-- [x] Next.js & eslint-config-next 16.0.8'e yükseltildi
-- [x] npm run build (local) ✅
-- [x] Git push (commit: d4603cf) ✅
-- [ ] Prod deploy doğrulaması (Vercel) — bekleniyor
-
-### Session 10: Blog UX + SEO + Ads (2025-12-09)
-- [x] Kategori + slug tabanlı kapak fallback havuzu (daha az tekrar) - commit: 00f48ed
-- [x] Blog detay: TOC, Key takeaways, CTA blokları, FAQ içerik + FAQ schema - commit: 0917655
-- [x] Blog detay: Çift in-article ad (üst/alt) CLS güvenli
-- [x] Blog liste: Top responsive ad slot eklendi - commit: 0917655
-- [x] Markdown heading'lerde id slug (TOC anchor) - commit: 0917655
-- [x] Build lokal ✅
-- [x] Push main ✅
-- [ ] Prod deploy kontrolü (Vercel) - bekleniyor
-
-### Session 7: Community Prompts Gallery (2025-11-27)
-- [x] 12 örnek prompt içeren galeri eklendi
-- [x] Like sistemi (LocalStorage ile kalıcı)
-- [x] Copy butonu (tek tıkla kopyalama)
-- [x] Kategori filtreleri (Fantasy, Sci-Fi, Character, Nature, Lifestyle)
-- [x] Model etiketleri (hangi AI model kullanıldığı)
-- [x] Responsive grid layout
-- [x] Browser test tamamlandı
-- [x] Vercel deploy
-- [x] GitHub push
-
-### Session 6: Yeni AI Modelleri (2025-11-27)
-- [x] 12 AI modeli eklendi
-- [x] Kategorili model seçici (Popular, Professional, Specialized)
-- [x] Model bazlı özellikler ve parametreler
-- [x] Her model için özel prompt syntax
-- [x] Negative prompt desteği (destekleyen modeller için)
-- [x] Model özellikleri gösterimi
-- [x] Browser test tamamlandı
-- [x] Vercel deploy
-- [x] GitHub push
-
-### Eklenen Modeller:
-| Kategori | Modeller |
-|----------|----------|
-| **Popular** | Flux, Midjourney v7, Nano Banana Pro, DALL-E 3 |
-| **Professional** | Midjourney v6, Stable Diffusion XL, Flux Pro, Adobe Firefly 3 |
-| **Specialized** | Ideogram 2.0, Leonardo.ai, Recraft V3, GPT-4o |
-
----
-
-### Önceki Session'lar:
-
-#### Session 1: Proje Kurulumu
-- [x] Next.js 16 + React 19 + TypeScript
-- [x] Tailwind CSS 4, Memory Bank, Cursor Rules
-
-#### Session 2: Frontend Geliştirme
-- [x] UI Bileşenleri, Generator, Layout, Sayfalar
-
-#### Session 3: AdSense & Otomasyon
-- [x] AdSense bileşenleri, Gemini Auto-Blogger, GitHub Actions
-
-#### Session 4: SEO & Deploy
-- [x] Sitemap, robots.txt, Schema.org, Vercel deploy
-
-#### Session 5: GitHub & Final
-- [x] GitHub repo, secrets, Search Console
-
----
-
-## 📈 METRİKLER
-
-| Metrik | Değer |
-|--------|-------|
-| AI Modelleri | **12** |
-| Toplam Bileşen | 30+ |
-| Toplam Sayfa | 12 |
-| Blog Post | 2 |
-| API Key | 10 |
-| GitHub Commit | 3 |
-
----
-
-## ⏳ BEKLEYEN GÖREVLER
-
-### Kısa Vadeli (~2 hafta):
-- [ ] 15+ blog post biriktir (Auto-blogger çalışıyor)
-- [ ] AdSense başvurusu yap
-
-### Orta Vadeli:
-- [ ] Google Analytics ekle
-- [ ] Performance optimizasyonu
-- [ ] Sosyal medya paylaşımları
-
----
-
-## 💡 ÖNEMLİ NOTLAR
-
-1. **Auto-Blogger:** Her gün 06:00 UTC çalışıyor
-2. **Yeni Modeller:** 12 model, 3 kategori
-3. **Varsayılan Model:** Flux (en popüler 2025 modeli)
-4. **AdSense:** 15+ post sonra başvur
-
----
-
-## 📅 SON GÜNCELLEME
-
-**Tarih:** 2025-11-27 ~15:30 UTC
-**Session:** 6 (Yeni AI Modelleri)
-**Commit:** `✨ 12 yeni AI modeli eklendi`
+Older implementation narratives remain in dated audit and plan documents for traceability; they are not active operating instructions.

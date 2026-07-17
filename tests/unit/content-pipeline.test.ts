@@ -22,4 +22,12 @@ describe('content publishing safety', () => {
     expect(scripts).not.toMatch(/in my experience|i.ve found|what works for me/i);
     expect(scripts).not.toMatch(/indistinguishable from.*human/i);
   });
+
+  it('writes only the explicitly selected draft artifact', () => {
+    const manager = fs.readFileSync(path.join(root, 'scripts', 'content-manager.js'), 'utf8');
+    const generator = fs.readFileSync(path.join(root, 'scripts', 'generate-post.js'), 'utf8');
+
+    expect(manager).not.toMatch(/writeFile\(CONTENT_HISTORY_PATH/);
+    expect(generator).not.toMatch(/writeFile\(CONFIG\.contentPlannerPath/);
+  });
 });

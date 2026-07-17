@@ -1,181 +1,39 @@
-# System Patterns: PromptMaster AI
+# System Patterns
 
-## 🏗️ Mimari Genel Bakış
+## Rendering and routes
 
-```
-┌─────────────────────────────────────────────────┐
-│                    FRONTEND                      │
-│              (Next.js App Router)                │
-├─────────────────────────────────────────────────┤
-│  app/                                            │
-│  ├── page.tsx (Prompt Generator)                 │
-│  ├── blog/                                       │
-│  │   ├── page.tsx (Blog listing)                 │
-│  │   └── [slug]/page.tsx (Blog post)             │
-│  └── (legal pages)                               │
-├─────────────────────────────────────────────────┤
-│  components/                                     │
-│  ├── Generator/ (Prompt Builder UI)              │
-│  ├── Ads/ (AdSense components)                   │
-│  └── UI/ (Shared components)                     │
-├─────────────────────────────────────────────────┤
-│  data/ (Static JSON configs)                     │
-│  posts/ (MDX blog posts)                         │
-└─────────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────┐
-│                  AUTOMATION                      │
-│            (GitHub Actions + Gemini)             │
-├─────────────────────────────────────────────────┤
-│  .github/workflows/scheduler.yml                 │
-│  scripts/generate-post.js                        │
-│  ├── 1. Topic Selection                          │
-│  ├── 2. Content Drafting (Gemini)                │
-│  ├── 3. Humanizing (Gemini)                      │
-│  └── 4. MDX Publishing                           │
-└─────────────────────────────────────────────────┘
-```
+- Next.js App Router with static generation for the home, legal, blog, tools, and prompt-use-case surfaces.
+- A single global `main#main-content` landmark in `app/layout.tsx`.
+- Canonical URL helpers in `lib/seo.ts`; apex redirects are resolved before legacy-path redirects and preserve query strings.
 
----
+## Editorial state
 
-## 📁 Dosya Yapısı Patternleri
+- `lib/editorial.ts` is the source of truth for `verified` versus `needs-review` state.
+- Blog hubs, sitemap entries, related links, and other publisher surfaces use the verified subset.
+- A quarantined route returns `noindex, follow`; missing or invalid routes use the normal not-found behavior.
+- Frontmatter, rendered-content bounds, source ledgers, and content decisions are covered by automated tests.
 
-### Component Pattern
-```
-components/
-├── Generator/
-│   ├── index.ts          # Barrel export
-│   ├── PromptBuilder.tsx # Ana container
-│   ├── ModelSelector.tsx # Model dropdown
-│   ├── StyleCards.tsx    # Görsel kartlar
-│   ├── ParameterSliders.tsx
-│   ├── LivePreview.tsx
-│   └── types.ts          # TypeScript types
-```
+## Privacy and analytics
 
-### Page Pattern (App Router)
-```typescript
-// app/blog/[slug]/page.tsx
+- `lib/consent.ts` is the consent state boundary.
+- Google Consent Mode defaults are written before any optional analytics configuration.
+- The external analytics script is gated by current consent; withdrawal updates consent, clears reachable analytics cookies, and is respected across tabs.
+- Tracking helpers reread consent at call time and accept bounded event fields.
 
-// Metadata (Server-side)
-export async function generateMetadata({ params }): Promise<Metadata> {
-  const post = await getPost(params.slug);
-  return { title: post.title, description: post.excerpt };
-}
+## Upload security
 
-// Static generation
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({ slug: post.slug }));
-}
+- `lib/image-upload.ts` contains client-safe constants and signature checks.
+- `lib/image-upload.server.ts` performs bounded stream reading and full Sharp decode before provider use.
+- One PNG, JPEG, or WebP frame is accepted within configured byte, dimension, and pixel limits.
 
-// Page component
-export default async function BlogPost({ params }) {
-  const post = await getPost(params.slug);
-  return <Article post={post} />;
-}
-```
+## Advertising
 
----
+- `components/Ads/AdUnit.tsx` and `AdSenseScript.tsx` are inert boundaries while `READINESS.adsEnabled` is false.
+- Routes do not reserve or render placement containers.
 
-## 🔄 State Management Patterns
+## Quality gates
 
-### Local State (useState)
-```typescript
-// Prompt builder state
-const [selectedModel, setSelectedModel] = useState<Model>('midjourney');
-const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-const [parameters, setParameters] = useState<Parameters>(defaultParams);
-```
-
-### LocalStorage Persistence
-```typescript
-// History pattern
-const [history, setHistory] = useLocalStorage<Prompt[]>('prompt-history', []);
-
-const saveToHistory = (prompt: string) => {
-  setHistory(prev => [
-    { id: Date.now(), prompt, timestamp: new Date().toISOString() },
-    ...prev.slice(0, 9) // Keep last 10
-  ]);
-};
-```
-
----
-
-## 🎨 Styling Patterns
-
-### Tailwind Class Organization
-```tsx
-<button className={cn(
-  // Base
-  "px-4 py-2 rounded-lg font-medium",
-  // Colors
-  "bg-violet-600 text-white",
-  // States
-  "hover:bg-violet-500 active:bg-violet-700",
-  // Transitions
-  "transition-colors duration-200",
-  // Disabled
-  "disabled:opacity-50 disabled:cursor-not-allowed"
-)}>
-```
-
-### Conditional Classes
-```typescript
-import { cn } from '@/lib/utils';
-
-<div className={cn(
-  "p-4 rounded-lg",
-  isActive && "ring-2 ring-violet-500",
-  isDisabled && "opacity-50"
-)} />
-```
-
----
-
-## 📡 Data Flow Patterns
-
-### Prompt Generation Flow
-```
-User Input → State Update → Compute Prompt → Display Preview
-     │                                              │
-     └──────────────────────────────────────────────┘
-                    (Real-time)
-```
-
-### Blog Content Flow
-```
-content-planner.json → Gemini API → Humanize → MDX File → Static Generation
-```
-
----
-
-## 🔧 Utility Patterns
-
-### Prompt Builder Logic
-```typescript
-// lib/prompt-builder.ts
-export function buildPrompt(config: PromptConfig): string {
-  const parts: string[] = [config.mainConcept];
-  
-  if (config.styles.length > 0) {
-    parts.push(config.styles.join(', '));
-  }
-  
-  if (config.lighting) {
-    parts.push(config.lighting);
-  }
-  
-  // Model-specific parameters
-  if (config.model === 'midjourney') {
-    if (config.aspectRatio) parts.push(`--ar ${config.aspectRatio}`);
-    if (config.stylize) parts.push(`--s ${config.stylize}`);
-    if (config.chaos) parts.push(`--chaos ${config.chaos}`);
-  }
-  
-  return parts.join(' ');
-}
-```
+- Vitest for units and render assertions.
+- Playwright plus axe for runtime, keyboard, landmark, console, network, and responsive checks.
+- Route inventory and Lighthouse outputs are recorded under `docs/adsense-rebuild/` and copied to the task output directory at completion.
 
