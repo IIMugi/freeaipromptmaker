@@ -79,7 +79,7 @@ The current dialog controls optional analytics only. It is not an advertising CM
 
 1. In AdSense **Sites**, check the current approval status and ads.txt status. Google documents `Requires review`, `Needs attention`, `Getting ready`, and `Ready`, plus ads.txt `Not applicable`, `Not found`, `Unauthorized`, and `Authorized`: [official site-status guidance](https://support.google.com/adsense/answer/12170222?hl=en).
 2. Complete the account tasks shown on the AdSense homepage. Google notes that incomplete tasks can keep the site in “Getting ready.”
-3. If ads.txt is required, use only the seller line associated with the confirmed owner account and verify it at the site root after deployment.
+3. The repository currently contains an existing public seller declaration in `public/ads.txt`. Confirm that its publisher ID belongs to the intended owner account, verify the served file at the site root after deployment, and do not change it without authorization.
 4. Check Policy Center and regulatory messages again. Record dates and screenshots without changing settings until the implementation plan is approved.
 5. Do not remove and re-add the site merely to accelerate processing; Google warns that resubmission can delay the process.
 

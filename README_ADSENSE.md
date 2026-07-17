@@ -8,7 +8,8 @@ Ads are disabled. This repository does not claim that the site or an account is 
 
 - `READINESS.adsEnabled` is false.
 - `components/Ads/AdSenseScript.tsx` and `components/Ads/AdUnit.tsx` are inert centralized boundaries.
-- No placement wrappers, reserved advertising gaps, publisher script, slot IDs, or public publisher identifier are shipped.
+- No placement wrappers, reserved advertising gaps, publisher script, or slot IDs are shipped.
+- `public/ads.txt` retains the existing public seller declaration. A seller declaration does not load advertising code or enable ads; the owner must verify it against the current account before relying on or changing it.
 - Analytics remains separate from advertising and loads only after explicit analytics consent.
 - The privacy and cookies pages describe the current disabled state and consent controls.
 
@@ -16,7 +17,7 @@ Ads are disabled. This repository does not claim that the site or an account is 
 
 Do not enable advertising by adding an environment value or editing a route. A future change needs its own reviewed implementation covering:
 
-1. Current account and publisher-policy status checked in the relevant dashboard.
+1. Current account, publisher-policy, and existing ads.txt seller-declaration status checked in the relevant dashboard.
 2. Current official integration requirements and consent obligations.
 3. A placement plan reviewed for deceptive adjacency, density, mobile usability, and layout shift.
 4. Strict publisher-ID and slot validation with no implementation placeholders shown to visitors.
@@ -25,4 +26,3 @@ Do not enable advertising by adding an environment value or editing a route. A f
 7. A separate release decision after manual editorial and legal review.
 
 Historical placement ideas in old audit evidence are not implementation instructions. Current status and remaining external checks belong in `docs/adsense-rebuild/FINAL_READINESS_REPORT.md` and `docs/adsense-rebuild/MANUAL_EXTERNAL_STEPS.md`.
-

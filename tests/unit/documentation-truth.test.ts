@@ -32,6 +32,8 @@ describe('active project guidance', () => {
 
     expect(product).toMatch(/manual editorial review/i);
     expect(ads).toMatch(/ads are disabled/i);
+    expect(ads).toMatch(/existing public seller declaration/i);
+    expect(ads).not.toMatch(/no public publisher identifier/i);
     expect(active).toMatch(/AdSense readiness rebuild/i);
   });
 });
