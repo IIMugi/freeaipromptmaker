@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-07-17",
+  "lighthouseVersion": "13.4.0",
+  "formFactor": "mobile",
+  "runsPerRoute": 3,
+  "routes": {
+    "/": {
+      "runs": [
+        { "performance": 95, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 911, "lcpMs": 2875, "tbtMs": 66, "cls": 0, "transferBytes": 268341 },
+        { "performance": 95, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 907, "lcpMs": 2872, "tbtMs": 68, "cls": 0, "transferBytes": 268341 },
+        { "performance": 95, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 907, "lcpMs": 2875, "tbtMs": 71, "cls": 0, "transferBytes": 268341 }
+      ],
+      "median": { "performance": 95, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 907, "lcpMs": 2875, "tbtMs": 68, "cls": 0, "transferBytes": 268341 }
+    },
+    "/blog/2025-11-29-stable-diffusion-negative-prompts-guide": {
+      "runs": [
+        { "performance": 96, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 906, "lcpMs": 2820, "tbtMs": 32, "cls": 0, "transferBytes": 330780 },
+        { "performance": 96, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 907, "lcpMs": 2828, "tbtMs": 36, "cls": 0, "transferBytes": 330780 },
+        { "performance": 96, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 906, "lcpMs": 2819, "tbtMs": 32, "cls": 0, "transferBytes": 330794 }
+      ],
+      "median": { "performance": 96, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcpMs": 906, "lcpMs": 2820, "tbtMs": 32, "cls": 0, "transferBytes": 330780 }
+    }
+  },
+  "notes": [
+    "Each retained JSON artifact was parsed for every reported category and audit.",
+    "Windows returned EPERM during temporary Chrome profile cleanup after complete reports were written.",
+    "Both median LCP values exceed the 2500ms simulated-mobile target and remain a residual risk."
+  ]
+}

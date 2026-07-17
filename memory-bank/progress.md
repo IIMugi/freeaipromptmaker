@@ -18,12 +18,12 @@ Last updated: 2026-07-17
 4. Six guide promotions with source ledgers and bounded instructions.
 5. Analytics consent, upload validation, redirect, CSP, HSTS, and landmark fixes.
 6. Generic use-case content cleanup and stale runtime removal.
+7. Full responsive/theme/interaction/security matrix, 51-test browser gate, route crawl, and three-run Lighthouse medians.
+8. Ordered feature-branch clean-install gate with 103 unit/component tests and zero dependency findings.
 
 ## Pending milestones
 
-1. Full viewport, theme, keyboard, reduced-motion, console, and network matrix.
-2. Three Lighthouse runs per selected route with medians recorded.
-3. Final route and content CSV refresh plus output-folder copies.
-4. Clean-install verification, final review, local merge, and repeated verification on `main`.
+1. Final report and output-folder copies.
+2. Final review, local merge, and repeated clean-install verification on `main`.
 
 Older implementation narratives remain in dated audit and plan documents for traceability; they are not active operating instructions.
