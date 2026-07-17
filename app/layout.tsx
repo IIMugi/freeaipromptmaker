@@ -5,7 +5,7 @@ import { Footer } from '@/components/Layout/Footer';
 import { CookieConsent } from '@/components/Consent/CookieConsent';
 import { ConsentGate } from '@/components/Consent/ConsentGate';
 import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
-import { GoogleAnalytics } from '@/components/Analytics';
+import { GoogleAnalytics, GoogleConsentDefaults } from '@/components/Analytics';
 import { SITE } from '@/lib/site';
 import { websiteJsonLd } from '@/lib/seo';
 import './globals.css';
@@ -73,6 +73,7 @@ export default function RootLayout({
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <GoogleConsentDefaults />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

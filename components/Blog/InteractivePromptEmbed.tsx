@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 import { copyToClipboard } from '@/lib/utils';
-import { trackProductEvent } from '@/lib/analytics';
+import { normalizeAnalyticsModel, trackProductEvent } from '@/lib/analytics';
 
 interface InteractivePromptEmbedProps {
   prompt: string;
@@ -27,10 +27,16 @@ export function InteractivePromptEmbed({
     const success = await copyToClipboard(prompt);
     if (success) {
       setCopied(true);
-      trackProductEvent('prompt_copy_succeeded', { model: model.toLowerCase(), variant: 'prompt' });
+      trackProductEvent('prompt_copy_succeeded', {
+        model: normalizeAnalyticsModel(model),
+        variant: 'prompt',
+      });
       setTimeout(() => setCopied(false), 2000);
     } else {
-      trackProductEvent('prompt_copy_failed', { model: model.toLowerCase(), variant: 'prompt' });
+      trackProductEvent('prompt_copy_failed', {
+        model: normalizeAnalyticsModel(model),
+        variant: 'prompt',
+      });
     }
   };
 
