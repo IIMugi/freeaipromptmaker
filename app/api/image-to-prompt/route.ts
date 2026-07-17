@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { detectImageType, MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
+import { MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
+import { readBoundedRequestBody, validateImageBytes } from '@/lib/image-upload.server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -178,9 +179,17 @@ export async function POST(request: Request) {
     return response;
   }
 
+  const requestBody = await readBoundedRequestBody(request);
+  if (!requestBody) return json({ code: 'image_too_large' }, 400, rateLimit);
+
   let formData: FormData;
   try {
-    formData = await request.formData();
+    const boundedRequest = new Request(request.url, {
+      method: request.method,
+      headers: request.headers,
+      body: requestBody,
+    });
+    formData = await boundedRequest.formData();
   } catch {
     return json({ code: 'invalid_request' }, 400, rateLimit);
   }
@@ -190,10 +199,8 @@ export async function POST(request: Request) {
   if (input.size > MAX_IMAGE_FILE_SIZE) return json({ code: 'image_too_large' }, 400, rateLimit);
 
   const bytes = new Uint8Array(await input.arrayBuffer());
-  const detectedType = detectImageType(bytes);
-  if (!detectedType || detectedType !== input.type) {
-    return json({ code: 'invalid_image_signature' }, 400, rateLimit);
-  }
+  const validation = await validateImageBytes(bytes, input.type);
+  if (!validation.ok) return json({ code: validation.code }, 400, rateLimit);
 
   const apiKey = getGeminiKey();
   if (!apiKey) return json({ code: 'analysis_unavailable' }, 503, rateLimit);
@@ -203,7 +210,7 @@ export async function POST(request: Request) {
     const providerResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
-        { inlineData: { data: Buffer.from(bytes).toString('base64'), mimeType: detectedType } },
+        { inlineData: { data: Buffer.from(bytes).toString('base64'), mimeType: validation.mimeType } },
         `Analyze the image and return only JSON matching this schema:
 {"styleDna":{"subject":"","lighting":"","lens":"","mood":"","palette":"","styleTags":[""]},"prompt":"","negativePrompt":"","remixes":[""]}`,
       ],

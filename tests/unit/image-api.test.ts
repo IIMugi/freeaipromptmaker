@@ -3,6 +3,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleGenAI } from '@google/genai';
 import { POST } from '@/app/api/image-to-prompt/route';
+import { MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
 
 const generateContent = vi.fn();
 
@@ -16,7 +17,11 @@ function imageRequest(bytes: number[], type = 'image/png', name = 'private-name.
   return new Request('http://localhost/api/image-to-prompt', { method: 'POST', body: formData });
 }
 
-const pngBytes = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+const pngBytes = [...Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC',
+  'base64',
+)];
+const truncatedPngBytes = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 describe('image analysis API', () => {
   beforeEach(() => {
@@ -39,6 +44,27 @@ describe('image analysis API', () => {
     const response = await POST(imageRequest([1, 2, 3, 4]));
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ code: 'invalid_image_signature' });
+  });
+
+  it('rejects a truncated file with a valid signature before calling the provider', async () => {
+    process.env.GEMINI_API_KEY = 'test-key';
+
+    const response = await POST(imageRequest(truncatedPngBytes));
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ code: 'invalid_image_data' });
+    expect(generateContent).not.toHaveBeenCalled();
+  });
+
+  it('rejects an oversized multipart request before parsing it', async () => {
+    const request = imageRequest(pngBytes);
+    request.headers.set('content-length', String(MAX_IMAGE_FILE_SIZE + 1024 * 1024));
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ code: 'image_too_large' });
+    expect(generateContent).not.toHaveBeenCalled();
   });
 
   it('returns a bounded provider failure', async () => {
