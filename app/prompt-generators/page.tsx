@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AI Prompt Generators by Use Case',
     description:
-      'Explore model-specific prompt generator pages for top creative workflows.',
+      'Explore model-specific prompt generator pages for common visual workflows.',
     url: `${siteUrl}/prompt-generators`,
   },
 };
@@ -35,7 +35,7 @@ export default function PromptGeneratorsHubPage() {
   const modelChips = getAllModelSlugs().slice(0, 6);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-12">
       <section className="section-shell rounded-2xl p-6 md:p-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">
           <Sparkles className="h-3.5 w-3.5" />
@@ -46,7 +46,7 @@ export default function PromptGeneratorsHubPage() {
         </h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-300 md:text-base">
           Select a use case, then pick a model-specific generator page. Each page includes examples,
-          negatives, and model guidance for faster output quality.
+          negative-prompt terms to test, and links to model-specific versions.
         </p>
       </section>
 
@@ -88,6 +88,6 @@ export default function PromptGeneratorsHubPage() {
           </article>
         ))}
       </section>
-    </main>
+    </div>
   );
 }

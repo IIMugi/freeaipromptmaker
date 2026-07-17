@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `Prompt Generator for ${entry.title}`,
-    description: `${entry.intent} Build ready-to-use prompts, negatives, and model guidance for ${entry.title.toLowerCase()} workflows.`,
+    description: `${entry.intent} Review examples, terms to test, and an iteration worksheet for ${entry.title.toLowerCase()} workflows.`,
     keywords: entry.keywords,
     alternates: { canonical },
     openGraph: {

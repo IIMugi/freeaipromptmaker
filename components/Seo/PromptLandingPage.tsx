@@ -4,7 +4,6 @@ import {
   getAllModelSlugs,
   getRelatedPromptUseCases,
   modelDisplayNames,
-  modelUseCaseHints,
   type PromptUseCase,
 } from '@/data/prompt-use-cases';
 
@@ -13,13 +12,20 @@ interface PromptLandingPageProps {
   model?: AIModel;
 }
 
+const iterationRows = [
+  ['1', 'Subject and action', 'Count, pose, placement, and unwanted additions'],
+  ['2', 'Composition and camera terms', 'Framing, crop, viewpoint, and focal emphasis'],
+  ['3', 'Lighting and color terms', 'Direction, contrast, palette, and visibility'],
+  ['4', 'Model-specific controls', 'Seed, aspect ratio, strength, and interface settings used'],
+] as const;
+
 export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
   const modelName = model ? modelDisplayNames[model] : null;
   const relatedUseCases = getRelatedPromptUseCases(useCase.slug, 4);
   const modelChips = getAllModelSlugs().slice(0, 6);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-14">
+    <div className="mx-auto max-w-5xl px-4 py-14">
       <div className="section-shell rounded-2xl p-6 md:p-8">
         <p className="text-xs uppercase tracking-[0.14em] text-cyan-200">
           {modelName ? `${modelName} Prompt Generator` : 'AI Prompt Generator'}
@@ -44,12 +50,13 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
         <h2 className="text-xl font-semibold text-white">Prompt examples</h2>
         <p className="mt-2 text-sm text-slate-300">
-          Copy, adapt, and iterate. These are optimized as base directions for {useCase.title.toLowerCase()} workflows.
+          These locally authored, text-only starting points were not independently tested against image outputs.
+          Change one variable at a time and record what the current model and interface produce.
         </p>
         <div className="mt-5 space-y-3">
           {useCase.samplePrompts.map((prompt) => (
             <div key={prompt} className="rounded-xl border border-white/12 bg-[#12223d]/70 p-4">
-              <code className="text-sm text-slate-100 whitespace-pre-wrap">{prompt}</code>
+              <code className="whitespace-pre-wrap text-sm text-slate-100">{prompt}</code>
             </div>
           ))}
         </div>
@@ -57,7 +64,10 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
 
       <section className="mt-8 grid gap-4 md:grid-cols-2">
         <div className="section-shell rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white">Negative prompt checklist</h2>
+          <h2 className="text-lg font-semibold text-white">Terms to test, if supported</h2>
+          <p className="mt-2 text-sm text-slate-300">
+            Negative-prompt support varies by model and interface. Treat these terms as hypotheses, not guarantees.
+          </p>
           <ul className="mt-4 space-y-2 text-sm text-slate-300">
             {useCase.negatives.map((item) => (
               <li key={item} className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
@@ -68,20 +78,22 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
         </div>
 
         <div className="section-shell rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white">Model guidance</h2>
+          <h2 className="text-lg font-semibold text-white">Model and interface notes</h2>
           <p className="mt-3 text-sm text-slate-300">
-            {model ? modelUseCaseHints[model] : 'Choose a model based on speed, quality, and control requirements.'}
+            {modelName
+              ? `This page selects ${modelName}; check the provider's current interface or documentation for supported parameters.`
+              : 'This page does not rank models. Check each provider’s current interface or documentation for supported parameters.'}
           </p>
           <div className="mt-5 space-y-2">
             <Link
               href="/#generator"
-              className="inline-flex items-center justify-between w-full rounded-xl border border-cyan-300/35 bg-cyan-300/12 px-4 py-3 text-sm text-cyan-100 hover:bg-cyan-300/18"
+              className="inline-flex w-full items-center justify-between rounded-xl border border-cyan-300/35 bg-cyan-300/12 px-4 py-3 text-sm text-cyan-100 hover:bg-cyan-300/18"
             >
               Open Prompt Generator
             </Link>
             <Link
               href="/blog"
-              className="inline-flex items-center justify-between w-full rounded-xl border border-white/12 bg-white/5 px-4 py-3 text-sm text-slate-100 hover:bg-white/10"
+              className="inline-flex w-full items-center justify-between rounded-xl border border-white/12 bg-white/5 px-4 py-3 text-sm text-slate-100 hover:bg-white/10"
             >
               Read prompt guides
             </Link>
@@ -112,64 +124,47 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
         </div>
       </section>
 
-      {/* Best Models Comparison — unique per use case */}
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-white">
-          Best AI models for {useCase.title.toLowerCase()}
-        </h2>
-        <p className="mt-2 text-sm text-slate-300 mb-5">
-          Not all models handle {useCase.title.toLowerCase()} equally. Here are our tested recommendations based on output quality, control, and workflow fit.
+        <h2 className="text-xl font-semibold text-white">Iteration worksheet</h2>
+        <p className="mt-2 text-sm text-slate-300">
+          Save the prompt, settings, and output together. Compare one controlled change per step.
         </p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {useCase.bestModels.map((entry, i) => (
-            <div key={entry.name} className="rounded-xl border border-white/12 bg-[#12223d]/50 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-cyan-300/12 text-xs font-bold text-cyan-200 border border-cyan-300/25">
-                  {i + 1}
-                </span>
-                <h3 className="text-sm font-semibold text-white">{entry.name}</h3>
-              </div>
-              <p className="text-sm text-slate-300 leading-relaxed">{entry.reason}</p>
-            </div>
-          ))}
+        <div className="mt-5 overflow-x-auto" role="region" aria-label="Prompt iteration worksheet" tabIndex={0}>
+          <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-white/15 text-slate-100">
+                <th className="px-3 py-3 font-semibold" scope="col">Step</th>
+                <th className="px-3 py-3 font-semibold" scope="col">Change one variable</th>
+                <th className="px-3 py-3 font-semibold" scope="col">Record</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-300">
+              {iterationRows.map(([step, change, record]) => (
+                <tr key={step} className="border-b border-white/10 last:border-0">
+                  <th className="px-3 py-3 font-medium text-cyan-100" scope="row">{step}</th>
+                  <td className="px-3 py-3">{change}</td>
+                  <td className="px-3 py-3">{record}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
-      {/* Pro Tips — unique actionable advice per use case */}
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-white">
-          Pro tips for {useCase.title.toLowerCase()} prompts
-        </h2>
-        <div className="mt-5 space-y-3">
-          {useCase.proTips.map((tip, i) => (
-            <div key={i} className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <span className="flex-shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-cyan-300/10 text-[11px] font-bold text-cyan-200 border border-cyan-300/20 mt-0.5">
-                {i + 1}
-              </span>
-              <p className="text-sm text-slate-300 leading-relaxed">{tip}</p>
-            </div>
+        <h2 className="text-lg font-semibold text-white">Manual review checklist</h2>
+        <ul className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
+          {[
+            'Count and placement of subjects',
+            'Text legibility and spelling',
+            'Anatomy, geometry, and edge artifacts',
+            'Rights, trademarks, and brand requirements',
+          ].map((item) => (
+            <li key={item} className="rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3">{item}</li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* Expert Guide — 500+ words of unique, in-depth content */}
-      <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-white">
-          The complete guide to {useCase.title.toLowerCase()} prompt engineering
-        </h2>
-
-        <div className="mt-5 prose prose-invert max-w-none prose-p:text-slate-300 prose-p:leading-relaxed prose-strong:text-white prose-em:text-cyan-200/90 prose-code:text-cyan-200 prose-code:bg-cyan-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
-          {useCase.expertGuide.split('\n\n').map((paragraph, i) => (
-            <p key={i} dangerouslySetInnerHTML={{
-              __html: paragraph
-                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-            }} />
-          ))}
-        </div>
-      </section>
-
-      {/* Related Prompt Generators */}
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
         <h2 className="text-lg font-semibold text-white">Related prompt generators</h2>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -189,6 +184,6 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
           })}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

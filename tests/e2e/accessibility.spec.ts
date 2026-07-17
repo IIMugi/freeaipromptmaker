@@ -11,6 +11,8 @@ const routes = [
   '/privacy',
   '/content-standards',
   '/tools',
+  '/prompt-generators',
+  '/prompt-generator-for/youtube-thumbnails',
 ];
 
 for (const route of routes) {
@@ -44,3 +46,10 @@ test('skip link reaches the main content with the keyboard', async ({ page }) =>
   await skipLink.press('Enter');
   await expect(page.getByRole('main')).toBeFocused();
 });
+
+for (const route of ['/prompt-generators', '/prompt-generator-for/youtube-thumbnails']) {
+  test(route + ' exposes exactly one main landmark', async ({ page }) => {
+    await page.goto(route);
+    await expect(page.getByRole('main')).toHaveCount(1);
+  });
+}

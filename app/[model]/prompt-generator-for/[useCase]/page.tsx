@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${modelName} Prompt Generator for ${entry.title}`,
-    description: `Generate ${modelName} prompts for ${entry.title.toLowerCase()} workflows with ready examples, negatives, and model-specific guidance.`,
+    description: `Draft ${modelName} prompts for ${entry.title.toLowerCase()} workflows with examples, terms to test, and an iteration worksheet.`,
     keywords: [...entry.keywords, `${modelName.toLowerCase()} prompt generator`],
     alternates: { canonical },
     // Prevent indexing of model-specific pages to avoid thin/duplicate content
