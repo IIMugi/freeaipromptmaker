@@ -49,6 +49,18 @@ test('readiness build makes no Google advertising or measurement requests', asyn
   await expect(page.locator('[data-ad-client], ins.adsbygoogle')).toHaveCount(0);
 });
 
+test('production responses emit the hardened transport and content policies', async ({ page }) => {
+  const response = await page.goto('/');
+  const headers = response?.headers() ?? {};
+  const csp = headers['content-security-policy'] ?? '';
+
+  expect(headers['strict-transport-security']).toMatch(/max-age=\d+.*includeSubDomains/i);
+  expect(csp).toContain("base-uri 'self'");
+  expect(csp).toContain("form-action 'self'");
+  expect(csp).toContain("frame-ancestors 'none'");
+  expect(csp).not.toContain("'unsafe-eval'");
+});
+
 test('redirect and removal routes return their intended statuses', async ({ request }) => {
   const redirect = await request.get('/flux-pro', { maxRedirects: 0 });
   expect(redirect.status()).toBe(308);
@@ -66,4 +78,18 @@ test('redirect and removal routes return their intended statuses', async ({ requ
     '/blog/2026-02-05-ai-art-reference-guide-inspiration-prompts/keyword',
   );
   expect(gone.status()).toBe(410);
+});
+
+test('www legacy routes redirect to the final apex URL in one hop with query parameters', async ({
+  request,
+}) => {
+  const response = await request.get('/flux-pro?utm_source=redirect-check', {
+    headers: { Host: 'www.freeaipromptmaker.com' },
+    maxRedirects: 0,
+  });
+
+  expect(response.status()).toBe(308);
+  expect(response.headers().location).toBe(
+    'https://freeaipromptmaker.com/prompt-generators?utm_source=redirect-check',
+  );
 });

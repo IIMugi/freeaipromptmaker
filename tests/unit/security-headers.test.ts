@@ -9,11 +9,17 @@ describe('security headers', () => {
     expect(headers['X-Frame-Options']).toBe('DENY');
     expect(headers['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
     expect(headers['Permissions-Policy']).toMatch(/camera=\(\).*microphone=\(\).*geolocation=\(\)/);
+    expect(headers['Strict-Transport-Security']).toMatch(/max-age=\d+.*includeSubDomains/i);
   });
 
   it('blocks objects and omits advertising origins while ads are disabled', () => {
-    expect(headers['Content-Security-Policy']).toContain("object-src 'none'");
-    expect(headers['Content-Security-Policy']).toContain("frame-src 'none'");
-    expect(headers['Content-Security-Policy']).not.toMatch(/googlesyndication|doubleclick/);
+    const csp = headers['Content-Security-Policy'];
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("frame-src 'none'");
+    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain("base-uri 'self'");
+    expect(csp).toContain("form-action 'self'");
+    expect(csp).not.toContain("'unsafe-eval'");
+    expect(csp).not.toMatch(/googlesyndication|doubleclick/);
   });
 });
