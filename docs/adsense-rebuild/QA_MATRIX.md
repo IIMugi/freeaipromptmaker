@@ -75,4 +75,3 @@ Representative console/page/first-party network monitoring covers the homepage, 
 ## Consolidated browser result
 
 `npm run test:e2e`: **51 passed** using Chromium against the production build.
-

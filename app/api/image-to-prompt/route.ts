@@ -33,13 +33,15 @@ interface RateLimitResult {
   resetAt: number;
 }
 
-const rateWindowMs = 10 * 60 * 1000;
-const maxRequestsPerWindow = 20;
+export const rateWindowMs = 10 * 60 * 1000;
+export const maxRequestsPerWindow = 20;
+export const maxRateLimitEntries = 4_096;
 const globalForRateLimit = globalThis as typeof globalThis & {
   __imageToPromptRateStore?: Map<string, RateLimitState>;
 };
 const rateStore = globalForRateLimit.__imageToPromptRateStore ?? new Map<string, RateLimitState>();
 globalForRateLimit.__imageToPromptRateStore = rateStore;
+let rateLimitOperations = 0;
 
 function getClientIdentifier(request: Request) {
   const raw =
@@ -50,10 +52,30 @@ function getClientIdentifier(request: Request) {
   return raw.replace(/[^a-zA-Z0-9:.\-]/g, '').slice(0, 120) || 'anonymous';
 }
 
-function consumeRateLimit(clientId: string): RateLimitResult {
-  const now = Date.now();
+function pruneExpiredRateLimits(now: number) {
+  for (const [clientId, state] of rateStore) {
+    if (state.resetAt <= now) rateStore.delete(clientId);
+  }
+}
+
+function evictOldestRateLimits() {
+  while (rateStore.size >= maxRateLimitEntries) {
+    const oldestClient = rateStore.keys().next().value as string | undefined;
+    if (!oldestClient) break;
+    rateStore.delete(oldestClient);
+  }
+}
+
+export function consumeRateLimit(clientId: string, now = Date.now()): RateLimitResult {
+  rateLimitOperations += 1;
+  if (rateLimitOperations % 128 === 0) pruneExpiredRateLimits(now);
   const existing = rateStore.get(clientId);
   if (!existing || existing.resetAt <= now) {
+    if (existing) rateStore.delete(clientId);
+    if (rateStore.size >= maxRateLimitEntries) {
+      pruneExpiredRateLimits(now);
+      evictOldestRateLimits();
+    }
     const next = { count: 1, resetAt: now + rateWindowMs };
     rateStore.set(clientId, next);
     return {
@@ -81,6 +103,15 @@ function consumeRateLimit(clientId: string): RateLimitResult {
     limit: maxRequestsPerWindow,
     resetAt: existing.resetAt,
   };
+}
+
+export function resetRateLimitStoreForTests() {
+  rateStore.clear();
+  rateLimitOperations = 0;
+}
+
+export function rateLimitStoreSizeForTests() {
+  return rateStore.size;
 }
 
 function responseHeaders(rateLimit: RateLimitResult) {

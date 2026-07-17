@@ -7,7 +7,7 @@
  * - Yazılan tüm konuları takip eder
  * - Aynı konuyu tekrar yazmaz
  * - Yeni konu önerileri üretir (Gemini ile)
- * - Günde 1 post atar
+ * - Yalnızca manuel inceleme taslağı üretir
  * - İçerik çeşitliliği sağlar
  */
 
@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs/promises';
 import { GoogleGenAI } from '@google/genai';
+import { resolveDraftOutput, writeDraftArtifact } from './lib/draft-output.js';
 
 // .env.local dosyasını yükle
 const __filename = fileURLToPath(import.meta.url);
@@ -23,9 +24,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 export function assertDraftMode() {
-  const output = process.env.CONTENT_DRAFT_OUTPUT;
-  if (!output) throw new Error('CONTENT_DRAFT_OUTPUT is required; publishing is disabled.');
-  return output;
+  return resolveDraftOutput();
 }
 
 // ============================================
@@ -177,7 +176,7 @@ async function generateNewTopic(history, category) {
   const publishedKeywords = [...new Set(history.publishedKeywords)].slice(-100).join(', ');
   
   const prompt = `
-You are an SEO expert for a free AI art prompt generator website called Free AI Prompt Maker (freeaipromptmaker.com).
+You are proposing a candidate topic for an unverified editorial draft for Free AI Prompt Maker (freeaipromptmaker.com).
 
 Generate ONE new blog post topic for the category: "${category}"
 
@@ -188,7 +187,7 @@ Already used keywords (avoid repetition): ${publishedKeywords || '(none yet)'}
 
 Requirements for the new topic:
 1. Must be unique and NOT similar to any already published topic
-2. Should target high-volume SEO keywords for AI art
+2. Must have clear search intent without claiming unsupported keyword-volume data
 3. Must be actionable and provide real value
 4. Should include specific examples users can try
 5. Category focus: ${category}
@@ -245,7 +244,7 @@ async function generateBlogPost(topic, history) {
   const recentTitles = history.publishedTitles.slice(-10).join(', ');
   
   const draftPrompt = `
-You are an expert AI art blogger for Free AI Prompt Maker (freeaipromptmaker.com).
+You are preparing an unverified draft for a human editor at Free AI Prompt Maker (freeaipromptmaker.com).
 
 Write a comprehensive blog post about: "${topic.title}"
 
@@ -265,11 +264,14 @@ Requirements:
 - Natural, conversational tone
 - Include [Try our Free AI Prompt Maker](/) link
 - Use relevant emoji sparingly
+- Cite primary sources with direct URLs for every product or interface claim
+- State the exact product or interface version and source access date
+- Include a limitations section and mark any unsupported point as [UNVERIFIED]
+- Never claim personal use, testing, independent verification, or professional authority
 
 DO NOT:
 - Use "In conclusion", "Let's dive in", "Unleash", "Delve into"
 - Start with "Welcome to" or "In this article"
-- Sound robotic
 - Repeat examples from previous posts
 
 Write in markdown:
@@ -305,11 +307,11 @@ function cleanAIArtifacts(content) {
  */
 async function saveBlogPost(content, topic) {
   const today = new Date().toISOString().split('T')[0];
-  const filepath = path.resolve(assertDraftMode());
+  const filepath = assertDraftMode();
   
   // Use proper description or generate one from title
   const seoDescription = topic.description || 
-    `Learn ${topic.title.toLowerCase()}. Expert tips and copy-paste prompts for ${topic.keywords[0] || 'AI art'}.`;
+    `Editorial draft about ${topic.title.toLowerCase()}, with examples for ${topic.keywords[0] || 'AI art'} pending source review.`;
   
   const frontmatter = `---
 title: "${topic.title}"
@@ -317,6 +319,7 @@ date: "${today}"
 description: "${seoDescription}"
 tags: [${topic.keywords.map(k => `"${k}"`).join(', ')}]
 author: "Free AI Prompt Maker"
+editorialStatus: "unverified-draft"
 category: "${topic.category}"
 difficulty: "${topic.difficulty || 'intermediate'}"
 readTime: "${topic.estimatedReadTime || '10 min'}"
@@ -324,8 +327,7 @@ readTime: "${topic.estimatedReadTime || '10 min'}"
 
 `;
 
-  await fs.mkdir(path.dirname(filepath), { recursive: true });
-  await fs.writeFile(filepath, frontmatter + content);
+  await writeDraftArtifact(process.env.CONTENT_DRAFT_OUTPUT, frontmatter + content);
   
   console.log(`✅ Dosya kaydedildi: ${filepath}`);
   return filepath;

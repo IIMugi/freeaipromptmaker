@@ -2,7 +2,15 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleGenAI } from '@google/genai';
-import { POST } from '@/app/api/image-to-prompt/route';
+import {
+  POST,
+  consumeRateLimit,
+  maxRateLimitEntries,
+  maxRequestsPerWindow,
+  rateWindowMs,
+  resetRateLimitStoreForTests,
+  rateLimitStoreSizeForTests,
+} from '@/app/api/image-to-prompt/route';
 import { MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
 
 const generateContent = vi.fn();
@@ -26,12 +34,37 @@ const truncatedPngBytes = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 describe('image analysis API', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetRateLimitStoreForTests();
     for (const key of Object.keys(process.env)) {
       if (key.startsWith('GEMINI_API_KEY')) delete process.env[key];
     }
     vi.mocked(GoogleGenAI).mockImplementation(function MockGoogleGenAI() {
       return { models: { generateContent } } as unknown as GoogleGenAI;
     });
+  });
+
+  it('returns 429 after the bounded per-client allowance', () => {
+    const now = 1_000;
+    for (let count = 0; count < maxRequestsPerWindow; count += 1) {
+      expect(consumeRateLimit('bounded-client', now).allowed).toBe(true);
+    }
+    const rejected = consumeRateLimit('bounded-client', now);
+    expect(rejected.allowed).toBe(false);
+    expect(rejected.retryAfterSeconds).toBe(Math.ceil(rateWindowMs / 1000));
+  });
+
+  it('expires old entries and admits the client in a new window', () => {
+    consumeRateLimit('expiring-client', 1_000);
+    const renewed = consumeRateLimit('expiring-client', 1_000 + rateWindowMs);
+    expect(renewed.allowed).toBe(true);
+    expect(renewed.remaining).toBe(maxRequestsPerWindow - 1);
+  });
+
+  it('caps unique-client state and evicts old entries', () => {
+    for (let index = 0; index < maxRateLimitEntries + 25; index += 1) {
+      consumeRateLimit(`client-${index}`, 1_000);
+    }
+    expect(rateLimitStoreSizeForTests()).toBe(maxRateLimitEntries);
   });
 
   it('fails closed when analysis is not configured', async () => {

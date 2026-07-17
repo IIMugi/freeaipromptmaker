@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * PromptMaster AI - Auto-Blogger Bot
- * Gemini 2.5 Pro ile otomatik blog yazısı üretir
- * 10 API Key Rotation sistemi ile günde 500 istek kapasitesi
+ * Free AI Prompt Maker - Unpublished Draft Generator
+ * Gemini ile yalnızca doğrulanmamış bir inceleme taslağı üretir
+ * API anahtarları taslağı yayımlamak veya depoyu değiştirmek için kullanılmaz
  * 
  * Kullanım: node scripts/generate-post.js
- * Cron: GitHub Actions ile 2 günde bir çalışır
+ * Yalnızca manuel GitHub Actions çalıştırmasıyla inceleme taslağı üretir
  */
 
 import dotenv from 'dotenv';
@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs/promises';
 import { GoogleGenAI } from '@google/genai';
+import { resolveDraftOutput, writeDraftArtifact } from './lib/draft-output.js';
 
 // .env.local dosyasını yükle
 const __filename = fileURLToPath(import.meta.url);
@@ -21,9 +22,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 export function assertDraftMode() {
-  const output = process.env.CONTENT_DRAFT_OUTPUT;
-  if (!output) throw new Error('CONTENT_DRAFT_OUTPUT is required; publishing is disabled.');
-  return output;
+  return resolveDraftOutput();
 }
 
 // ============================================
@@ -437,7 +436,7 @@ async function generateNewTopic(publishedData) {
   const suggestedCategory = CONTENT_CATEGORIES[categoryIndex];
 
   const prompt = `
-You are an SEO expert specializing in AI art content. Your task is to generate ONE new blog topic.
+You are proposing ONE candidate topic for an unverified editorial draft about AI art.
 
 PUBLISHED CONTENT (DO NOT REPEAT):
 ${allTitles.map((t, i) => `${i + 1}. ${t}`).join('\n')}
@@ -448,7 +447,7 @@ ${[...new Set(allKeywords)].slice(0, 30).join(', ')}
 SUGGESTED CATEGORY FOR THIS POST: ${suggestedCategory}
 
 Generate a NEW blog topic that:
-1. Targets high-volume AI art search keywords
+1. Has clear AI art search intent without claiming unsupported keyword-volume data
 2. Does NOT overlap with published content above
 3. Has clear search intent (how-to, guide, tips, collection)
 4. Is actionable and valuable for AI artists
@@ -556,7 +555,7 @@ async function generateDraft(topic) {
   console.log(`📝 Taslak yazılıyor: ${topic.title}`);
 
   const prompt = `
-You are an expert AI art blogger writing for PromptMaster AI - a visual prompt generator for Midjourney, DALL-E, and Stable Diffusion.
+You are preparing an unverified draft for a human editor at Free AI Prompt Maker.
 
 Write a comprehensive, SEO-optimized blog post about: "${topic.title}"
 
@@ -567,21 +566,24 @@ Structure the post with:
 2. Main content sections based on this outline:
 ${topic.outline.map((item, i) => `   ${i + 1}. ${item}`).join('\n')}
 3. Practical examples with actual prompts users can copy (use code blocks)
-4. Pro tips and best practices
+4. Source-bounded practical notes and limitations
 5. A conclusion with a call-to-action to try our Prompt Generator
 
 Requirements:
-- Write in a friendly, expert tone - like you're helping a friend
+- Write in clear, neutral language
 - Include 5-10 actual prompt examples in code blocks that users can copy
 - Use markdown formatting (##, ###, **, \`code\`, etc.)
 - Target length: 2000-2500 words
 - Make it genuinely helpful and actionable
 - Include internal link: [Try our Visual Prompt Generator](/)
 - Add relevant emoji sparingly for visual interest
+- Cite primary sources with direct URLs for every product or interface claim
+- State the exact product or interface version and source access date
+- Include a limitations section and mark any unsupported point as [UNVERIFIED]
+- Never claim personal use, testing, independent verification, or professional authority
 
 CRITICAL - DO NOT:
 - Use phrases like "In conclusion", "Let's dive in", "Unleash", "Delve into", "In this article"
-- Sound robotic or AI-generated
 - Use excessive exclamation marks
 - Be overly promotional
 - Start paragraphs with "So," or "Now,"
@@ -598,7 +600,7 @@ Write the blog post now in markdown format:
  */
 async function createMDXFile(content, topic, imageData) {
   const today = new Date().toISOString().split('T')[0];
-  const filepath = path.resolve(assertDraftMode());
+  const filepath = assertDraftMode();
 
   // Image frontmatter kısmı
   const imageFrontmatter = imageData ? `
@@ -622,6 +624,7 @@ date: "${today}"
 description: "${topic.keywords.slice(0, 3).join(', ')} - A comprehensive guide for AI artists"
 tags: [${topic.keywords.map(k => `"${k}"`).join(', ')}]
 author: "Free AI Prompt Maker"
+editorialStatus: "unverified-draft"
 readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${categoryFrontmatter}${prosFrontmatter}${consFrontmatter}${imageFrontmatter}
 ---
 
@@ -629,12 +632,8 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${categoryFron
 
   const fullContent = frontmatter + content;
 
-  // posts klasörü yoksa oluştur
-  await fs.mkdir(path.dirname(filepath), { recursive: true });
-
-  // Dosyayı yaz
-  await fs.writeFile(filepath, fullContent);
-
+  // Yalnızca sınırlandırılmış, izlenmeyen taslak köküne yeni bir dosya yaz
+  await writeDraftArtifact(process.env.CONTENT_DRAFT_OUTPUT, fullContent);
   console.log(`✅ Dosya oluşturuldu: ${filepath}`);
   return filepath;
 }
@@ -644,7 +643,7 @@ readTime: "${Math.ceil(content.split(' ').length / 200)} min read"${categoryFron
  */
 async function main() {
   assertDraftMode();
-  console.log('🚀 PromptMaster AI Auto-Blogger başlatılıyor...');
+  console.log('🚀 Free AI Prompt Maker inceleme taslağı oluşturuluyor...');
   console.log(`📊 ${API_KEYS.length} API key yüklendi\n`);
 
   // API key kontrolü
