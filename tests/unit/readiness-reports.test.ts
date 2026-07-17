@@ -10,7 +10,7 @@ describe('final readiness artifacts', () => {
     const report = fs.readFileSync(path.join(docs, 'FINAL_READINESS_REPORT.md'), 'utf8');
 
     expect(report).toMatch(/seven source-verified guides/i);
-    expect(report).toMatch(/27 files, 103 tests passed/i);
+    expect(report).toMatch(/28 files, 106 tests passed/i);
     expect(report).toMatch(/51 Chromium tests passed/i);
     expect(report).toMatch(/30 sitemap URLs/i);
     expect(report).not.toMatch(/only one guide|252 legacy|47 unit|32 browser|24 sitemap/i);

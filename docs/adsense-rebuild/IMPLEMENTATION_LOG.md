@@ -73,7 +73,7 @@ The row-level decisions and fresh rendered inventory are in `CONTENT_DECISIONS.c
 | `npm ci` | 643 packages installed; 644 audited; 0 vulnerabilities. |
 | `npm run lint` | Exit 0; no reported errors or warnings. |
 | `npx tsc --noEmit` | Exit 0. |
-| `npm test` | 27 files, 103 tests passed. |
+| `npm test` | 28 files, 106 tests passed. |
 | `npm run build` | Next.js 16.2.10; 426 static pages generated. |
 | `npm run test:e2e` | 51 Chromium tests passed against the production build. |
 | `npm run audit:routes` | 423 routes, 30 sitemap URLs, 132 internal links, 17 assets; 0 issues. |
