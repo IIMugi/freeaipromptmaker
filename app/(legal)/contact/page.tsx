@@ -4,7 +4,8 @@ import { SITE } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Report a factual, privacy, accessibility, or software issue for Free AI Prompt Maker.',
+  description:
+    'Report a factual, privacy, accessibility, or software issue for Free AI Prompt Maker via the public GitHub repository, with tips for useful corrections.',
   alternates: { canonical: '/contact' },
 };
 

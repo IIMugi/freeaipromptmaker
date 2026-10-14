@@ -4,7 +4,8 @@ import { SITE } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'How Free AI Prompt Maker works, what it does not claim, and where to inspect the project.',
+  description:
+    'How Free AI Prompt Maker works: an open-source browser tool that formats image prompts locally, what it does not claim, and where to inspect the source.',
   alternates: { canonical: '/about' },
 };
 

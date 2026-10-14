@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Content Standards',
-  description: 'The editorial states and verification requirements used by Free AI Prompt Maker.',
+  description:
+    'The editorial states and checks behind Free AI Prompt Maker guides: verified, needs review, or archived, and how older automated content is handled.',
   alternates: { canonical: '/content-standards' },
 };
 

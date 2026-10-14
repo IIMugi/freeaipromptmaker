@@ -5,7 +5,7 @@ import { getAllPosts } from '@/lib/blog';
 export const metadata: Metadata = {
   title: 'AI Prompt Blog - Prompt Engineering Guides',
   description:
-    'Source-checked prompt and tool references with explicit version and limitation notes.',
+    'Source-checked guides to image prompting in Stable Diffusion, Midjourney and Leonardo AI, each with explicit tool version and limitation notes.',
   alternates: {
     canonical: '/blog',
   },

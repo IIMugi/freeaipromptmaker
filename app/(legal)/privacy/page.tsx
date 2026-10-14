@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'What Free AI Prompt Maker processes locally, what is sent to providers, and how analytics consent works.',
+  description:
+    'What Free AI Prompt Maker processes in your browser, what is sent to providers when you analyze an image, and how optional analytics consent works.',
   alternates: { canonical: '/privacy' },
 };
 

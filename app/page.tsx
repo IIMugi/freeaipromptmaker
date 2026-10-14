@@ -10,7 +10,7 @@ import { getAllPosts } from '@/lib/blog';
 export const metadata: Metadata = {
   title: 'Free AI Prompt Maker',
   description:
-    'Format structured image prompts locally, copy model-aware variants, and keep a private browser history.',
+    'Format structured image prompts locally for Midjourney, Stable Diffusion, Flux, DALL-E 3 and more. Copy model-aware variants and keep a private history.',
   alternates: { canonical: '/' },
 };
 

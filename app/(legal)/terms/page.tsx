@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
-  description: 'Terms for using Free AI Prompt Maker and its optional image-analysis feature.',
+  description:
+    'Terms for using Free AI Prompt Maker, a free tool that formats image prompts locally, including acceptable use and the optional image-analysis feature.',
   alternates: { canonical: '/terms' },
 };
 

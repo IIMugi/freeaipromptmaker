@@ -5,7 +5,8 @@ import { aiTools } from '@/data/ai-tools';
 
 export const metadata: Metadata = {
   title: 'Image Tool Reference',
-  description: 'Official provider links and prompt-format boundaries for image-generation products.',
+  description:
+    'Official links and prompt-format notes for Midjourney, FLUX, Stable Diffusion, Adobe Firefly and OpenAI image generation. No rankings or paid placements.',
   alternates: { canonical: '/tools' },
 };
 
