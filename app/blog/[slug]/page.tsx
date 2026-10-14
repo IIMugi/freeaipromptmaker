@@ -33,9 +33,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = canonicalUrl(`/blog/${slug}`);
   const policy = getEditorialPolicy(post.editorialState);
 
+  // Post titles skip the " | Free AI Prompt Maker" template suffix to stay under ~65 characters in search results.
+  const title = { absolute: post.title };
+
   if (!policy.index) {
     return {
-      title: post.title,
+      title,
       description: QUARANTINED_DESCRIPTION,
       keywords: [],
       authors: [],
@@ -60,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: post.title,
+    title,
     description: post.description,
     keywords: post.tags,
     authors: post.author ? [{ name: post.author }] : undefined,

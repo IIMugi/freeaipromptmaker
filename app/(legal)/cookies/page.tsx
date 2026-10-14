@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'Local storage and optional analytics used by Free AI Prompt Maker.',
+  description:
+    'How Free AI Prompt Maker uses browser local storage and optional Google Analytics cookies, which load only after you choose Allow analytics.',
   alternates: { canonical: '/cookies' },
 };
 
