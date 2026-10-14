@@ -1,0 +1,33 @@
+# Runs freeaipromptmaker.com on the Oracle host behind nginx (deploy/nginx/).
+# Secrets live in ./.env next to this file (git-ignored, chmod 600). The same file
+# supplies the NEXT_PUBLIC_* build args below via compose variable interpolation.
+name: freeaipromptmaker
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://freeaipromptmaker.com}
+        NEXT_PUBLIC_GA4_ID: ${NEXT_PUBLIC_GA4_ID:-}
+        NEXT_PUBLIC_GOOGLE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_VERIFICATION:-}
+    image: freeaipromptmaker:latest
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    # Loopback only; nginx is the public entry point. 3000/4000/4100 are taken by divi/obol.
+    ports:
+      - "127.0.0.1:${HOST_PORT:-3100}:3000"
+    volumes:
+      - next-cache:/app/.next/cache
+    mem_limit: 1g
+    cpus: 1.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  next-cache:

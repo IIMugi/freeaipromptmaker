@@ -1,0 +1,12 @@
+.git
+.github
+.cursor
+node_modules
+.next
+.env*
+*.log
+lighthouse-*.json
+playwright-report
+test-results
+Dockerfile
+docker-compose.yml
