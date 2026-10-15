@@ -1,22 +1,22 @@
 const groups = [
   {
     title: 'Midjourney',
-    text: 'Formats supported text parameters such as aspect ratio, stylize, chaos, and --no. Confirm current parameters in Midjourney before use.',
+    text: 'Adds parameters such as --ar, --stylize, --chaos and --no at the end of the prompt, where Midjourney expects them.',
   },
   {
     title: 'Flux',
-    text: 'Produces a descriptive natural-language prompt. Dimensions and other API or interface settings are not inserted as fake text flags.',
+    text: 'Writes a plain descriptive prompt. Flux has no parameter flags in the prompt, so size and other settings stay in your tool.',
   },
   {
-    title: 'Other interfaces',
-    text: 'Creates a structured descriptive draft. Model versions, safety behavior, settings, and negative-prompt support vary by provider.',
+    title: 'Stable Diffusion, Leonardo and others',
+    text: 'Builds a clear descriptive prompt you can paste anywhere. Negative prompt support differs by tool and model.',
   },
 ];
 
 export function SupportedModels() {
   return (
     <section className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6 sm:p-8">
-      <h2 className="text-2xl font-semibold text-[var(--text-primary)]">What model support means here</h2>
+      <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Prompts formatted for each tool</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {groups.map((group) => (
           <article key={group.title} className="rounded-2xl border border-[var(--border-default)] p-5">

@@ -32,8 +32,8 @@ export default function PrivacyPage() {
           copy variant, or failure reason; prompt and image content are not included.
         </PolicySection>
         <PolicySection title="Advertising">
-          Advertising is disabled in the readiness build. No advertising script or advertising cookie
-          is loaded by the current application.
+          The site currently shows no advertising. No advertising script or advertising cookie is
+          loaded.
         </PolicySection>
         <PolicySection title="Hosting and request data">
           Normal web requests may expose technical data such as IP address, user agent, route, and

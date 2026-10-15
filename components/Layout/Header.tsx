@@ -10,7 +10,6 @@ import { useTheme } from '@/components/ThemeProvider';
 const navLinks = [
   { href: '/', label: 'Generator' },
   { href: '/prompt-generators', label: 'Prompt Hub' },
-  { href: '/image-to-prompt', label: 'Image Analysis' },
   { href: '/tools', label: 'Tools' },
   { href: '/blog', label: 'Guides' },
   { href: '/about', label: 'About' },

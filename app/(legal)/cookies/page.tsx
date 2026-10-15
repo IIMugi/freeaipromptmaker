@@ -30,7 +30,7 @@ export default function CookiesPage() {
         </section>
         <section>
           <h2 className="text-2xl font-semibold text-[var(--text-primary)]">No advertising cookies</h2>
-          <p className="mt-3 leading-relaxed">Advertising is disabled in the readiness build, so the current application does not load advertising cookies.</p>
+          <p className="mt-3 leading-relaxed">The site currently shows no advertising, so it does not load advertising cookies.</p>
         </section>
       </div>
       <p className="mt-10 text-[var(--text-secondary)]">See the <Link href="/privacy" className="text-[var(--accent-primary)] hover:underline">privacy policy</Link> for provider and request-data boundaries.</p>

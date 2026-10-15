@@ -31,8 +31,9 @@ export default function TermsPage() {
           Features may change or be unavailable. The site reports provider failures but cannot promise
           uninterrupted access or a particular result from another product.
         </Term>
-        <Term title="Commercial readiness">
-          Advertising is disabled in the readiness build. AdSense approval is not guaranteed.
+        <Term title="Advertising">
+          The site currently shows no advertising. If that changes, these terms and the privacy policy
+          will be updated first.
         </Term>
       </div>
       <p className="mt-10 text-[var(--text-secondary)]">Questions can be submitted through the <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">contact page</Link>.</p>

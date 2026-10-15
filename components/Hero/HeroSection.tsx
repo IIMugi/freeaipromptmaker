@@ -1,18 +1,18 @@
 import Link from 'next/link';
-import { ArrowDown, Github } from 'lucide-react';
-import { SITE } from '@/lib/site';
+import { ArrowDown, BookOpen } from 'lucide-react';
 
 export function HeroSection() {
   return (
     <section className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-base)] px-6 py-12 shadow-[var(--shadow-card)] sm:px-10 md:py-16">
       <div className="max-w-4xl">
-        <p className="text-sm font-medium text-[var(--accent-primary)]">Local prompt formatter</p>
+        <p className="text-sm font-medium text-[var(--accent-primary)]">Free, no sign-up</p>
         <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl">
-          Build a clearer image prompt.
+          Free AI Image Prompt Generator
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
-          Choose a target model, describe the image, add optional style and camera cues, then copy
-          the locally formatted result. No account is required and prompt text stays in your browser.
+          Describe the image you want, add style, lighting and camera details, and copy a prompt
+          formatted for Midjourney, Stable Diffusion, Flux, Leonardo and more. Your prompts stay in
+          your browser.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
@@ -22,15 +22,13 @@ export function HeroSection() {
             Open the generator
             <ArrowDown className="h-4 w-4" aria-hidden="true" />
           </Link>
-          <a
-            href={SITE.social.github}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/blog"
             className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] px-5 py-3 text-sm font-medium text-[var(--text-primary)]"
           >
-            <Github className="h-4 w-4" aria-hidden="true" />
-            Inspect the source
-          </a>
+            <BookOpen className="h-4 w-4" aria-hidden="true" />
+            Prompt guides
+          </Link>
         </div>
       </div>
     </section>

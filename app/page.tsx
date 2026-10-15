@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { HeroSection } from '@/components/Hero/HeroSection';
 import { PromptBuilderLazy as PromptBuilder } from '@/components/Generator/PromptBuilderLazy';
 import { HowPromptFormattingWorks } from '@/components/Home/HowPromptFormattingWorks';
@@ -8,9 +7,9 @@ import { VerifiedGuides } from '@/components/Home/VerifiedGuides';
 import { getAllPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
-  title: 'Free AI Prompt Maker',
+  title: { absolute: 'Free AI Prompt Generator for Midjourney, Stable Diffusion & Flux' },
   description:
-    'Format structured image prompts locally for Midjourney, Stable Diffusion, Flux, DALL-E 3 and more. Copy model-aware variants and keep a private history.',
+    'Free AI image prompt generator: describe your image, add style, lighting and camera details, and copy a prompt for Midjourney, Stable Diffusion, Flux and more.',
   alternates: { canonical: '/' },
 };
 
@@ -29,20 +28,6 @@ export default function Home() {
         <HowPromptFormattingWorks />
         <SupportedModels />
         <VerifiedGuides posts={verifiedGuides} />
-
-        <section className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 sm:p-8">
-          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Trust boundaries</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
-            Prompt formatting runs locally. Optional analytics requires consent. Image analysis is a
-            separate provider-backed feature and clearly reports when unavailable. Advertising is
-            disabled in this readiness build.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-4 text-sm font-medium">
-            <Link href="/privacy" className="text-[var(--accent-primary)] hover:underline">Privacy</Link>
-            <Link href="/content-standards" className="text-[var(--accent-primary)] hover:underline">Content standards</Link>
-            <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">Contact</Link>
-          </div>
-        </section>
       </div>
     </div>
   );

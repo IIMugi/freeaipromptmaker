@@ -5,7 +5,8 @@ import { canonicalUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Image to Prompt Analysis',
   description:
-    'Request prompt suggestions from a supported image when vision analysis is configured. The tool fails closed when analysis is unavailable.',
+    'Upload an image and get prompt suggestions describing it. Image analysis is currently unavailable on this site.',
+  robots: { index: false, follow: true },
   alternates: { canonical: canonicalUrl('/image-to-prompt') },
   openGraph: {
     title: 'Image to Prompt Analysis',

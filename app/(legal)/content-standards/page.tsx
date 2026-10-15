@@ -42,10 +42,10 @@ export default function ContentStandardsPage() {
       </section>
 
       <section className="mt-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Commercial readiness</h2>
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Advertising and affiliate links</h2>
         <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
-          Advertising is disabled in the readiness build and there are no affiliate links in the
-          tool directory. AdSense approval is not guaranteed by these changes or by this policy.
+          The site currently shows no advertising, and the tool directory contains no affiliate
+          links. Guides are not paid placements.
         </p>
       </section>
 

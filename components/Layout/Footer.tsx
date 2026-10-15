@@ -5,9 +5,8 @@ import { SITE } from '@/lib/site';
 const productLinks = [
   { href: '/#generator', label: 'Prompt generator' },
   { href: '/prompt-generators', label: 'Prompt hub' },
-  { href: '/image-to-prompt', label: 'Image analysis' },
   { href: '/tools', label: 'Tool directory' },
-  { href: '/blog', label: 'Verified guides' },
+  { href: '/blog', label: 'Prompt guides' },
 ];
 
 const trustLinks = [
@@ -31,8 +30,8 @@ export function Footer() {
             <span className="font-semibold text-[var(--text-primary)]">{SITE.name}</span>
           </Link>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-[var(--text-secondary)]">
-            Build and copy structured prompts locally. Optional image analysis is clearly separated
-            and fails closed when its provider is unavailable.
+            Free prompt generator and guides for Midjourney, Stable Diffusion, Flux and Leonardo.
+            Prompts are built in your browser.
           </p>
           <a
             href={SITE.social.github}

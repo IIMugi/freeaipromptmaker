@@ -9,7 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: canonicalUrl('/blog'), changeFrequency: 'weekly', priority: 0.8 },
     { url: canonicalUrl('/tools'), changeFrequency: 'monthly', priority: 0.7 },
     { url: canonicalUrl('/prompt-generators'), changeFrequency: 'monthly', priority: 0.8 },
-    { url: canonicalUrl('/image-to-prompt'), changeFrequency: 'monthly', priority: 0.8 },
     { url: canonicalUrl('/about'), changeFrequency: 'monthly', priority: 0.6 },
     { url: canonicalUrl('/content-standards'), changeFrequency: 'yearly', priority: 0.4 },
     { url: canonicalUrl('/privacy'), changeFrequency: 'yearly', priority: 0.3 },
