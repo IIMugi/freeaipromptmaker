@@ -173,15 +173,16 @@
                                                                              "state":  "needs-review"
                                                                          },
     "2026-01-04-stable-diffusion-regional-prompting-guide":  {
-                                                                 "state":  "verified",
-                                                                 "lastVerified":  "2026-07-16",
-                                                                 "testedVersion":  "Regional Prompter upstream main commit 3ed4cb30e10e510e4cd9b33cd9b11cda170859c2, documented against AUTOMATIC1111 1.10.1",
-                                                                 "sources":  [
-                                                                                 "https://github.com/hako-mikan/sd-webui-regional-prompter",
-                                                                                 "https://github.com/hako-mikan/sd-webui-regional-prompter/tree/3ed4cb30e10e510e4cd9b33cd9b11cda170859c2",
-                                                                                 "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
-                                                                             ]
-                                                             },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Regional Prompter main @ b10c496 (2026-09-04), SwarmUI Prompt Syntax docs and ComfyUI Area Composition examples as of 2026-10-15",
+    "sources": [
+      "https://github.com/hako-mikan/sd-webui-regional-prompter",
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions",
+      "https://github.com/mcmonkeyprojects/SwarmUI/blob/master/docs/Features/Prompt%20Syntax.md",
+      "https://comfyanonymous.github.io/ComfyUI_examples/area_composition/"
+    ]
+  },
     "2026-01-05-dall-e-3-text-generation-guide":  {
                                                       "state":  "needs-review"
                                                   },

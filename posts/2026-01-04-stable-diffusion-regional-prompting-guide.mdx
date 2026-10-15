@@ -1,153 +1,247 @@
 ---
-title: "Stable Diffusion Regional Prompting with Regional Prompter"
+title: "Regional Prompter Guide: BREAK, ADDCOL, ADDROW + Examples"
 date: "2026-01-04"
-description: "A source-bounded reference for assigning text prompts to rows, columns, and two-dimensional regions with Regional Prompter."
-tags: ["stable diffusion", "regional prompting", "regional prompter", "automatic1111", "prompt workflow"]
+description: "How to use Regional Prompter in Stable Diffusion (A1111, Forge): BREAK, ADDCOMM, ADDBASE, ADDCOL, ADDROW, divide ratios and copy-paste regional prompts."
+tags: ["regional prompter", "regional prompting", "stable diffusion", "forge", "swarmui regional prompting", "comfyui area composition"]
 author: "Eren Koray"
-readTime: "11 min read"
 category: "stable-diffusion"
+difficulty: "intermediate"
+readTime: "9 min"
+pros:
+  - "Different prompts for different parts of the image: two characters, outfit pieces, sky and ground"
+  - "Works in AUTOMATIC1111, Forge and reForge, with SDXL support"
+cons:
+  - "Small regions blend together in Attention mode"
+  - "Region LoRAs need Latent mode, which is slower"
 ---
 
-# Stable Diffusion Regional Prompting with Regional Prompter
+Regional Prompter splits the image into regions and gives each region its own prompt. It is the usual fix for colors and details bleeding between subjects: red hair ending up on both characters, or the skirt color leaking into the blouse. This page covers the syntax, the settings and ready-to-copy prompts.
 
-Regional Prompter assigns separate prompt clauses to defined parts of a Stable Diffusion canvas. It is an AUTOMATIC1111 extension, so the syntax and compatibility notes below are extension-specific rather than general Stable Diffusion syntax.
+## Quick start
 
-**Version boundary:** Regional Prompter upstream `main` commit `3ed4cb30e10e510e4cd9b33cd9b11cda170859c2`, documented against AUTOMATIC1111 1.10.1. Documentation verified: 2026-07-16.
+Install Regional Prompter from the web UI's **Extensions → Available** tab, restart, and open the Regional Prompter panel under the generation settings.
 
-No independent image-generation comparison was performed for this guide.
+The README's own first example: three regions stacked top to bottom.
 
-## Choose the region model before writing the prompt
+```text
+green hair twintail BREAK
+red blouse BREAK
+blue skirt
+```
 
-| Need | Configuration to start with | Prompt structure | Important constraint |
+```text
+Active: On
+Use base prompt: Off
+Divide mode: Rows
+Divide Ratio: 1,1,1
+Base Ratio:
+```
+
+Each `BREAK` starts the prompt for the next region. The first prompt goes to the top third, the second to the middle, the third to the bottom.
+
+**Mode names changed.** Older tutorials say *Horizontal* and *Vertical*. In the current version *Horizontal* is **Columns** (regions side by side, left to right) and *Vertical* is **Rows** (regions stacked, top to bottom).
+
+## Syntax cheat sheet
+
+| Keyword | What it does | Turns on automatically |
+| --- | --- | --- |
+| `BREAK` | Separates the prompts for each region | — |
+| `ADDCOMM` | Text before it is added to every region | Use common prompt |
+| `ADDBASE` | Text before it is a base prompt, mixed in by Base Ratio | Use base prompt |
+| `ADDCOL` | Next region is a new column (2D mode) | 2D region mode |
+| `ADDROW` | Next region is a new row (2D mode) | 2D region mode |
+| `;` in Divide Ratio | Separates rows in 2D mode | 2D region mode |
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| Mode | Matrix (Columns or Rows), Mask, Prompt | Columns = side by side, Rows = stacked |
+| Divide Ratio | e.g. `1,1` / `3,1,1` / `1,2,1;2,4,6` | `3,1,1` = 60% / 20% / 20% |
+| Base Ratio | `0`–`1`, one value or one per region | `0.2` = 20% base prompt + 80% region prompt |
+| Calculation mode | Attention, Latent | Attention for normal use; Latent for per-region LoRAs |
+
+Divide Ratio accepts plain proportions (`1,1,1`), fractions (`0.1,0.1,0.1` is the same thing) or pixel sizes (`300,100,112` for a 512 px side) when you want exact borders.
+
+## Copy-paste templates
+
+### Two characters side by side
+
+```text
+2girls standing in a park, autumn leaves, soft daylight, best quality ADDCOMM
+red hair, white sundress, holding a book BREAK
+black short hair, denim jacket, holding a coffee cup
+```
+
+```text
+Divide mode: Columns
+Divide Ratio: 1,1
+```
+
+`ADDCOMM` sends the first line to both regions, so each half knows the scene. With common on you need one more prompt than regions: here 3 prompts for 2 regions.
+
+### Outfit from top to bottom
+
+```text
+1girl, full body, standing, plain studio background ADDCOMM
+silver hair, blue eyes BREAK
+black leather jacket, white t-shirt BREAK
+red plaid skirt, black boots
+```
+
+```text
+Divide mode: Rows
+Divide Ratio: 1,1,1
+```
+
+### Sky, mountains, lake
+
+```text
+landscape photo, golden hour, high detail ADDCOMM
+dramatic orange clouds, sunset sky BREAK
+snowy mountain range, pine forest BREAK
+calm lake, reflections
+```
+
+```text
+Divide mode: Rows
+Divide Ratio: 2,2,1
+```
+
+### Base prompt instead of common
+
+```text
+a cozy living room, warm evening light ADDBASE
+blue velvet sofa BREAK
+green plants by a large window
+```
+
+```text
+Divide mode: Columns
+Divide Ratio: 1,1
+Base Ratio: 0.2
+```
+
+Each region is generated as 20% "cozy living room" + 80% its own prompt. With base on you also need one extra prompt: 3 prompts for 2 regions.
+
+### Per-region negative prompts
+
+Negative prompts can be split with `BREAK` too. If the negative prompt has no `BREAK`, the same negative is used for every region.
+
+```text
+blurry, lowres BREAK
+blurry, lowres, extra arms
+```
+
+For ready-made negative lists, see the [negative prompts guide](/blog/2025-11-29-stable-diffusion-negative-prompts-guide).
+
+## Common vs base
+
+Both share text between regions, but in different ways:
+
+| | Common (`ADDCOMM`) | Base (`ADDBASE`) |
+| --- | --- | --- |
+| How it combines | Joins the text: `a girl, red hair` | Mixes weights: `a girl` × 0.2 + `red hair` × 0.8 |
+| Strength control | None, the text is always there | Base Ratio |
+| Use it when | Every region needs the same scene and quality words | Common makes the shared part too strong |
+
+You can use both. The order is: common, base, then the region prompts. Three regions with both on need five prompts.
+
+## 2D regions with ADDCOL and ADDROW
+
+For grids, use `ADDCOL` and `ADDROW` instead of `BREAK`. Prompts are read top to bottom, left to right. The README's example:
+
+```text
+(blue sky:1.2) ADDCOL
+green hair twintail ADDCOL
+(aquarium:1.3) ADDROW
+(messy desk:1.2) ADDCOL
+orange dress and sofa
+```
+
+```text
+Divide mode: Columns
+Divide Ratio: 1,2,1,1;2,4,6
+```
+
+How to read the ratio: groups are separated by `;`, one group per row. The first number in a group is the row's height, the rest are the column widths in that row. So `1,2,1,1` is a row of height 1 with three columns (2:1:1), and `2,4,6` is a row of height 2 with two columns (4:6). That is 3 + 2 = 5 regions, matching 5 prompts.
+
+Another grid from the README, with a common prompt:
+
+```text
+fantasy ADDCOMM
+sky ADDROW
+castle ADDROW
+street stalls ADDCOL
+2girls eating and walking on street ADDCOL
+street stalls
+```
+
+The extension can draw the regions for a ratio and generate a matching prompt template for you: enter the ratio and press the visualize button. Use it whenever you are unsure how a ratio splits.
+
+If the ratio does not match the number of separators, all regions are made equal. The **flip** option swaps `,` and `;`, which rotates the layout by 90 degrees.
+
+## Attention vs Latent mode
+
+- **Attention** (default): use it normally. Fast, but at 512×512 regions are reduced to about 8×8 pixels inside the U-Net, so small regions mix together.
+- **Latent:** slower (generation time × number of regions) but keeps regions more exact, and lets you apply different LoRAs to different regions to some extent.
+
+You can write `BREAK` or `AND` in either mode; the extension converts between them.
+
+Support by front end, from the README:
+
+| Mode | A1111 | Forge | reForge |
 | --- | --- | --- | --- |
-| One stack of bands | Rows or Columns divide mode | One clause per region, separated by `BREAK` | Clause count must match the divide-ratio count |
-| A shared scene description plus local details | Enable the base prompt | Base clause first, then one `BREAK` clause per region | The base clause adds one prompt segment |
-| A grid or uneven two-dimensional layout | 2D regions with `ADDROW` and `ADDCOL` | Write regions from top to bottom and left to right | Row/column interpretation depends on the selected main split |
-| Region-specific LoRAs | Latent mode | Keep LoRA references in their intended clauses | Latent mode is slower and has documented client limitations |
+| Attention | Yes | Yes | Yes |
+| Latent | Yes | Yes, may fail with large batches (VRAM) | Yes, may fail with large batches (VRAM) |
+| LoRA in Latent | Yes | Yes | No |
 
-This worksheet begins with ratio-defined regions because every input can be recorded as text. Mask and prompt-derived region modes exist upstream, but they add experimental behavior that is outside this text-only reference.
+The 2026-09-04 update added Forge Neo models (Z-Image, Krea2, Anima): Latent mode works on all three, Attention works on Krea2 and Anima (on Z-Image it can merge two central subjects), and Region LoRA does not work on them.
 
-## Core syntax
+## Mask and Prompt modes
 
-### `BREAK` maps clauses to regions
-
-Regional Prompter reads prompt clauses separated by `BREAK`. With three regions and no base prompt, supply three clauses:
+- **Mask:** draw the regions by hand (or upload a mask image) instead of using ratios. Divide Ratio is ignored, Base Ratio still applies. Handy for odd shapes; trace over an OpenPose or depth image if you want.
+- **Prompt:** the region is found from a word in the prompt. Example from the README, putting the apple print only on the shirt:
 
 ```text
-misty pine forest BREAK
-stone observatory BREAK
-dry grass foreground
+lady smiling and sitting, twintails green hair, white skirt, shirt BREAK
+(apple printed:1.4),shirt
 ```
 
-The same count rule applies to a region-specific negative prompt. If the negative prompt contains no `BREAK`, the extension applies that negative prompt to all regions.
+The `threshold` setting controls how big the detected area is; use one value per target, separated by commas (for example `0.4,0.6`). Strong weights such as `1.4` to `1.6` on the target effect are normal here.
 
-### Base prompt adds a shared clause
+## Troubleshooting
 
-When **Use base prompt** is enabled, the first clause is treated as the base and is blended into every region according to the base-ratio setting. A three-region layout therefore needs four clauses:
-
-```text
-overcast mountain landscape BREAK
-misty pine forest BREAK
-stone observatory BREAK
-dry grass foreground
-```
-
-Do not confuse a base prompt with a common prompt. Upstream describes the common clause as text appended to each regional clause, while the base prompt is mixed by weight through the base-ratio control.
-
-### Divide ratio sets relative size
-
-Comma-separated values describe relative region sizes. `1,1,1` creates three equal shares; `3,1,1` creates shares of 60%, 20%, and 20%. Scaling every number by the same factor leaves the proportions unchanged.
-
-Rows and columns refer to the direction selected in the extension. Confirm the visible order in the region template before adding subject details; swapping a split direction changes which physical band receives each clause.
-
-## Three-region text worksheet
-
-Use this worksheet to keep the region contract explicit before opening the WebUI:
-
-| Field | Recorded value |
+| Problem | Fix |
 | --- | --- |
-| Canvas | `768 x 512` |
-| Active | `On` |
-| Calculation mode | `Attention` |
-| Divide mode | `Columns` |
-| Divide ratio | `2,3,2` |
-| Use base prompt | `On` |
-| Base ratio | `0.2` |
-| Base clause | `quiet coastal landscape, early morning` |
-| Region 1 clause | `dark rocks, tide pools` |
-| Region 2 clause | `small lighthouse, pale walls` |
-| Region 3 clause | `low dunes, beach grass` |
+| `IndexError: list index out of range` | The number of `BREAK`s does not match the number of regions. Count again, remembering the extra prompt for common/base, or untick "Use base prompt". |
+| Colors still bleed between regions | Use Latent mode, make the region bigger, or raise the weight of the region's key words. |
+| Small subject ignored | In Attention mode small regions merge; use Latent mode, which works at full latent resolution. |
+| LoRA corrupts the image in Latent mode | Lower CFG and LoRA weight, raise steps; try the LoRA text encoder / U-Net values (0–1, one per LoRA); last resort: inpaint. |
+| `Input type (struct c10::Half) and bias type (float) should be the same` | Happens with LoRA plus `--medvram`-style options: enable **Use LoHa or other**. |
+| LoCon/LoHa not applied | Enable **Use LoHa or other** (slower in A1111; no limit in Forge). |
 
-Combined prompt:
+## Regional prompting in SwarmUI and ComfyUI
+
+**SwarmUI** has region syntax built into the prompt:
 
 ```text
-quiet coastal landscape, early morning BREAK
-dark rocks, tide pools BREAK
-small lighthouse, pale walls BREAK
-low dunes, beach grass
+a photo of a cat and a dog on a sofa <region:0,0,0.5,1> a ginger cat <region:0.5,0,0.5,1> a black labrador
 ```
 
-The worksheet is reproducible as a text configuration: another operator can enter the same canvas, mode, ratios, base weight, and clauses. It does not predict identical image content unless the rest of the generation configuration is also held constant, and it does not guarantee that every described object stays inside its assigned region.
+The format is `<region:x,y,width,height,strength>`, all values as fractions of the image (0.5 = half). Strength is optional. `<region:background>` targets everything not covered by another region, and `<object:...>` adds an automatic inpaint pass over the region. SwarmUI's docs note that SDXL follows regions strongly, while SD3 and Flux tend to apply them only in early steps, and very small regions are likely to be ignored.
 
-## Input-to-region audit
+**ComfyUI** does it with nodes: the official Area Composition examples use the core `ConditioningSetArea` node to give each area of the image its own prompt. They include a 16:9 image with a square area for the subject, which keeps wide images more coherent.
 
-For the `2,3,2` example, translate each input into its intended region before generation:
+## Related guides
 
-| Input order | Relative width | Intended content | Audit question |
-| --- | ---: | --- | --- |
-| Base | all regions at `0.2` | quiet coast and time of day | Is this shared context, rather than a local object? |
-| Region 1 | 2/7 | rocks and tide pools | Is this the first visible column? |
-| Region 2 | 3/7 | lighthouse | Does the widest column receive the central subject? |
-| Region 3 | 2/7 | dunes and grass | Is this the final visible column? |
+To add random variation inside regions, combine Regional Prompter with [wildcards](/blog/2026-01-25-stable-diffusion-wildcards-guide). For other extensions that work alongside it, see the [Stable Diffusion extensions guide](/blog/2026-02-13-best-stable-diffusion-extensions). For weight syntax such as `(word:1.3)`, see the [prompt weighting guide](/blog/2025-12-25-ai-prompt-weighting-guide).
 
-If a local phrase belongs everywhere, move it to the base or common clause. If a phrase belongs to one region, keep it out of the shared clause to reduce cross-region influence.
+## Build your prompt
 
-## Two-dimensional regions
-
-Regional Prompter activates 2D behavior with `ADDROW` or `ADDCOL`; a semicolon in the divide ratio is another documented trigger. The prompt is traversed from the upper-left, then top to bottom and left to right according to the chosen main split.
-
-A four-cell text template can be written explicitly:
-
-```text
-cloud layer ADDCOL distant ridge ADDROW
-river bank ADDCOL footpath
-```
-
-Before extending this layout, use the extension's region visualization/template control and record the generated ordering. Uneven 2D ratios are compact, but commas and semicolons change meaning with Rows, Columns, and flip settings.
-
-## Compatibility boundary
-
-The upstream compatibility table at the recorded commit distinguishes Attention and Latent modes:
-
-| Client | Attention mode | Latent mode | LoRA in Latent mode |
-| --- | --- | --- | --- |
-| AUTOMATIC1111 | Supported | Supported | Supported |
-| Forge | Supported | Conditional for large batches and available VRAM | Supported |
-| reForge | Supported | Conditional for large batches and available VRAM | Not supported |
-
-The same documentation notes that Latent mode repeats work per area and can corrupt LoRA behavior. LoCon and LoHa have additional WebUI-specific constraints. Treat this matrix as a snapshot of the named commit, not a promise about later forks or releases.
-
-## One-variable troubleshooting sequence
-
-Keep the seed and every unrelated generation setting fixed while changing one item at a time:
-
-1. **Count only:** disable the base prompt and use one plain noun per region. Confirm that the `BREAK` clause count equals the ratio count.
-2. **Direction only:** switch Rows to Columns, or Columns to Rows, without editing the prompt or ratio. Confirm the physical ordering.
-3. **Ratio only:** replace the ratio with equal values such as `1,1,1`. If ordering becomes clear, restore the uneven ratio.
-4. **Base only:** enable the base prompt, add exactly one leading clause, and keep a single base-ratio value.
-5. **Mode only:** use Attention mode before evaluating Latent mode or region-specific LoRA behavior.
-6. **Extension stack only:** disable other extensions, then re-enable one at a time after the text mapping is correct.
-
-This sequence isolates syntax, geometry, weighting, calculation mode, and extension interaction. It cannot distinguish model behavior from regional configuration unless the checkpoint, sampler, seed, dimensions, and other inputs remain unchanged.
-
-## Workflow boundaries and related references
-
-Regional prompting controls where prompt clauses are applied; it does not replace prompt cleanup. Establish exclusions with the [Stable Diffusion negative prompts reference](/blog/2025-11-29-stable-diffusion-negative-prompts-guide) before splitting them by region.
-
-For controlled prompt variation, use the [Dynamic Prompts wildcard guide](/blog/2026-01-25-stable-diffusion-wildcards-guide). Review repository provenance and rollback preparation in the [extension selection and installation guide](/blog/2026-02-13-best-stable-diffusion-extensions) before adding Regional Prompter.
+The [prompt generator](/#generator) builds the description for each region from subject, style and lighting choices. Paste the parts between `BREAK`s. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [Regional Prompter upstream repository](https://github.com/hako-mikan/sd-webui-regional-prompter)
-- [Regional Prompter snapshot at commit 3ed4cb30e10e510e4cd9b33cd9b11cda170859c2](https://github.com/hako-mikan/sd-webui-regional-prompter/tree/3ed4cb30e10e510e4cd9b33cd9b11cda170859c2)
-- [AUTOMATIC1111 1.10.1 release](https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1)
+- [Regional Prompter README (hako-mikan/sd-webui-regional-prompter)](https://github.com/hako-mikan/sd-webui-regional-prompter)
+- [AUTOMATIC1111 wiki: Extensions](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions)
+- [SwarmUI docs: Prompt Syntax (Regional Prompting)](https://github.com/mcmonkeyprojects/SwarmUI/blob/master/docs/Features/Prompt%20Syntax.md)
+- [ComfyUI examples: Area Composition](https://comfyanonymous.github.io/ComfyUI_examples/area_composition/)
