@@ -1,7 +1,19 @@
 import { readConsent } from '@/lib/consent';
-import type { AIModel } from '@/lib/prompt-builder';
-
-export type AnalyticsModel = AIModel | 'other';
+// Model ids sent to GA. Kept stable across redesigns so reports stay comparable.
+export type AnalyticsModel =
+  | 'midjourney'
+  | 'midjourney-v7'
+  | 'stable-diffusion'
+  | 'dall-e'
+  | 'flux'
+  | 'flux-pro'
+  | 'ideogram'
+  | 'leonardo'
+  | 'firefly'
+  | 'nano-banana'
+  | 'recraft'
+  | 'gpt4o'
+  | 'other';
 
 export type ProductEventMap = {
   prompt_generated: { model: AnalyticsModel };

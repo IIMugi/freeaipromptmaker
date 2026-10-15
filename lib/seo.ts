@@ -15,25 +15,22 @@ export function websiteJsonLd() {
   } as const;
 }
 
-export function breadcrumbJsonLd(pathname: string) {
-  const segments = pathname.split('/').filter(Boolean);
+export interface BreadcrumbItem {
+  name: string;
+  path: string;
+}
+
+/** BreadcrumbList for a page. `items` exclude Home, which is always first. */
+export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: SITE.origin,
-      },
-      ...segments.map((segment, index) => ({
-        '@type': 'ListItem',
-        position: index + 2,
-        name: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
-        item: canonicalUrl(`/${segments.slice(0, index + 1).join('/')}`),
-      })),
-    ],
+    itemListElement: [{ name: 'Home', path: '/' }, ...items].map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: canonicalUrl(item.path),
+    })),
   } as const;
 }
 
@@ -60,4 +57,9 @@ export function articleJsonLd(article: {
       : { '@type': 'Organization', name: SITE.name, url: SITE.origin },
     publisher: { '@type': 'Organization', name: SITE.name, url: SITE.origin },
   } as const;
+}
+
+/** JSON for a <script type="application/ld+json"> tag, with "<" escaped so text can never close the tag. */
+export function serializeJsonLd(data: unknown) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
 }

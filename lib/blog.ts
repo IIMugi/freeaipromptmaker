@@ -7,39 +7,21 @@ import type { EditorialState } from '@/lib/editorial';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-// Kategori bazlı kapak fallback'leri (Unsplash)
-const categoryFallbackImages: Record<string, string> = {
-  midjourney:
-    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
-  'stable-diffusion':
-    'https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1600&q=80',
-  'dall-e':
-    'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1600&q=80',
-  tutorials:
-    'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80',
-  comparisons:
-    'https://images.unsplash.com/photo-1488229297570-58520851e868?auto=format&fit=crop&w=1600&q=80',
-  'prompt-techniques':
-    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1600&q=80',
+/** Guides per hub page. The hub paginates with ?page=N beyond this. */
+export const POSTS_PER_PAGE = 24;
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  'art-styles': 'Art styles',
+  leonardo: 'Leonardo',
+  midjourney: 'Midjourney',
+  'prompt-techniques': 'Prompt techniques',
+  'stable-diffusion': 'Stable Diffusion',
 };
 
-const defaultFallbackImage =
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80';
-
-// Farklılık için genel fallback havuzu (deterministic seçim)
-const fallbackPool = [
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80', // desk purple
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80&sat=-60', // desk muted
-  'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80', // laptop notes
-  'https://images.unsplash.com/photo-1488229297570-58520851e868?auto=format&fit=crop&w=1600&q=80', // charts
-  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80', // team work
-  'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1600&q=80', // gradient tech
-];
-
-const pickFallbackFromPool = (slug: string) => {
-  const hash = Array.from(slug).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-  return fallbackPool[hash % fallbackPool.length] || defaultFallbackImage;
-};
+export function categoryLabel(category?: string) {
+  if (!category) return 'Guides';
+  return CATEGORY_LABELS[category] ?? category.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
+}
 
 export interface BlogPost {
   slug: string;
@@ -52,11 +34,6 @@ export interface BlogPost {
   difficulty?: string;
   readTime: string;
   content: string;
-  image?: string;
-  imageCredit?: string;
-  imageCreditUrl?: string;
-  pros?: string[];
-  cons?: string[];
   editorialState: EditorialState;
   lastVerified?: string;
   testedVersion?: string;
@@ -73,7 +50,6 @@ export interface BlogPostMeta {
   category?: string;
   difficulty?: string;
   readTime: string;
-  image?: string;
   editorialState: EditorialState;
   lastVerified?: string;
   testedVersion?: string;
@@ -108,11 +84,6 @@ export function getAllPosts({ hubOnly = false }: GetAllPostsOptions = {}): BlogP
       const stats = readingTime(content);
       
       const category = data.category as string | undefined;
-      const image =
-        data.image ||
-        (category ? categoryFallbackImages[category] : undefined) ||
-        pickFallbackFromPool(slug) ||
-        defaultFallbackImage;
 
       return {
         slug,
@@ -124,7 +95,6 @@ export function getAllPosts({ hubOnly = false }: GetAllPostsOptions = {}): BlogP
         category,
         difficulty: data.difficulty,
         readTime: data.readTime || stats.text,
-        image,
         editorialState: editorial.state,
         lastVerified: editorial.lastVerified,
         testedVersion: editorial.testedVersion,
@@ -173,11 +143,6 @@ export function getPostBySlug(slug: string): BlogPost | null {
     difficulty: data.difficulty,
     readTime: data.readTime || stats.text,
     content,
-    image: data.image,
-    imageCredit: data.imageCredit,
-    imageCreditUrl: data.imageCreditUrl,
-    pros: Array.isArray(data.pros) ? data.pros : undefined,
-    cons: Array.isArray(data.cons) ? data.cons : undefined,
     editorialState: editorial.state,
     lastVerified: editorial.lastVerified,
     testedVersion: editorial.testedVersion,

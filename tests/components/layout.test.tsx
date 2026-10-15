@@ -20,11 +20,22 @@ describe('global layout', () => {
     expect(screen.queryByRole('navigation', { name: 'Mobile navigation' })).not.toBeInTheDocument();
   });
 
+  it('offers system, light and dark themes', () => {
+    render(<ThemeProvider><Header /></ThemeProvider>);
+    const system = screen.getByRole('button', { name: 'Use system theme' });
+    expect(system).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'Use dark theme' }));
+    expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
+    expect(screen.getByRole('button', { name: 'Use dark theme' })).toHaveAttribute('aria-pressed', 'true');
+    localStorage.clear();
+  });
+
   it('has no non-functional newsletter or unsupported social profile', () => {
     render(<Footer />);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.queryByText(/newsletter|twitter/i)).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /source repository/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /source code on github/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Privacy settings' })).toBeInTheDocument();
   });
 
   it('defines a skip link and one main landmark in the root shell', () => {

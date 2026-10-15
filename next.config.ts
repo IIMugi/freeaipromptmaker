@@ -62,6 +62,8 @@ export const securityHeaders = [
 const nextConfig: NextConfig = {
   // Self-hosted in Docker (see Dockerfile); emits a minimal server in .next/standalone.
   output: 'standalone',
+  // next dev otherwise writes an AGENTS.md into the repo on every start.
+  agentRules: false,
   poweredByHeader: false,
   turbopack: {
     root: process.cwd(),

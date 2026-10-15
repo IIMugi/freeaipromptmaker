@@ -1,25 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Moon, Sparkles, Sun, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/components/ThemeProvider';
+import { BrandMark } from '@/components/Layout/BrandMark';
+import { ThemeSwitch } from '@/components/Layout/ThemeSwitch';
 
-const navLinks = [
-  { href: '/', label: 'Generator' },
-  { href: '/prompt-generators', label: 'Prompt Hub' },
-  { href: '/tools', label: 'Tools' },
+export const NAV_LINKS = [
+  { href: '/', label: 'Prompt generator' },
+  { href: '/negative-prompt-generator', label: 'Negative prompts' },
+  { href: '/prompt-generators', label: 'By use case' },
   { href: '/blog', label: 'Guides' },
-  { href: '/about', label: 'About' },
 ];
 
 export function Header() {
   const pathname = usePathname();
   const [openMenuPath, setOpenMenuPath] = useState<string | null>(null);
   const isMenuOpen = openMenuPath === pathname;
-  const { resolvedTheme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -30,31 +29,33 @@ export function Header() {
   }, []);
 
   const isActive = (href: string) =>
-    pathname === href || (href !== '/' && pathname.startsWith(href));
+    pathname === href ||
+    (href === '/prompt-generators' && pathname.startsWith('/prompt-generator-for')) ||
+    (href !== '/' && pathname.startsWith(href));
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-[var(--border-default)] bg-[var(--glass-bg-dense)] backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
-        <Link href="/" className="flex min-w-0 items-center gap-2" aria-label="Free AI Prompt Maker home">
-          <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl border border-[var(--accent-primary-strong)] bg-[var(--accent-primary-soft)]">
-            <Sparkles className="h-4 w-4 text-[var(--accent-primary)]" aria-hidden="true" />
-          </span>
-          <span className="truncate text-base font-semibold tracking-tight text-[var(--text-primary)]">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-2.5 rounded-control"
+          aria-label="Free AI Prompt Maker home"
+        >
+          <BrandMark className="h-7 w-7 flex-none" />
+          <span className="truncate text-[1.05rem] font-bold tracking-tight text-ink [font-stretch:85%]">
             Free AI Prompt Maker
           </span>
         </Link>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((link) => (
+        <nav aria-label="Primary navigation" className="hidden h-full items-stretch gap-1 lg:flex">
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               aria-current={isActive(link.href) ? 'page' : undefined}
               className={cn(
-                'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                isActive(link.href)
-                  ? 'bg-[var(--accent-primary-soft)] text-[var(--accent-primary)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]',
+                'flex items-center border-b-2 px-3 text-[0.95rem] font-medium transition-colors',
+                isActive(link.href) ? 'border-accent text-ink' : 'border-transparent text-ink-2 hover:text-ink',
               )}
             >
               {link.label}
@@ -63,27 +64,20 @@ export function Header() {
         </nav>
 
         <div className="flex flex-none items-center gap-2">
+          <ThemeSwitch className="hidden sm:inline-flex" />
           <button
             type="button"
-            onClick={toggleTheme}
-            aria-label={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          >
-            {resolvedTheme === 'dark' ? (
-              <Sun className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <Moon className="h-4 w-4" aria-hidden="true" />
-            )}
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-control border border-line text-ink lg:hidden"
             onClick={() => setOpenMenuPath(isMenuOpen ? null : pathname)}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMenuOpen}
             aria-controls="site-mobile-navigation"
           >
-            {isMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+            {isMenuOpen ? (
+              <X className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>
@@ -92,25 +86,28 @@ export function Header() {
         <nav
           id="site-mobile-navigation"
           aria-label="Mobile navigation"
-          className="border-t border-[var(--border-default)] bg-[var(--surface-base)] px-4 py-3 lg:hidden"
+          className="border-t border-line bg-surface px-4 pb-4 pt-2 lg:hidden"
         >
-          <div className="mx-auto grid max-w-7xl gap-1 sm:grid-cols-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpenMenuPath(null)}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-                className={cn(
-                  'rounded-lg px-3 py-3 text-sm font-medium',
-                  isActive(link.href)
-                    ? 'bg-[var(--accent-primary-soft)] text-[var(--accent-primary)]'
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]',
-                )}
-              >
-                {link.label}
-              </Link>
+          <ul className="mx-auto max-w-7xl">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setOpenMenuPath(null)}
+                  aria-current={isActive(link.href) ? 'page' : undefined}
+                  className={cn(
+                    'flex min-h-12 items-center border-b border-line text-base font-medium',
+                    isActive(link.href) ? 'text-accent' : 'text-ink',
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
             ))}
+          </ul>
+          <div className="mt-4 flex items-center justify-between gap-3 sm:hidden">
+            <span className="text-sm text-ink-2">Theme</span>
+            <ThemeSwitch />
           </div>
         </nav>
       ) : null}

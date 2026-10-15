@@ -1,14 +1,27 @@
 import type { Metadata } from 'next';
+import { Archivo, Spline_Sans_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { CookieConsent } from '@/components/Consent/CookieConsent';
 import { ConsentGate } from '@/components/Consent/ConsentGate';
-import { BreadcrumbsJSON } from '@/components/Seo/BreadcrumbsJSON';
 import { GoogleAnalytics, GoogleConsentDefaults } from '@/components/Analytics';
 import { SITE } from '@/lib/site';
 import { websiteJsonLd } from '@/lib/seo';
 import './globals.css';
+
+const archivo = Archivo({
+  subsets: ['latin', 'latin-ext'],
+  axes: ['wdth'],
+  display: 'swap',
+  variable: '--font-archivo',
+});
+
+const splineMono = Spline_Sans_Mono({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-spline-mono',
+});
 
 const themeInitScript = `(function(){try{var key='theme-preference';var stored=localStorage.getItem(key);var valid=stored==='light'||stored==='dark'||stored==='system'?stored:'system';var dark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=valid==='system'?(dark?'dark':'light'):valid;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved;}catch(e){document.documentElement.dataset.theme='light';document.documentElement.style.colorScheme='light';}})();`;
 
@@ -70,7 +83,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning>
+    <html lang="en" data-theme="light" className={`${archivo.variable} ${splineMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <GoogleConsentDefaults />
@@ -85,7 +98,7 @@ export default function RootLayout({
         <ThemeProvider>
           <a
             href="#main-content"
-            className="sr-only fixed left-4 top-4 z-[200] rounded-lg bg-[var(--surface-overlay)] px-4 py-3 text-[var(--text-primary)] focus:not-sr-only"
+            className="sr-only fixed left-4 top-3 z-[200] rounded-control border border-line-strong bg-surface px-4 py-2.5 font-semibold text-ink focus:not-sr-only"
           >
             Skip to main content
           </a>
@@ -93,9 +106,8 @@ export default function RootLayout({
           <ConsentGate>
             <GoogleAnalytics />
           </ConsentGate>
-          <BreadcrumbsJSON />
           <Header />
-          <main id="main-content" tabIndex={-1} className="flex-1 w-full pt-20">{children}</main>
+          <main id="main-content" tabIndex={-1} className="w-full flex-1 focus:outline-none">{children}</main>
           <Footer />
           <CookieConsent />
         </ThemeProvider>

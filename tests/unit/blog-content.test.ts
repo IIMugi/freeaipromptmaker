@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { describe, expect, it } from 'vitest';
-import { POSTS_PER_PAGE } from '@/components/Blog/BlogIndexClient';
+import { POSTS_PER_PAGE } from '@/lib/blog';
 import { getEditorialRecords } from '@/lib/editorial';
 
 const postsDirectory = path.join(process.cwd(), 'posts');

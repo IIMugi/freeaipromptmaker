@@ -1,40 +1,12 @@
-// Prompt formatting for the /prompt-generator-for/* builders. Pure functions, no side effects.
-// SDXL sizes mirror the table in posts/2026-05-17-master-sdxl-prompting-guide.mdx.
+// Use-case builder configs for /prompt-generator-for/*. Formatting lives in lib/prompt-format.ts.
 
-export type UseCaseModelId = 'midjourney' | 'sdxl' | 'flux' | 'chat';
+import { FORMATS, formatPrompt, type AspectRatio, type FormatId, type FormattedPrompt } from '@/lib/prompt-format';
 
-export type AspectRatio = '1:1' | '16:9' | '9:16' | '4:5' | '3:2' | '2:3';
+export { SDXL_SIZES, type AspectRatio } from '@/lib/prompt-format';
 
-export interface UseCaseModel {
-  id: UseCaseModelId;
-  label: string;
-  analyticsModel: 'midjourney' | 'stable-diffusion' | 'flux' | 'gpt4o';
-}
+export type UseCaseModelId = FormatId;
 
-export const USE_CASE_MODELS: readonly UseCaseModel[] = [
-  { id: 'midjourney', label: 'Midjourney', analyticsModel: 'midjourney' },
-  { id: 'sdxl', label: 'Stable Diffusion XL', analyticsModel: 'stable-diffusion' },
-  { id: 'flux', label: 'Flux', analyticsModel: 'flux' },
-  { id: 'chat', label: 'ChatGPT / Gemini', analyticsModel: 'gpt4o' },
-];
-
-export const SDXL_SIZES: Record<AspectRatio, string> = {
-  '1:1': '1024 × 1024',
-  '16:9': '1344 × 768',
-  '9:16': '768 × 1344',
-  '4:5': '896 × 1152',
-  '3:2': '1216 × 832',
-  '2:3': '832 × 1216',
-};
-
-const ASPECT_PHRASES: Record<AspectRatio, string> = {
-  '1:1': 'Square 1:1 format.',
-  '16:9': 'Wide 16:9 landscape format.',
-  '9:16': 'Tall 9:16 vertical format.',
-  '4:5': 'Vertical 4:5 format.',
-  '3:2': 'Landscape 3:2 format.',
-  '2:3': 'Vertical 2:3 format.',
-};
+export const USE_CASE_MODELS = FORMATS;
 
 export interface BuilderOption {
   id: string;
@@ -74,12 +46,7 @@ export interface UseCasePromptState {
   avoid: boolean;
 }
 
-export interface UseCasePromptResult {
-  prompt: string;
-  negative: string;
-  settings: string;
-  note: string;
-}
+export type UseCasePromptResult = FormattedPrompt;
 
 function selectedFragments(config: UseCaseBuilderConfig, selections: UseCasePromptState['selections']) {
   return config.groups.flatMap((group) => {
@@ -88,51 +55,18 @@ function selectedFragments(config: UseCaseBuilderConfig, selections: UseCaseProm
   });
 }
 
-function capitalize(text: string) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
 export function buildUseCasePrompt(config: UseCaseBuilderConfig, state: UseCasePromptState): UseCasePromptResult {
-  const subject = state.subject.trim().replace(/\s+/g, ' ').replace(/[.,;\s]+$/, '');
-  const fragments = selectedFragments(config, state.selections);
-
-  if (!subject) {
-    return { prompt: '', negative: '', settings: '', note: 'Describe your subject to build a prompt.' };
-  }
-
-  switch (state.model) {
-    case 'midjourney': {
-      const params = [`--ar ${state.aspectRatio}`];
-      if (state.avoid && config.midjourneyNo.length > 0) params.push(`--no ${config.midjourneyNo.join(', ')}`);
-      return {
-        prompt: `${[config.tag, subject, ...fragments].join(', ')} ${params.join(' ')}`,
-        negative: '',
-        settings: '',
-        note: 'Paste into Midjourney. --no reads each word separately, so it only lists single words.',
-      };
-    }
-    case 'sdxl':
-      return {
-        prompt: [config.tag, subject, ...fragments].join(', '),
-        negative: state.avoid ? config.negatives.join(', ') : '',
-        settings: `Size: ${SDXL_SIZES[state.aspectRatio]}`,
-        note: 'Works in Automatic1111, Forge, ComfyUI and other SDXL apps. Put the second box in the Negative prompt field.',
-      };
-    case 'flux':
-      return {
-        prompt: `${capitalize(`${config.sentence} ${subject}`)}${fragments.length ? `, ${fragments.join(', ')}` : ''}.`,
-        negative: '',
-        settings: `Aspect ratio: ${state.aspectRatio} (set it in your app)`,
-        note: 'Flux has no standard negative prompt field, so describe what you want instead of what to avoid.',
-      };
-    case 'chat':
-      return {
-        prompt: `${capitalize(`${config.sentence} ${subject}`)}${fragments.length ? `, ${fragments.join(', ')}` : ''}. ${ASPECT_PHRASES[state.aspectRatio]}`,
-        negative: '',
-        settings: '',
-        note: 'Paste into ChatGPT or Gemini. Ask for changes in plain words afterwards, for example “make the background darker”.',
-      };
-  }
+  return formatPrompt({
+    format: state.model,
+    subject: state.subject,
+    tag: config.tag,
+    sentence: config.sentence,
+    styles: selectedFragments(config, state.selections),
+    light: [],
+    aspectRatio: state.aspectRatio,
+    negative: state.avoid ? config.negatives : [],
+    midjourneyNo: state.avoid ? config.midjourneyNo : [],
+  });
 }
 
 /** Initial selections from the config defaults, limited to options that exist. */

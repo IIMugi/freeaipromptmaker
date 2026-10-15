@@ -49,3 +49,6 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Written by next dev (agentRules is off, but keep it out of git)
+AGENTS.md

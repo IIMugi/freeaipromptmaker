@@ -10,9 +10,8 @@ const read = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
 
 const userFacingFiles = [
   'app/page.tsx',
-  'components/Hero/HeroSection.tsx',
-  'components/Home/HowPromptFormattingWorks.tsx',
-  'components/Home/SupportedModels.tsx',
+  'components/Builder/PromptStudio.tsx',
+  'app/blog/[slug]/page.tsx',
   'components/Layout/Footer.tsx',
   'components/Layout/Header.tsx',
   'app/(legal)/content-standards/page.tsx',
@@ -34,7 +33,7 @@ describe('home page copy', () => {
   });
 
   it('uses a search-oriented H1', () => {
-    expect(read('components/Hero/HeroSection.tsx')).toMatch(/<h1[^>]*>\s*Free AI Image Prompt Generator\s*<\/h1>/);
+    expect(read('app/page.tsx')).toMatch(/<h1[^>]*>\s*Free AI Image Prompt Generator\s*<\/h1>/);
   });
 
   it('has no internal readiness or compliance jargon in user-facing copy', () => {

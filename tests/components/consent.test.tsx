@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConsentGate } from '@/components/Consent/ConsentGate';
-import { CookieConsent } from '@/components/Consent/CookieConsent';
+import { CookieConsent, PrivacySettingsButton } from '@/components/Consent/CookieConsent';
 import {
   CONSENT_EVENT,
   CONSENT_KEY,
@@ -48,7 +48,13 @@ describe('analytics consent', () => {
 
   it('lets a returning user reopen privacy settings and withdraw', () => {
     localStorage.setItem(CONSENT_KEY, 'analytics-accepted');
-    render(<CookieConsent />);
+    render(
+      <>
+        <PrivacySettingsButton />
+        <CookieConsent />
+      </>,
+    );
+    expect(screen.queryByRole('button', { name: 'Allow analytics' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Privacy settings' }));
     fireEvent.click(screen.getByRole('button', { name: 'Decline analytics' }));
     expect(localStorage.getItem(CONSENT_KEY)).toBe('declined');
