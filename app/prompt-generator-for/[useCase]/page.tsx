@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PromptLandingPage } from '@/components/Seo/PromptLandingPage';
-import { getAllPromptUseCaseSlugs, getPromptUseCase } from '@/data/prompt-use-cases';
+import { getAllPromptUseCaseSlugs, getPromptUseCase, getUseCaseTitle } from '@/data/prompt-use-cases';
 import { canonicalUrl } from '@/lib/seo';
 
 interface PageProps {
@@ -23,17 +23,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const canonical = canonicalUrl(`/prompt-generator-for/${entry.slug}`);
+  const title = getUseCaseTitle(entry);
 
   return {
-    title: `Prompt Generator for ${entry.title}`,
-    description: `${entry.intent} Includes examples and an iteration worksheet.`,
-    keywords: entry.keywords,
+    title: { absolute: title },
+    description: entry.description,
     alternates: { canonical },
     openGraph: {
-      title: `Prompt Generator for ${entry.title}`,
-      description: entry.intent,
+      title,
+      description: entry.description,
       url: canonical,
-      type: 'article',
+      type: 'website',
     },
   };
 }

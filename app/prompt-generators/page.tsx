@@ -1,59 +1,61 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { promptUseCases } from '@/data/prompt-use-cases';
+import { ArrowRight } from 'lucide-react';
+import { countExamples, promptUseCases } from '@/data/prompt-use-cases';
+import { canonicalUrl } from '@/lib/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
+const title = 'AI Prompt Generators by Use Case: Anime, Pixel Art, Thumbnails';
+const description =
+  'Free AI prompt generators by use case: YouTube thumbnails, anime, pixel art, game concepts, logos, product and food photography, and more. Copy-paste examples.';
 
 export const metadata: Metadata = {
-  title: 'AI Prompt Generators by Use Case',
-  description:
-    'Free AI prompt generators by use case: anime, logos, product photography, YouTube thumbnails, pixel art, game concepts, cinematic portraits and more.',
-  alternates: {
-    canonical: '/prompt-generators',
-  },
-  openGraph: {
-    title: 'AI Prompt Generators by Use Case',
-    description:
-      'Free AI prompt generators for common image types, with example prompts.',
-    url: `${siteUrl}/prompt-generators`,
-  },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: canonicalUrl('/prompt-generators') },
+  openGraph: { title, description, url: canonicalUrl('/prompt-generators'), type: 'website' },
 };
 
 export default function PromptGeneratorsHubPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      <section className="section-shell rounded-2xl p-6 md:p-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">
-          <Sparkles className="h-3.5 w-3.5" />
-          Prompt Generator Hub
-        </div>
-        <h1 className="mt-4 text-3xl font-semibold text-white md:text-4xl">
-          Prompt generators for every visual workflow
-        </h1>
-        <p className="mt-3 max-w-3xl text-sm text-slate-300 md:text-base">
-          Pick what you want to make. Each page has example prompts and the terms that matter for
-          that kind of image.
-        </p>
-      </section>
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+      <h1 className="text-balance text-4xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-5xl">
+        AI prompt generators by use case
+      </h1>
+      <p className="mt-5 max-w-3xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+        Pick what you want to make. Each page has a generator with presets for that kind of image, formatted for
+        Midjourney, Stable Diffusion XL, Flux or ChatGPT, plus example prompts you can copy.
+      </p>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {promptUseCases.map((useCase) => (
-          <article key={useCase.slug} className="section-shell rounded-2xl p-5">
-            <h2 className="text-lg font-semibold text-white">{useCase.title}</h2>
-            <p className="mt-2 text-sm text-slate-300 line-clamp-3">{useCase.intent}</p>
-            <div className="mt-5 space-y-2">
-              <Link
-                href={`/prompt-generator-for/${useCase.slug}`}
-                className="inline-flex w-full items-center justify-between rounded-xl border border-cyan-300/35 bg-cyan-300/12 px-3 py-2 text-sm text-cyan-100 hover:bg-cyan-300/18"
-              >
-                Open the generator
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </article>
+          <Link
+            key={useCase.slug}
+            href={`/prompt-generator-for/${useCase.slug}`}
+            className="group flex flex-col rounded-3xl border border-[var(--border-default)] bg-[var(--surface-base)] p-5 shadow-[var(--shadow-card)] transition-colors hover:border-[var(--accent-primary)]"
+          >
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">{useCase.h1}</h2>
+            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-[var(--text-secondary)]">
+              {useCase.examples[0]!.prompts[0]}
+            </p>
+            <span className="mt-auto flex items-center justify-between pt-4 text-sm font-medium text-[var(--accent-primary)]">
+              {`Generator + ${countExamples(useCase)} examples`}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </span>
+          </Link>
         ))}
-      </section>
+      </div>
+
+      <p className="mt-10 leading-relaxed text-[var(--text-secondary)]">
+        Something else? The{' '}
+        <Link href="/#generator" className="text-[var(--accent-primary)] hover:underline">
+          main prompt generator
+        </Link>{' '}
+        works for any subject, and the{' '}
+        <Link href="/negative-prompt-generator" className="text-[var(--accent-primary)] hover:underline">
+          negative prompt generator
+        </Link>{' '}
+        builds the list of things to avoid.
+      </p>
     </div>
   );
 }

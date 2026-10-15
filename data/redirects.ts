@@ -1,5 +1,7 @@
 export const permanentRedirects = [
   { source: '/flux-pro', destination: '/prompt-generators' },
+  // Parent of /prompt-generator-for/* has no page; the global breadcrumb JSON-LD links to it.
+  { source: '/prompt-generator-for', destination: '/prompt-generators' },
   {
     source: '/blog/2025-11-27-stable-diffusion-negative-prompts-guide',
     destination: '/blog/2025-11-29-stable-diffusion-negative-prompts-guide',
