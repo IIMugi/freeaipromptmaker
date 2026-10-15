@@ -44,6 +44,7 @@ export function articleJsonLd(article: {
   datePublished: string;
   dateModified?: string;
   image?: string;
+  author?: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -54,7 +55,9 @@ export function articleJsonLd(article: {
     datePublished: article.datePublished,
     dateModified: article.dateModified,
     image: article.image ? [article.image] : undefined,
-    author: { '@type': 'Organization', name: SITE.name, url: SITE.origin },
+    author: article.author
+      ? { '@type': 'Person', name: article.author }
+      : { '@type': 'Organization', name: SITE.name, url: SITE.origin },
     publisher: { '@type': 'Organization', name: SITE.name, url: SITE.origin },
   } as const;
 }

@@ -210,6 +210,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         datePublished: post.date,
         dateModified: post.lastVerified,
         image: post.image,
+        author: post.author || undefined,
       })
     : null;
 
