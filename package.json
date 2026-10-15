@@ -12,9 +12,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "audit:routes": "node scripts/audit-routes.mjs",
-    "test:all": "npm run lint && npx tsc --noEmit && npm test && npm run build && npm run test:e2e",
-    "generate-post": "node scripts/generate-post.js",
-    "daily-content": "node scripts/content-manager.js"
+    "test:all": "npm run lint && npx tsc --noEmit && npm test && npm run build && npm run test:e2e"
   },
   "dependencies": {
     "@google/genai": "^1.52.0",
