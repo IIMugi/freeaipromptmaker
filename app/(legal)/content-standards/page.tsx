@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { TextPage } from '@/components/Layout/TextPage';
 
 export const metadata: Metadata = {
   title: 'Content Standards',
@@ -17,41 +18,32 @@ const requirements = [
 
 export default function ContentStandardsPage() {
   return (
-    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
-      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Content standards</h1>
-      <p className="mt-3 text-sm text-[var(--text-tertiary)]">Last updated: July 16, 2026</p>
-      <p className="mt-6 text-lg leading-relaxed text-[var(--text-secondary)]">
-        Every guide has one explicit state: verified, needs review, or archived. Only verified guides
-        may be indexed, appear in the sitemap, or be promoted from a hub.
+    <TextPage
+      title="Content standards"
+      path="/content-standards"
+      updated="2026-10-16"
+      lead="Every guide has one state: verified, needs review or archived. Only verified guides are published, listed and in the sitemap."
+    >
+      <h2>What a verified guide needs</h2>
+      <ul>
+        {requirements.map((requirement) => (
+          <li key={requirement}>{requirement}</li>
+        ))}
+      </ul>
+      <h2>Older automated guides</h2>
+      <p>
+        An earlier version of the site published automatically generated guides. In October 2026 they were reviewed: the
+        useful ones were rewritten and checked, and the rest were removed. A removed address either redirects to the
+        guide that now covers the topic or reports that the page is gone. Nothing is published automatically.
       </p>
-
-      <section className="mt-10 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Verification requirements</h2>
-        <ul className="mt-4 list-disc space-y-3 pl-5 text-[var(--text-secondary)]">
-          {requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}
-        </ul>
-      </section>
-
-      <section className="mt-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">AI-assisted legacy content</h2>
-        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
-          The repository contains a legacy automated corpus. Those pages default to needs review.
-          Automated direct publishing is disabled; any future draft requires manual review and an
-          explicit editorial-state change.
-        </p>
-      </section>
-
-      <section className="mt-6 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Advertising and affiliate links</h2>
-        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
-          The site currently shows no advertising, and the tool directory contains no affiliate
-          links. Guides are not paid placements.
-        </p>
-      </section>
-
-      <p className="mt-8 text-[var(--text-secondary)]">
-        Found a factual issue? Use the <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">contact page</Link>.
+      <h2>Advertising and affiliate links</h2>
+      <p>
+        The site currently shows no advertising, and the tool directory contains no affiliate links. Guides are not paid
+        placements.
       </p>
-    </article>
+      <p>
+        Found a factual issue? Use the <Link href="/contact">contact page</Link>.
+      </p>
+    </TextPage>
   );
 }

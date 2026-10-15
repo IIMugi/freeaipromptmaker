@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Copy, ImageUp, Loader2, Sparkles, Wand2 } from 'lucide-react';
-import { Button } from '@/components/UI';
-import { copyToClipboard, cn } from '@/lib/utils';
+import Link from 'next/link';
+import { ImageUp, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { CopyButton } from '@/components/Builder/CopyButton';
 import { detectImageType, MAX_IMAGE_FILE_SIZE } from '@/lib/image-upload';
 import { trackProductEvent } from '@/lib/analytics';
 
@@ -31,7 +32,6 @@ export function ImageReverseEngineer() {
   const [state, setState] = useState<AnalysisState>('idle');
   const [result, setResult] = useState<ReversePromptResult | null>(null);
   const [message, setMessage] = useState('');
-  const [copyState, setCopyState] = useState<'prompt' | 'bundle' | null>(null);
 
   const busy = state === 'validating' || state === 'uploading';
   const canAnalyze = Boolean(selectedFile) && !busy;
@@ -49,7 +49,6 @@ export function ImageReverseEngineer() {
     setResult(null);
     setMessage('');
     setState('idle');
-    setCopyState(null);
   };
 
   const handleFile = (file: File | null) => {
@@ -109,7 +108,7 @@ export function ImageReverseEngineer() {
       if (response.status === 503 || payload?.code === 'analysis_unavailable') {
         trackProductEvent('image_analysis_failed', { reason: 'unavailable' });
         setState('unavailable');
-        setMessage('Image analysis is currently unavailable. Your selected file is preserved.');
+        setMessage('Image analysis is currently unavailable. You can describe the image in the prompt generator instead.');
         return;
       }
       if (!response.ok || !payload?.data) {
@@ -132,176 +131,161 @@ export function ImageReverseEngineer() {
     }
   };
 
-  const handleCopy = async (variant: 'prompt' | 'bundle') => {
-    if (state !== 'success' || !result) return;
-    const output =
-      variant === 'prompt'
-        ? result.prompt
-        : JSON.stringify(
-            {
-              prompt: result.prompt,
-              negativePrompt: result.negativePrompt,
-              remixes: result.remixes,
-              styleDna: result.styleDna,
-            },
-            null,
-            2,
-          );
-    if (await copyToClipboard(output)) setCopyState(variant);
-  };
-
-  const handleShare = () => {
-    if (state !== 'success' || !result) return;
-    const shareUrl = `${window.location.origin}/image-to-prompt`;
-    const text = `Image prompt created with Free AI Prompt Maker:\n\n${result.prompt}`;
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
-      '_blank',
-      'noopener,noreferrer',
-    );
-  };
+  const bundle = result
+    ? JSON.stringify(
+        {
+          prompt: result.prompt,
+          negativePrompt: result.negativePrompt,
+          remixes: result.remixes,
+          styleDna: result.styleDna,
+        },
+        null,
+        2,
+      )
+    : '';
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pb-20 pt-8 md:pt-12">
-      <section className="section-shell rounded-3xl p-6 sm:p-8 md:p-10">
-        <div className="grid gap-7 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              Optional vision analysis
-            </div>
-            <h1 className="mt-4 text-3xl font-semibold text-white md:text-5xl">Image to prompt</h1>
-            <p className="mt-3 max-w-2xl text-sm text-slate-300 md:text-base">
-              When analysis is configured, upload a supported image to request a prompt, negative
-              prompt, and variations from the vision provider. No result is fabricated when the
-              provider is unavailable.
-            </p>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <header className="max-w-3xl pb-8 pt-10 sm:pt-14">
+        <h1 className="font-display text-[clamp(2.4rem,5.5vw,3.75rem)] text-ink">Image to prompt</h1>
+        <p className="mt-4 text-lg leading-relaxed text-ink-2 sm:text-xl">
+          Upload an image to get a prompt that describes it, a negative prompt and a few variations.
+        </p>
+      </header>
 
-            <div
-              className={cn(
-                'mt-6 rounded-2xl border-2 border-dashed p-6 transition',
-                isDragging ? 'border-cyan-300/60 bg-cyan-300/10' : 'border-white/15 bg-[#0d182b]/70',
-              )}
-              onDragOver={(event) => {
-                event.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={(event) => {
-                event.preventDefault();
-                setIsDragging(false);
-                handleFile(event.dataTransfer.files?.[0] || null);
-              }}
+      <div className="grid gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,6fr)]">
+        <div>
+          <div
+            className={cn(
+              'rounded-panel border-2 border-dashed p-8 transition-colors',
+              isDragging ? 'border-accent bg-accent-wash' : 'border-line-strong bg-surface',
+            )}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setIsDragging(false);
+              handleFile(event.dataTransfer.files?.[0] || null);
+            }}
+          >
+            <label
+              htmlFor="image-analysis-upload"
+              className="flex cursor-pointer flex-col items-center justify-center gap-2 text-center"
             >
-              <label htmlFor="image-analysis-upload" className="flex cursor-pointer flex-col items-center justify-center gap-2 text-center">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-300/15 text-cyan-100">
-                  <ImageUp className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <span className="text-sm text-slate-200">Drop image or click to upload</span>
-                <span className="text-xs text-slate-400">PNG, JPG, WEBP up to 8MB</span>
-              </label>
-              <input
-                id="image-analysis-upload"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                className="sr-only"
-                onChange={(event) => handleFile(event.target.files?.[0] || null)}
-              />
-            </div>
+              <ImageUp className="h-7 w-7 text-accent" aria-hidden="true" />
+              <span className="font-semibold text-ink">Drop image or click to upload</span>
+              <span className="text-sm text-ink-3">PNG, JPG or WEBP, up to 8 MB</span>
+            </label>
+            <input
+              id="image-analysis-upload"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="sr-only"
+              onChange={(event) => handleFile(event.target.files?.[0] || null)}
+            />
+          </div>
 
-            {message ? (
-              <p
-                role="status"
-                className={cn(
-                  'mt-3 rounded-lg border px-3 py-2 text-sm',
-                  state === 'error'
-                    ? 'border-rose-300/30 bg-rose-300/10 text-rose-100'
-                    : 'border-cyan-300/30 bg-cyan-300/10 text-cyan-100',
-                )}
+          {message ? (
+            <p
+              role="status"
+              className={cn(
+                'mt-4 rounded-control border-l-4 px-4 py-3 text-[0.95rem]',
+                state === 'error'
+                  ? 'border-danger bg-danger-wash text-ink'
+                  : state === 'unavailable'
+                    ? 'border-warn bg-warn-wash text-ink'
+                    : 'border-line-strong bg-sunken text-ink-2',
+              )}
+            >
+              {message}
+            </p>
+          ) : null}
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            {state === 'unavailable' ? (
+              <Link
+                href="/"
+                className="inline-flex min-h-11 items-center rounded-control bg-accent px-5 font-semibold text-on-accent hover:bg-accent-hover"
               >
-                {message}
-              </p>
-            ) : null}
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button
+                Describe it in the prompt generator
+              </Link>
+            ) : (
+              <button
+                type="button"
                 onClick={analyzeImage}
                 disabled={!canAnalyze}
-                icon={busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                className="inline-flex min-h-11 items-center gap-2 rounded-control bg-accent px-5 font-semibold text-on-accent hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-45"
               >
-                {busy
-                  ? state === 'validating'
-                    ? 'Validating…'
-                    : 'Analyzing…'
-                  : state === 'unavailable' || state === 'error'
-                    ? 'Try analysis again'
-                    : 'Analyze image'}
-              </Button>
-              <Button variant="secondary" onClick={reset} disabled={busy || !selectedFile}>
-                Reset
-              </Button>
-            </div>
-          </div>
-
-          <div className="glass rounded-2xl p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Preview</p>
-            <div className="relative mt-3 min-h-[320px] overflow-hidden rounded-xl border border-white/12 bg-[#0a1325]">
-              {previewUrl ? (
-                <Image src={previewUrl} alt="Selected image preview" fill unoptimized className="object-contain" />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-300">
-                  Selected image preview will appear here.
-                </div>
-              )}
-            </div>
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+                {busy ? (state === 'validating' ? 'Checking…' : 'Analyzing…') : 'Analyze image'}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={reset}
+              disabled={busy || !selectedFile}
+              className="inline-flex min-h-11 items-center rounded-control border border-line-strong px-5 font-semibold text-ink hover:border-accent disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Remove image
+            </button>
           </div>
         </div>
-      </section>
+
+        <div className="relative min-h-[320px] overflow-hidden rounded-panel border border-line bg-sunken">
+          {previewUrl ? (
+            <Image src={previewUrl} alt="Selected image preview" fill unoptimized className="object-contain" />
+          ) : (
+            <p className="absolute inset-0 flex items-center justify-center px-6 text-center text-ink-3">
+              Your image appears here.
+            </p>
+          )}
+        </div>
+      </div>
 
       {state === 'success' && result ? (
-        <section className="section-shell mt-8 rounded-3xl p-6 md:p-8">
+        <section aria-labelledby="analysis-title" className="mt-16 border-t-2 border-ink pt-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-2xl font-semibold text-white">Analysis result</h2>
+            <h2 id="analysis-title" className="font-display text-[clamp(1.75rem,3.4vw,2.4rem)] text-ink">
+              Analysis result
+            </h2>
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" onClick={() => handleCopy('prompt')} icon={<Copy className="h-4 w-4" />}>
-                {copyState === 'prompt' ? 'Copied' : 'Copy prompt'}
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => handleCopy('bundle')}>
-                {copyState === 'bundle' ? 'Copied' : 'Copy bundle'}
-              </Button>
-              <Button size="sm" variant="ghost" onClick={handleShare}>Share on X</Button>
+              <CopyButton text={result.prompt} label="Copy prompt" copiedLabel="Prompt copied" variant="primary" />
+              <CopyButton text={bundle} label="Copy everything as JSON" copiedLabel="JSON copied" />
             </div>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <ul className="mt-5 flex flex-wrap gap-2" aria-label="Detected style">
             {[...tokenBadges, ...result.styleDna.styleTags].map((token) => (
-              <span key={token} className="rounded-full border border-cyan-300/35 bg-cyan-300/12 px-3 py-1 text-xs text-cyan-100">
+              <li key={token} className="rounded-control bg-sunken px-2.5 py-1 text-sm text-role-style">
                 {token}
-              </span>
+              </li>
             ))}
+          </ul>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            <div>
+              <h3 className="font-semibold text-ink">Prompt</h3>
+              <p className="proof mt-2">{result.prompt}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-ink">Negative prompt</h3>
+              <p className="proof mt-2">
+                <span data-role="negative">{result.negativePrompt}</span>
+              </p>
+            </div>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-2xl border border-white/12 bg-[#0d182b]/70 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Prompt</p>
-              <pre className="mt-2 whitespace-pre-wrap font-mono text-sm text-white">{result.prompt}</pre>
-            </div>
-            <div className="rounded-2xl border border-white/12 bg-[#0d182b]/70 p-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Negative prompt</p>
-              <pre className="mt-2 whitespace-pre-wrap font-mono text-sm text-slate-200">{result.negativePrompt}</pre>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-white/12 bg-[#0d182b]/70 p-4">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Variations</p>
-            <ul className="mt-2 space-y-2">
-              {result.remixes.map((remix) => (
-                <li key={remix} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-100">
-                  {remix}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <h3 className="mt-8 font-semibold text-ink">Variations</h3>
+          <ul className="mt-2 border-t border-line">
+            {result.remixes.map((remix) => (
+              <li key={remix} className="border-b border-line py-3 font-mono text-[0.9rem] text-ink">
+                {remix}
+              </li>
+            ))}
+          </ul>
         </section>
       ) : null}
     </div>

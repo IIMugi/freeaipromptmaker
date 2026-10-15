@@ -198,7 +198,7 @@ export function PromptStudio() {
 
   return (
     <div>
-      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,6fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,6fr)]">
         {/* 1. Subject */}
         <div className="lg:col-start-1 lg:row-start-1">
           <label htmlFor={SUBJECT_INPUT_ID} className="block text-lg font-semibold text-ink">
@@ -235,7 +235,7 @@ export function PromptStudio() {
               <h2 id={`${uid}-proof-title`} className="sr-only">
                 Your prompt
               </h2>
-              <fieldset className="border-b border-line px-2 pt-2">
+              <fieldset className="min-w-0 border-b border-line px-2 pt-2">
                 <legend className="sr-only">Format the prompt for</legend>
                 <div className="-mb-px flex overflow-x-auto [scrollbar-width:none]">
                   {FORMATS.map((option) => (
@@ -270,13 +270,13 @@ export function PromptStudio() {
                   {hasSubject ? `For ${format.models}` : 'Example. Describe your image to make it yours.'}
                 </p>
                 <div key={flash} className={cn('-mx-2 mt-2 rounded-control px-2 py-1', flash > 0 && 'proof-flash')}>
-                  <Proof segments={result.segments} muted={!hasSubject} />
+                  <Proof segments={result.segments} />
                 </div>
 
                 {result.negative ? (
                   <div className="mt-4 border-t border-dashed border-line-strong pt-3">
                     <p className="text-sm font-medium text-ink-2">Negative prompt</p>
-                    <Proof segments={result.negativeSegments} muted={!hasSubject} className="mt-1" />
+                    <Proof segments={result.negativeSegments} className="mt-1" />
                   </div>
                 ) : null}
 

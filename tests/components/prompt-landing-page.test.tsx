@@ -73,7 +73,8 @@ describe('prompt use-case pages', () => {
     expect(html).toContain(useCase.h1);
     expect(html).toContain(`${countExamples(useCase)} Pixel Art prompts to copy`);
     expect(html).toContain(useCase.examples[0]!.prompts[0]);
-    expect(html).toContain('pixel art, a knight with a blue cape');
+    // The prompt is split into role-marked spans; compare the visible text.
+    expect(html.replace(/<[^>]+>/g, '')).toContain('pixel art, a knight with a blue cape');
     expect(html).toContain('href="/negative-prompt-generator"');
     expect(html).toContain(`href="/blog/${useCase.guides[0]}"`);
     expect(html).not.toMatch(fabricated);

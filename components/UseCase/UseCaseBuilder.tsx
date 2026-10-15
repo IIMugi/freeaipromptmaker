@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useMemo, useState } from 'react';
-import { Check, Copy } from 'lucide-react';
+import Link from 'next/link';
 import { trackProductEvent } from '@/lib/analytics';
 import {
   USE_CASE_MODELS,
@@ -11,41 +11,14 @@ import {
   type UseCaseBuilderConfig,
   type UseCaseModelId,
 } from '@/lib/use-case-prompt';
-import { cn, copyToClipboard } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { CopyButton } from '@/components/Builder/CopyButton';
+import { Proof, ProofLegend } from '@/components/Builder/Proof';
 
 const chip =
-  'inline-flex cursor-pointer items-center rounded-xl border px-3.5 py-2 text-sm font-medium transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--accent-primary)]';
-const chipOff = 'border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
-const chipOn = 'border-[var(--accent-primary)] bg-[var(--accent-primary-soft)] text-[var(--text-primary)]';
-const copyButton =
-  'absolute right-2 top-2 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--border-strong)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]';
-const output =
-  'whitespace-pre-wrap rounded-2xl border border-[var(--border-default)] bg-[var(--surface-sunken)] px-4 pb-4 pt-11 font-mono text-sm leading-relaxed text-[var(--text-primary)] [overflow-wrap:anywhere]';
-
-function OutputBox({ label, text, placeholder, onCopy }: { label: string; text: string; placeholder: string; onCopy: () => void }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    if (!text || !(await copyToClipboard(text))) return;
-    setCopied(true);
-    onCopy();
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="relative mt-3">
-      {text && (
-        <button type="button" className={copyButton} onClick={handleCopy} aria-label={copied ? 'Copied to clipboard' : `Copy ${label}`}>
-          {copied ? <Check className="h-3.5 w-3.5" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
-          <span aria-hidden>{copied ? 'Copied' : 'Copy'}</span>
-        </button>
-      )}
-      <pre className={cn(output, 'min-h-[5.5rem]')} tabIndex={0} aria-label={label} aria-live="polite">
-        <code>{text || placeholder}</code>
-      </pre>
-    </div>
-  );
-}
+  'inline-flex min-h-9 cursor-pointer items-center rounded-control border px-3 text-[0.95rem] transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus';
+const chipOff = 'border-line text-ink-2 hover:border-line-strong hover:text-ink';
+const chipOn = 'border-accent bg-accent-wash font-medium text-ink';
 
 export function UseCaseBuilder({ config }: { config: UseCaseBuilderConfig }) {
   const uid = useId();
@@ -54,13 +27,14 @@ export function UseCaseBuilder({ config }: { config: UseCaseBuilderConfig }) {
   const [selections, setSelections] = useState(() => defaultSelections(config));
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>(config.aspectRatios[0]!);
   const [avoid, setAvoid] = useState(true);
+  const [status, setStatus] = useState('');
 
   const result = useMemo(
     () => buildUseCasePrompt(config, { model, subject, selections, aspectRatio, avoid }),
     [config, model, subject, selections, aspectRatio, avoid],
   );
-  const analyticsModel = USE_CASE_MODELS.find((option) => option.id === model)!.analyticsModel;
-  const avoidAvailable = model === 'midjourney' || model === 'sdxl';
+  const format = USE_CASE_MODELS.find((option) => option.id === model)!;
+  const avoidAvailable = format.negativeField;
 
   const toggle = (groupId: string, optionId: string, multiple: boolean) => {
     setSelections((current) => {
@@ -74,142 +48,185 @@ export function UseCaseBuilder({ config }: { config: UseCaseBuilderConfig }) {
     });
   };
 
-  return (
-    <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-base)] p-5 shadow-[var(--shadow-card)] sm:p-8">
-      <label htmlFor={`${uid}-subject`} className="text-sm font-semibold text-[var(--text-primary)]">
-        {config.subjectLabel}
-      </label>
-      <textarea
-        id={`${uid}-subject`}
-        value={subject}
-        onChange={(event) => setSubject(event.target.value)}
-        rows={2}
-        maxLength={300}
-        className="mt-2 w-full resize-y rounded-2xl border border-[var(--border-default)] bg-[var(--surface-sunken)] px-4 py-3 text-base text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
-        placeholder={config.defaultSubject}
-      />
+  const copied = (variant: 'prompt' | 'with-negative') => {
+    trackProductEvent('prompt_copy_succeeded', { model: format.analyticsModel, variant });
+    setStatus(variant === 'prompt' ? 'Prompt copied.' : 'Negative prompt copied.');
+  };
 
-      {config.groups.map((group) => (
-        <fieldset key={group.id} className="mt-5">
-          <legend className="text-sm font-semibold text-[var(--text-primary)]">
-            {group.label}
-            {group.multiple && <span className="ml-2 font-normal text-[var(--text-tertiary)]">any</span>}
-          </legend>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            {group.options.map((option) => {
-              const active = (selections[group.id] ?? []).includes(option.id);
-              return (
-                <label key={option.id} className={cn(chip, active ? chipOn : chipOff)}>
+  return (
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,6fr)]">
+      <div className="space-y-8">
+        <div>
+          <label htmlFor={`${uid}-subject`} className="block text-lg font-semibold text-ink">
+            {config.subjectLabel}
+          </label>
+          <textarea
+            id={`${uid}-subject`}
+            value={subject}
+            onChange={(event) => setSubject(event.target.value)}
+            rows={2}
+            maxLength={300}
+            className="mt-3 w-full resize-y rounded-panel border border-line-strong bg-surface px-4 py-3 text-lg text-ink placeholder:text-ink-3 focus-visible:border-accent"
+            placeholder={config.defaultSubject}
+          />
+        </div>
+
+        {config.groups.map((group) => (
+          <fieldset key={group.id} className="border-t border-line pt-5">
+            <legend className="float-left mb-3 w-full text-lg font-semibold text-ink">
+              {group.label}
+              {group.multiple && <span className="ml-2 text-sm font-normal text-ink-3">pick any</span>}
+            </legend>
+            <div className="clear-left flex flex-wrap gap-2">
+              {group.options.map((option) => {
+                const active = (selections[group.id] ?? []).includes(option.id);
+                return (
+                  <label key={option.id} className={cn(chip, active ? chipOn : chipOff)}>
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={() => toggle(group.id, option.id, group.multiple)}
+                      className="sr-only"
+                    />
+                    {option.label}
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+        ))}
+
+        <div className="grid gap-8 border-t border-line pt-5 sm:grid-cols-2">
+          <fieldset>
+            <legend className="mb-3 text-lg font-semibold text-ink">Aspect ratio</legend>
+            <div className="flex flex-wrap gap-2">
+              {config.aspectRatios.map((ratio) => (
+                <label key={ratio} className={cn(chip, aspectRatio === ratio ? chipOn : chipOff)}>
                   <input
-                    type="checkbox"
-                    checked={active}
-                    onChange={() => toggle(group.id, option.id, group.multiple)}
+                    type="radio"
+                    name={`${uid}-ratio`}
+                    value={ratio}
+                    checked={aspectRatio === ratio}
+                    onChange={() => setAspectRatio(ratio)}
                     className="sr-only"
                   />
-                  {active && <Check className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />}
-                  {option.label}
+                  {ratio}
                 </label>
-              );
-            })}
-          </div>
-        </fieldset>
-      ))}
-
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <fieldset>
-          <legend className="text-sm font-semibold text-[var(--text-primary)]">Aspect ratio</legend>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            {config.aspectRatios.map((ratio) => (
-              <label key={ratio} className={cn(chip, aspectRatio === ratio ? chipOn : chipOff)}>
-                <input
-                  type="radio"
-                  name={`${uid}-ratio`}
-                  value={ratio}
-                  checked={aspectRatio === ratio}
-                  onChange={() => setAspectRatio(ratio)}
-                  className="sr-only"
-                />
-                {ratio}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <fieldset disabled={!avoidAvailable}>
-          <legend className="text-sm font-semibold text-[var(--text-primary)]">Negative prompt</legend>
-          <label className={cn(chip, 'mt-2.5', avoid && avoidAvailable ? chipOn : chipOff, !avoidAvailable && 'cursor-not-allowed opacity-50')}>
-            <input type="checkbox" checked={avoid} onChange={() => setAvoid((value) => !value)} className="sr-only" />
-            {avoid && avoidAvailable && <Check className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />}
-            Add common fixes
-          </label>
-        </fieldset>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset disabled={!avoidAvailable}>
+            <legend className="mb-3 text-lg font-semibold text-ink">Negative prompt</legend>
+            <label
+              className={cn(
+                chip,
+                avoid && avoidAvailable ? chipOn : chipOff,
+                !avoidAvailable && 'cursor-not-allowed opacity-50',
+              )}
+            >
+              <input type="checkbox" checked={avoid} onChange={() => setAvoid((value) => !value)} className="sr-only" />
+              Add common fixes
+            </label>
+            {!avoidAvailable ? <p className="mt-2 text-sm text-ink-3">{format.label} has no negative prompt.</p> : null}
+          </fieldset>
+        </div>
       </div>
 
-      <div className="mt-6 border-t border-[var(--border-default)]" aria-hidden="true" />
-      <fieldset className="mt-6">
-        <legend className="text-sm font-semibold text-[var(--text-primary)]">Format for</legend>
-        <div className="mt-2.5 flex flex-wrap gap-2">
-          {USE_CASE_MODELS.map((option) => (
-            <label key={option.id} className={cn(chip, model === option.id ? chipOn : chipOff)}>
-              <input
-                type="radio"
-                name={`${uid}-model`}
-                value={option.id}
-                checked={model === option.id}
-                onChange={() => setModel(option.id)}
-                className="sr-only"
-              />
-              {option.label}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <section aria-labelledby={`${uid}-proof-title`} className="lg:sticky lg:top-24 lg:self-start">
+        <div className="rounded-panel border border-line bg-surface shadow-panel">
+          <h2 id={`${uid}-proof-title`} className="sr-only">
+            Your prompt
+          </h2>
+          <fieldset className="min-w-0 border-b border-line px-2 pt-2">
+            <legend className="sr-only">Format the prompt for</legend>
+            <div className="-mb-px flex overflow-x-auto [scrollbar-width:none]">
+              {USE_CASE_MODELS.map((option) => (
+                <label
+                  key={option.id}
+                  className={cn(
+                    'flex min-h-11 flex-none cursor-pointer items-center whitespace-nowrap border-b-2 px-3 text-[0.95rem] font-medium transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-[-2px] focus-within:outline-focus',
+                    model === option.id ? 'border-accent text-ink' : 'border-transparent text-ink-3 hover:text-ink',
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name={`${uid}-model`}
+                    value={option.id}
+                    checked={model === option.id}
+                    onChange={() => setModel(option.id)}
+                    className="sr-only"
+                  />
+                  {option.short}
+                </label>
+              ))}
+            </div>
+          </fieldset>
 
-      <h2 className="mt-5 text-sm font-semibold text-[var(--text-primary)]">Your prompt</h2>
-      <OutputBox
-        label="prompt"
-        text={result.prompt}
-        placeholder="Describe your subject above."
-        onCopy={() => trackProductEvent('prompt_copy_succeeded', { model: analyticsModel, variant: 'prompt' })}
-      />
-      {result.negative && (
-        <>
-          <h3 className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Negative prompt</h3>
-          <OutputBox
-            label="negative prompt"
-            text={result.negative}
-            placeholder=""
-            onCopy={() => trackProductEvent('prompt_copy_succeeded', { model: analyticsModel, variant: 'with-negative' })}
-          />
-        </>
-      )}
-      {result.settings && <p className="mt-3 font-mono text-sm text-[var(--text-primary)]">{result.settings}</p>}
-      <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{result.note}</p>
+          <div className="px-5 pb-5 pt-4 sm:px-6">
+            {result.prompt ? (
+              <Proof segments={result.segments} />
+            ) : (
+              <p className="text-ink-3">Describe your subject to build a prompt.</p>
+            )}
+            {result.negative ? (
+              <div className="mt-4 border-t border-dashed border-line-strong pt-3">
+                <p className="text-sm font-medium text-ink-2">Negative prompt</p>
+                <Proof segments={result.negativeSegments} className="mt-1" />
+              </div>
+            ) : null}
+            {result.settings ? <p className="mt-3 font-mono text-sm text-ink-2">{result.settings}</p> : null}
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <CopyButton
+                text={result.prompt}
+                label="Copy prompt"
+                copiedLabel="Prompt copied"
+                variant="primary"
+                onCopied={() => copied('prompt')}
+              />
+              {result.negative ? (
+                <CopyButton
+                  text={result.negative}
+                  label="Copy negative"
+                  copiedLabel="Negative copied"
+                  onCopied={() => copied('with-negative')}
+                />
+              ) : null}
+            </div>
+            <p role="status" aria-live="polite" className="sr-only">
+              {status}
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-ink-2">{result.note}</p>
+            <ProofLegend
+              segments={[...result.segments, ...result.negativeSegments]}
+              className="mt-4 border-t border-line pt-3"
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
 
 export function ExamplePrompt({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    if (!(await copyToClipboard(text))) return;
-    setCopied(true);
-    trackProductEvent('guide_snippet_copied', {});
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <li className="group relative rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] py-3 pl-4 pr-20">
-      <p className="text-sm leading-relaxed text-[var(--text-primary)] [overflow-wrap:anywhere]">{text}</p>
-      <button
-        type="button"
-        className="absolute right-2 top-2.5 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--border-strong)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
-        onClick={handleCopy}
-        aria-label={copied ? 'Copied to clipboard' : 'Copy example prompt'}
-      >
-        {copied ? <Check className="h-3.5 w-3.5" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
-        <span aria-hidden>{copied ? 'Copied' : 'Copy'}</span>
-      </button>
+    <li className="flex flex-col gap-3 border-b border-line py-4 sm:flex-row sm:items-start sm:gap-6">
+      <p className="min-w-0 flex-1 font-mono text-[0.9rem] leading-relaxed text-ink [overflow-wrap:anywhere]">{text}</p>
+      <div className="flex flex-none gap-2">
+        <CopyButton
+          text={text}
+          variant="quiet"
+          label="Copy"
+          copiedLabel="Copied"
+          onCopied={() => trackProductEvent('guide_snippet_copied', {})}
+        />
+        <Link
+          href={`/?q=${encodeURIComponent(text)}`}
+          className="inline-flex min-h-8 items-center rounded-control border border-line px-2.5 text-sm text-ink-2 hover:border-line-strong hover:text-ink"
+        >
+          Edit in generator
+        </Link>
+      </div>
     </li>
   );
 }

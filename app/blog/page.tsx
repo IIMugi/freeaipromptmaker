@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Breadcrumbs } from '@/components/Seo/Breadcrumbs';
-import { FlagText } from '@/components/Blog/FlagText';
+import { FlagText } from '@/components/Layout/FlagText';
 import { POSTS_PER_PAGE, categoryLabel, getAllPosts, type BlogPostMeta } from '@/lib/blog';
 import { formatDate } from '@/lib/utils';
 

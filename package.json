@@ -21,7 +21,6 @@
     "github-slugger": "2.0.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.468.0",
-    "motion": "^12.42.2",
     "next": "^16.4.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

@@ -14,10 +14,12 @@ for (const width of [375, 768, 820, 1280]) {
 test('theme preference persists and navigation is keyboard dismissible', async ({ page }) => {
   await page.setViewportSize({ width: 820, height: 900 });
   await page.goto('/');
-  await page.getByRole('button', { name: /switch to dark mode|switch to light mode/i }).click();
-  const theme = await page.locator('html').getAttribute('data-theme');
+  await page.getByRole('button', { name: 'Use dark theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', theme || 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.getByRole('button', { name: 'Use light theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
   await page.getByRole('button', { name: /open navigation menu/i }).click();
   await page.keyboard.press('Escape');

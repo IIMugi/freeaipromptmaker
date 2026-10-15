@@ -16,7 +16,7 @@
   --ink-2: #3d4b5c;
   --ink-3: #5a6878;
   --line: #d3dbdf;
-  --line-strong: #a9b6be;
+  --line-strong: #788691;
   --accent: #1c4f8c;
   --accent-hover: #153f71;
   --on-accent: #ffffff;
@@ -47,7 +47,7 @@
   --ink-2: #b9c7d6;
   --ink-3: #93a5b8;
   --line: #24405f;
-  --line-strong: #3b5d82;
+  --line-strong: #557ca8;
   --accent: #9cc0f2;
   --accent-hover: #bcd5f7;
   --on-accent: #0c1b2e;
@@ -67,44 +67,6 @@
   --warn-wash: #33301f;
 
   --shadow-panel: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.6);
-}
-
-/* Legacy names still used by pages that have not been redrawn yet. Removed in 4.6. */
-:root {
-  --surface-ground: var(--paper);
-  --surface-base: var(--surface);
-  --surface-raised: var(--sunken);
-  --surface-overlay: var(--surface);
-  --surface-sunken: var(--sunken);
-  --text-primary: var(--ink);
-  --text-secondary: var(--ink-2);
-  --text-tertiary: var(--ink-3);
-  --text-inverted: var(--on-accent);
-  --border-subtle: var(--line);
-  --border-default: var(--line);
-  --border-strong: var(--line-strong);
-  --accent-primary: var(--accent);
-  --accent-primary-soft: var(--accent-wash);
-  --accent-primary-strong: var(--line-strong);
-  --accent-secondary: var(--role-param);
-  --accent-secondary-soft: var(--sunken);
-  --accent-violet: var(--accent);
-  --accent-violet-soft: var(--accent-wash);
-  --accent-amber: var(--role-light);
-  --accent-amber-soft: var(--warn-wash);
-  --accent-rose: var(--danger);
-  --accent-rose-soft: var(--danger-wash);
-  --success: var(--ok);
-  --warning: var(--warn);
-  --error: var(--danger);
-  --focus-ring: var(--focus);
-  --glass-bg: var(--surface);
-  --glass-bg-dense: var(--surface);
-  --glass-border: var(--line);
-  --shadow-card: var(--shadow-panel);
-  --shadow-card-hover: var(--shadow-panel);
-  --shadow-glow: none;
-  --shadow-nav: none;
 }
 
 @theme inline {
@@ -277,18 +239,22 @@ body {
 
 .prose-custom .markdown-content :is(ul, .unordered-list),
 .prose-custom .markdown-content :is(ol, .ordered-list),
-.prose-text :is(ul, ol) {
+.prose-text :is(ul, ol),
+ul.prose-text,
+ol.prose-text {
   margin: 1rem 0 1.2rem;
   padding-left: 1.35rem;
 }
 
 .prose-custom .markdown-content ul,
-.prose-text ul {
+.prose-text ul,
+ul.prose-text {
   list-style: disc;
 }
 
 .prose-custom .markdown-content ol,
-.prose-text ol {
+.prose-text ol,
+ol.prose-text {
   list-style: decimal;
 }
 

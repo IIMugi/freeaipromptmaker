@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { TextPage } from '@/components/Layout/TextPage';
 import { SITE } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -11,45 +12,32 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
-      <p className="text-sm font-medium text-[var(--accent-primary)]">About the project</p>
-      <h1 className="mt-3 text-4xl font-semibold text-[var(--text-primary)]">Free AI Prompt Maker</h1>
-      <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)]">
-        This is an open-source browser tool for structuring image prompts. It helps users organize a
-        subject, visual style, camera cues, and supported text parameters before copying the result
-        into a separate image-generation product.
+    <TextPage
+      title="About"
+      path="/about"
+      lead="Free AI Prompt Maker is a free, open-source set of prompt tools and guides for people who make images with Midjourney, Stable Diffusion, Flux, ChatGPT and Gemini."
+    >
+      <h2>What the tools do</h2>
+      <p>
+        You describe an image, pick a style, light and camera, and the generator writes the prompt in the form each
+        model expects: flags for Midjourney, a separate negative prompt for Stable Diffusion, plain sentences for Flux,
+        ChatGPT and Gemini. Everything runs in your browser. The site does not create images and does not see your
+        prompts.
       </p>
-
-      <div className="mt-10 space-y-8">
-        <Section title="What the core generator does">
-          Prompt formatting runs locally in the browser. It does not generate an image, predict
-          output quality, inspect a user&apos;s prompt on a server, or promise a result from another provider.
-        </Section>
-        <Section title="What is separate">
-          Image analysis is an optional server-backed feature. It reports unavailable instead of
-          fabricating output when its provider is not configured or fails.
-        </Section>
-        <Section title="How content is handled">
-          Legacy generated guides remain accessible for review but are excluded from search, the
-          sitemap, and guide hubs until their claims, sources, and model versions are verified.
-        </Section>
-        <Section title="Inspect or report an issue">
-          The source and issue history are public. Visit the{' '}
-          <a className="text-[var(--accent-primary)] underline underline-offset-2" href={SITE.social.github} target="_blank" rel="noopener noreferrer">
-            GitHub repository
-          </a>{' '}
-          or read the <Link className="text-[var(--accent-primary)] underline underline-offset-2" href="/content-standards">content standards</Link>.
-        </Section>
-      </div>
-    </article>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-      <h2 className="text-xl font-semibold text-[var(--text-primary)]">{title}</h2>
-      <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{children}</p>
-    </section>
+      <h2>Who writes the guides</h2>
+      <p>
+        The guides are written and maintained by Eren Koray. Each one is checked against the tool&apos;s own documentation,
+        lists its sources at the end and shows the date it was last checked. How that works is described in the{' '}
+        <Link href="/content-standards">content standards</Link>.
+      </p>
+      <h2>Open source</h2>
+      <p>
+        The code is public on{' '}
+        <a href={SITE.social.github} target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+        . Corrections and bug reports are welcome through the <Link href="/contact">contact page</Link>.
+      </p>
+    </TextPage>
   );
 }

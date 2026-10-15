@@ -9,17 +9,27 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <section className="mx-auto flex min-h-[60vh] max-w-3xl items-center px-4 py-16">
-      <div>
-        <p className="text-sm font-medium text-[var(--accent-primary)]">404</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[var(--text-primary)]">Page not found</h1>
-        <p className="mt-4 max-w-xl leading-relaxed text-[var(--text-secondary)]">
-          This URL is not part of the current site. It may have been removed, renamed, or typed incorrectly.
+    <section className="mx-auto flex min-h-[60vh] max-w-7xl items-center px-4 py-16 sm:px-6">
+      <div className="max-w-2xl">
+        <h1 className="font-display text-[clamp(2.4rem,5.5vw,3.75rem)] text-ink">This page does not exist</h1>
+        <p className="mt-4 text-lg leading-relaxed text-ink-2">
+          It may have been removed or renamed, or the address has a typo. These are the places most people are looking
+          for:
         </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/#generator" className="rounded-xl bg-[var(--accent-primary)] px-5 py-3 text-sm font-semibold text-[var(--text-inverted)]">Open the generator</Link>
-          <Link href="/prompt-generators" className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] px-5 py-3 text-sm font-medium text-[var(--text-primary)]">Browse prompt pages</Link>
-        </div>
+        <ul className="mt-6 border-t border-line">
+          {[
+            { href: '/', label: 'Prompt generator' },
+            { href: '/negative-prompt-generator', label: 'Negative prompt generator' },
+            { href: '/prompt-generators', label: 'Prompt generators by use case' },
+            { href: '/blog', label: 'Prompt guides' },
+          ].map((item) => (
+            <li key={item.href} className="border-b border-line">
+              <Link href={item.href} className="flex min-h-12 items-center text-ink hover:text-accent hover:underline hover:underline-offset-4">
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

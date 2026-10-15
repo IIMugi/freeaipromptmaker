@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { TextPage } from '@/components/Layout/TextPage';
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
@@ -10,37 +11,35 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
-      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Terms of use</h1>
-      <p className="mt-3 text-sm text-[var(--text-tertiary)]">Last updated: July 16, 2026</p>
-      <div className="mt-10 space-y-8 text-[var(--text-secondary)]">
-        <Term title="Tool output">
-          The core product formats text deterministically. It does not create images. Generated
-          results in third-party products vary, and users must review prompts and destination settings.
-        </Term>
-        <Term title="Third-party services">
-          Model names belong to their respective owners. This project is not endorsed by those
-          providers. Optional image analysis uses Google Gemini when configured and invoked; provider
-          terms may apply.
-        </Term>
-        <Term title="Acceptable use">
-          Do not use the service to violate law, intellectual-property rights, privacy, platform rules,
-          or the rights of another person. Do not upload sensitive images to optional analysis.
-        </Term>
-        <Term title="Availability">
-          Features may change or be unavailable. The site reports provider failures but cannot promise
-          uninterrupted access or a particular result from another product.
-        </Term>
-        <Term title="Advertising">
-          The site currently shows no advertising. If that changes, these terms and the privacy policy
-          will be updated first.
-        </Term>
-      </div>
-      <p className="mt-10 text-[var(--text-secondary)]">Questions can be submitted through the <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">contact page</Link>.</p>
-    </article>
+    <TextPage title="Terms of use" path="/terms" updated="2026-07-16">
+      <h2>Tool output</h2>
+      <p>
+        The tools format text in your browser. They do not create images. Results in other products vary, so review the
+        prompt and the settings of the tool you paste it into.
+      </p>
+      <h2>Third-party services</h2>
+      <p>
+        Model names belong to their owners. This project is not endorsed by those providers. Optional image analysis
+        uses Google Gemini when it is configured and you start it; the provider&apos;s terms may apply.
+      </p>
+      <h2>Acceptable use</h2>
+      <p>
+        Do not use the service to break the law, infringe intellectual property or privacy, break platform rules or harm
+        another person. Do not upload sensitive images to image analysis.
+      </p>
+      <h2>Availability</h2>
+      <p>
+        Features may change or be unavailable. The site cannot promise uninterrupted access or a particular result from
+        another product.
+      </p>
+      <h2>Advertising</h2>
+      <p>
+        The site currently shows no advertising. If that changes, these terms and the privacy policy will be updated
+        first.
+      </p>
+      <p>
+        Questions can be sent through the <Link href="/contact">contact page</Link>.
+      </p>
+    </TextPage>
   );
-}
-
-function Term({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section><h2 className="text-2xl font-semibold text-[var(--text-primary)]">{title}</h2><p className="mt-3 leading-relaxed">{children}</p></section>;
 }

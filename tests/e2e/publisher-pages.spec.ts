@@ -24,15 +24,15 @@ test('verified guide hub uses bounded factual copy', async ({ page }) => {
 test('verified guide is indexable and identifies its evidence', async ({ page }) => {
   await page.goto(verifiedSlug);
   await expect(page.locator('meta[name="robots"]')).not.toHaveAttribute('content', /noindex/i);
-  await expect(page.getByLabel('Editorial details')).toBeVisible();
-  await expect(page.getByText('Verified', { exact: true })).toBeVisible();
-  await expect(page.getByLabel('Editorial details')).toContainText(/Last verified\s*\d{4}-\d{2}-\d{2}/);
+  await expect(page.getByText(/Checked against the sources listed at the end/)).toBeVisible();
+  await expect(page.locator('header time')).toHaveAttribute('datetime', /^\d{4}-\d{2}-\d{2}$/);
+  await expect(page.getByRole('heading', { name: 'Primary sources' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Stability AI Developer Platform/i })).toBeVisible();
 });
 
 test('unknown routes return a useful 404 document', async ({ page }) => {
   const response = await page.goto('/this-route-does-not-exist');
   expect(response?.status()).toBe(404);
-  await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /open the generator/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
+  await expect(page.getByRole('main').getByRole('link', { name: 'Prompt generator', exact: true })).toBeVisible();
 });

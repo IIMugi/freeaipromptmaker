@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import type { Role, Segment } from '@/lib/prompt-format';
 import { cn } from '@/lib/utils';
+import { FlagText } from '@/components/Layout/FlagText';
 
 export const ROLE_LABELS: Record<Role, string> = {
   subject: 'Subject',
@@ -15,19 +16,17 @@ const ROLE_ORDER: Role[] = ['subject', 'style', 'light', 'param', 'negative'];
 /** A formatted prompt with each part marked in its role colour. */
 export function Proof({
   segments,
-  muted = false,
   className,
 }: {
   segments: readonly Segment[];
-  muted?: boolean;
   className?: string;
 }) {
   return (
-    <p className={cn('proof', muted && 'opacity-55', className)}>
+    <p className={cn('proof', className)}>
       {segments.map((segment, index) =>
         segment.role ? (
           <span key={index} data-role={segment.role}>
-            {segment.text}
+            <FlagText text={segment.text} />
           </span>
         ) : (
           <Fragment key={index}>{segment.text}</Fragment>

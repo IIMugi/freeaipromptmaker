@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { TextPage } from '@/components/Layout/TextPage';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -10,50 +11,34 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <article className="mx-auto max-w-4xl px-4 py-14 sm:py-16">
-      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Privacy policy</h1>
-      <p className="mt-3 text-sm text-[var(--text-tertiary)]">Last updated: July 16, 2026</p>
-
-      <div className="mt-10 space-y-8 text-[var(--text-secondary)]">
-        <PolicySection title="Core prompt formatter">
-          Prompt formatting runs locally in your browser. Prompt text and local history are handled
-          by client-side code; history is stored in browser localStorage on your device. Clearing the
-          site&apos;s storage removes that local history.
-        </PolicySection>
-        <PolicySection title="Optional image analysis">
-          When you select Analyze image, the uploaded image is sent to this site&apos;s server and then
-          to Google Gemini for analysis if the feature is configured. Do not upload sensitive images.
-          Provider processing is governed by Google&apos;s applicable terms and policies. When the
-          provider is unavailable, the site returns an error and does not fabricate a result.
-        </PolicySection>
-        <PolicySection title="Analytics">
-          Google Analytics can load only after explicit consent through the privacy control. Declining
-          leaves analytics off. Product events are restricted to short outcome fields such as model,
-          copy variant, or failure reason; prompt and image content are not included.
-        </PolicySection>
-        <PolicySection title="Advertising">
-          The site currently shows no advertising. No advertising script or advertising cookie is
-          loaded.
-        </PolicySection>
-        <PolicySection title="Hosting and request data">
-          Normal web requests may expose technical data such as IP address, user agent, route, and
-          timestamp to hosting and network providers. This policy does not claim zero retention for
-          infrastructure or third-party providers.
-        </PolicySection>
-      </div>
-
-      <p className="mt-10 text-[var(--text-secondary)]">
-        Questions or correction requests can be submitted through the <Link href="/contact" className="text-[var(--accent-primary)] hover:underline">contact page</Link>.
+    <TextPage title="Privacy policy" path="/privacy" updated="2026-10-16">
+      <h2>Prompt tools</h2>
+      <p>
+        Prompts are built in your browser. Prompt text is not sent to our server. The prompts you copy are kept in your
+        browser&apos;s local storage on your device so you can restore them; clearing this site&apos;s data removes them.
+        A share link you copy contains the prompt and settings in the address, so anyone you send it to can read them.
       </p>
-    </article>
-  );
-}
-
-function PolicySection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section>
-      <h2 className="text-2xl font-semibold text-[var(--text-primary)]">{title}</h2>
-      <p className="mt-3 leading-relaxed">{children}</p>
-    </section>
+      <h2>Optional image analysis</h2>
+      <p>
+        When you choose Analyze image, the uploaded image is sent to this site&apos;s server and then to Google Gemini for
+        analysis, if the feature is configured. Do not upload sensitive images. Google&apos;s terms and policies apply to
+        that processing. If the provider is unavailable, the site returns an error instead of a made-up result.
+      </p>
+      <h2>Analytics</h2>
+      <p>
+        Google Analytics loads only after you choose Allow analytics. Declining leaves analytics off. Product events
+        only carry short fields such as the model, the copy type or a failure reason, never prompt or image content.
+      </p>
+      <h2>Advertising</h2>
+      <p>The site currently shows no advertising. No advertising script or advertising cookie is loaded.</p>
+      <h2>Hosting and request data</h2>
+      <p>
+        Normal web requests expose technical data such as IP address, browser, page and time to the hosting and network
+        providers that serve the site. This policy does not claim that those providers keep nothing.
+      </p>
+      <p>
+        Questions or correction requests can be sent through the <Link href="/contact">contact page</Link>.
+      </p>
+    </TextPage>
   );
 }

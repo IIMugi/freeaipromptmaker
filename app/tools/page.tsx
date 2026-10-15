@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { Breadcrumbs } from '@/components/Seo/Breadcrumbs';
 import { aiTools } from '@/data/ai-tools';
 
 export const metadata: Metadata = {
@@ -12,37 +12,50 @@ export const metadata: Metadata = {
 
 export default function ToolsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-14 sm:py-16">
-      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Image tool reference</h1>
-      <p className="mt-5 max-w-3xl text-lg leading-relaxed text-[var(--text-secondary)]">
-        This is a neutral list of official provider links, not a ranking or price comparison. Plans,
-        models, limits, and interfaces change; confirm current details with the provider before spending money.
-      </p>
-      <p className="mt-3 text-sm text-[var(--text-tertiary)]">
-        The current list contains no paid-placement or commission links.
-      </p>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <Breadcrumbs items={[{ name: 'Image tool reference', path: '/tools' }]} visible={false} />
+      <header className="max-w-3xl pb-10 pt-10 sm:pt-14">
+        <h1 className="font-display text-[clamp(2.4rem,5.5vw,3.75rem)] text-ink">Image tool reference</h1>
+        <p className="mt-4 text-lg leading-relaxed text-ink-2 sm:text-xl">
+          Official links and how each tool reads a prompt. No rankings and no paid placements. Plans and limits change
+          often, so check the provider&apos;s page before you pay for anything.
+        </p>
+      </header>
 
-      <div className="mt-10 grid gap-5 md:grid-cols-2">
+      <ul className="border-t-2 border-ink">
         {aiTools.map((tool) => (
-          <article key={tool.id} className="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-            <p className="text-sm text-[var(--text-tertiary)]">{tool.provider}</p>
-            <h2 className="mt-1 text-xl font-semibold text-[var(--text-primary)]">{tool.name}</h2>
-            <dl className="mt-5 space-y-4 text-sm">
-              <div><dt className="font-medium text-[var(--text-primary)]">Prompt mode</dt><dd className="mt-1 leading-relaxed text-[var(--text-secondary)]">{tool.promptMode}</dd></div>
-              <div><dt className="font-medium text-[var(--text-primary)]">Check before use</dt><dd className="mt-1 leading-relaxed text-[var(--text-secondary)]">{tool.limitation}</dd></div>
-            </dl>
-            <a href={tool.website} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--accent-primary)] hover:underline">
-              Open official provider page <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </article>
+          <li key={tool.id} className="grid gap-x-10 gap-y-3 border-b border-line py-7 md:grid-cols-[14rem_minmax(0,1fr)_minmax(0,1fr)]">
+            <div>
+              <h2 className="font-display text-[1.6rem] text-ink">{tool.name}</h2>
+              <p className="text-sm text-ink-3">{tool.provider}</p>
+              <a
+                href={tool.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex min-h-8 items-center text-[0.95rem] text-accent underline underline-offset-4"
+              >
+                Official site
+              </a>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-ink">How it reads prompts</h3>
+              <p className="mt-1 leading-relaxed text-ink-2">{tool.promptMode}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-ink">Check before you use it</h3>
+              <p className="mt-1 leading-relaxed text-ink-2">{tool.limitation}</p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <section className="mt-10 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6">
-        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Prepare a prompt locally</h2>
-        <p className="mt-2 text-[var(--text-secondary)]">Use the formatter, then review the destination provider&apos;s current syntax and settings.</p>
-        <Link href="/#generator" className="mt-4 inline-block text-sm font-medium text-[var(--accent-primary)] hover:underline">Open the prompt generator</Link>
-      </section>
+      <p className="mt-10 max-w-2xl leading-relaxed text-ink-2">
+        Ready to write a prompt? The{' '}
+        <Link href="/" className="text-accent underline underline-offset-4">
+          prompt generator
+        </Link>{' '}
+        formats it for Midjourney, Stable Diffusion, Flux, ChatGPT and Gemini.
+      </p>
     </div>
   );
 }

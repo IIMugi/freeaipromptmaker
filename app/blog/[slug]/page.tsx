@@ -4,7 +4,7 @@ import Link from 'next/link';
 import GithubSlugger from 'github-slugger';
 import { MarkdownRenderer } from '@/components/Blog/MarkdownRenderer';
 import { Breadcrumbs } from '@/components/Seo/Breadcrumbs';
-import { FlagText } from '@/components/Blog/FlagText';
+import { FlagText } from '@/components/Layout/FlagText';
 import { categoryLabel, getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/blog';
 import { articleJsonLd, canonicalUrl, serializeJsonLd } from '@/lib/seo';
 import { formatDate } from '@/lib/utils';

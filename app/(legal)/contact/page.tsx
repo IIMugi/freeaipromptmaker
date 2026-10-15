@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Github } from 'lucide-react';
+import { TextPage } from '@/components/Layout/TextPage';
 import { SITE } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -11,24 +11,22 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <article className="mx-auto max-w-3xl px-4 py-14 sm:py-16">
-      <h1 className="text-4xl font-semibold text-[var(--text-primary)]">Contact and corrections</h1>
-      <p className="mt-5 text-lg leading-relaxed text-[var(--text-secondary)]">
-        The public repository is the verified contact channel currently exposed by this project. Use
-        it for factual corrections, privacy questions, accessibility problems, and software bugs.
-      </p>
-      <section className="mt-10 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-base)] p-6">
-        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Before opening an issue</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-[var(--text-secondary)]">
-          <li>Do not include private prompts, uploaded images, API keys, or personal information.</li>
-          <li>Include the affected public URL and a concise description of the problem.</li>
-          <li>For a factual correction, link the primary source that supports the change.</li>
-        </ul>
-        <a href={`${SITE.social.github}/issues`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--accent-primary)] px-5 py-3 text-sm font-semibold text-[var(--text-inverted)]">
-          <Github className="h-4 w-4" aria-hidden="true" />
+    <TextPage
+      title="Contact and corrections"
+      path="/contact"
+      lead="Report a factual error, a privacy question, an accessibility problem or a bug through the project's public GitHub issues."
+    >
+      <h2>Before you open an issue</h2>
+      <ul>
+        <li>Do not include private prompts, uploaded images, API keys or personal information.</li>
+        <li>Include the page address and a short description of the problem.</li>
+        <li>For a factual correction, link the primary source that supports the change.</li>
+      </ul>
+      <p>
+        <a href={`${SITE.social.github}/issues`} target="_blank" rel="noopener noreferrer">
           Open GitHub issues
         </a>
-      </section>
-    </article>
+      </p>
+    </TextPage>
   );
 }
