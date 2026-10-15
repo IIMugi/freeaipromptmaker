@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Page Not Found',
+  // Overrides the layout's index,follow; Next adds its own noindex on top.
+  robots: { index: false, follow: true },
 };
 
 export default function NotFound() {
