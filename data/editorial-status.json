@@ -33,8 +33,13 @@
     ]
   },
     "2025-11-30-ai-art-styles-guide":  {
-                                           "state":  "needs-review"
-                                       },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Style vocabulary reference; Tate art terms glossary checked 2026-10-15",
+    "sources": [
+      "https://www.tate.org.uk/art/art-terms"
+    ]
+  },
     "2025-12-01-ai-art-composition-guide":  {
                                                 "state":  "needs-review"
                                             },
@@ -365,8 +370,13 @@
                                                                                   "state":  "needs-review"
                                                                               },
     "2026-02-16-master-ai-art-lenses-prompts-guide":  {
-                                                          "state":  "needs-review"
-                                                      },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Photography vocabulary reference; Nikon focal-length guide checked 2026-10-15",
+    "sources": [
+      "https://www.nikonusa.com/learn-and-explore/c/products-and-innovation/understanding-focal-length"
+    ]
+  },
     "2026-02-17-master-ai-art-game-development-assets-concepts-worlds":  {
                                                                              "state":  "needs-review"
                                                                          },
@@ -402,14 +412,24 @@
                                                                        ]
                                                        },
     "2026-02-23-master-ai-art-emotion-prompts":  {
-                                                     "state":  "needs-review"
-                                                 },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Expression and mood vocabulary reference; Paul Ekman Group universal emotions page checked 2026-10-15",
+    "sources": [
+      "https://www.paulekman.com/universal-emotions/"
+    ]
+  },
     "2026-02-23-master-art-nouveau-ai-art":  {
                                                  "state":  "needs-review"
                                              },
     "2026-02-24-master-ai-art-weather-time-prompts":  {
-                                                          "state":  "needs-review"
-                                                      },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Lighting and weather vocabulary reference; USNO twilight definitions checked 2026-10-15",
+    "sources": [
+      "https://aa.usno.navy.mil/faq/RST_defs"
+    ]
+  },
     "2026-02-25-ai-img2img-comparison-midjourney-stable-diffusion-dalle3":  {
                                                                                 "state":  "needs-review"
                                                                             },
@@ -663,8 +683,17 @@
                                                              "state":  "needs-review"
                                                          },
     "2026-05-17-master-sdxl-prompting-guide":  {
-                                                   "state":  "needs-review"
-                                               },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "SDXL base 1.0 model card, Diffusers SDXL pipeline docs, SDXL paper, AUTOMATIC1111 and ComfyUI docs checked 2026-10-15",
+    "sources": [
+      "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0",
+      "https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/stable_diffusion_xl",
+      "https://arxiv.org/abs/2307.01952",
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui#features",
+      "https://github.com/comfyanonymous/ComfyUI"
+    ]
+  },
     "2026-05-19-leonardo-ai-merchandise-design-guide":  {
                                                             "state":  "needs-review"
                                                         },
