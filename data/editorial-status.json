@@ -1,13 +1,26 @@
 {
     "2025-11-27-midjourney-v6-complete-prompt-guide":  {
-                                                           "state":  "verified",
-                                                           "lastVerified":  "2026-07-16",
-                                                           "testedVersion":  "Midjourney V6.1 (released 2024-07-30; default until 2025-06-16), documentation snapshot verified 2026-07-16 while V8.1 is current",
-                                                           "sources":  [
-                                                                           "https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version",
-                                                                           "https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List"
-                                                                       ]
-                                                       },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Midjourney V6 / V6.1 parameters per official docs (Version chart, Legacy Features) as of 2026-10-15, V8.2 current default",
+    "sources": [
+      "https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version",
+      "https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List",
+      "https://docs.midjourney.com/hc/en-us/articles/33329788681101-Legacy-Features",
+      "https://docs.midjourney.com/hc/en-us/articles/32634113811853-Raw",
+      "https://docs.midjourney.com/hc/en-us/articles/32176522101773-Quality",
+      "https://docs.midjourney.com/hc/en-us/articles/32196176868109-Stylize",
+      "https://docs.midjourney.com/hc/en-us/articles/32099348346765-Chaos-Variety",
+      "https://docs.midjourney.com/hc/en-us/articles/32390120435085-Weird",
+      "https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio",
+      "https://docs.midjourney.com/hc/en-us/articles/32173351982093-No",
+      "https://docs.midjourney.com/hc/en-us/articles/32040250122381-Image-Prompts",
+      "https://docs.midjourney.com/hc/en-us/articles/32180011136653-Style-Reference",
+      "https://docs.midjourney.com/hc/en-us/articles/32804058614669-Upscalers",
+      "https://docs.midjourney.com/hc/en-us/articles/32595476770957-Zoom-Out",
+      "https://docs.midjourney.com/hc/en-us/articles/36285124473997-Omni-Reference"
+    ]
+  },
     "2025-11-27-stable-diffusion-negative-prompts-guide":  {
                                                                "state":  "needs-review"
                                                            },

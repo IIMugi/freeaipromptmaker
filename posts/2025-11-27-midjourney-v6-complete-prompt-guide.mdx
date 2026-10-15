@@ -1,118 +1,206 @@
 ---
-title: "Midjourney V6.1 Parameter Reference (Legacy Model)"
+title: "Midjourney V6 Parameters Cheat Sheet: --style raw, --q, --v"
 date: "2025-11-27"
-description: "A legacy Midjourney V6.1 reference with a strict current-documentation boundary and a text-only migration check."
-tags: ["Midjourney V6.1", "legacy model", "Midjourney parameters", "version parameter"]
+description: "Every Midjourney V6 and V6.1 parameter in one table: --v 6.1, --style raw, --q 2, --s, --c, --ar, --sref, upscalers, plus copy-paste prompts."
+tags: ["Midjourney V6", "Midjourney V6.1", "Midjourney parameters", "--style raw", "--q 2", "midjourney cheat sheet"]
 author: "Eren Koray"
 category: "midjourney"
-readTime: "9 min read"
+difficulty: "beginner"
+readTime: "7 min"
+pros:
+  - "V6.1 can still be picked per prompt with --v 6.1, so old prompts stay reproducible"
+  - "Quality, Raw and Stylize give simple, predictable control over the look"
+cons:
+  - "V6 is no longer the default: unversioned prompts now run on V8.2"
+  - "Newer features such as Omni Reference (--oref), Draft and HD do not exist in V6"
 ---
 
-# Midjourney V6.1 Parameter Reference (Legacy Model)
+Midjourney V6 and V6.1 are older models, but you can still choose them for any prompt. This page lists every parameter that works with them, the accepted values, and ready-to-copy prompts.
 
-**V8.1 is the current default; V6.1 is a legacy model.** Use this page only when a record must intentionally select V6.1. For a new unversioned prompt, consult current Midjourney documentation instead of assuming V6.1 behavior.
+**Current default:** V8.2 (since 24 July 2026). If you do not add `--v`, your prompt runs on V8.2 or on whatever version you picked as your default in settings. To use V6.1, add `--v 6.1` to the end of the prompt.
 
-V6.1 was released on 2024-07-30 and was the default until 2025-06-16. **Documentation snapshot checked: 2026-07-16.** The official Version article was modified 2026-06-16, and the official Parameter List was modified 2026-06-11 when checked.
+## V6 / V6.1 parameter cheat sheet
 
-**Documented:** V8.1 is the current default, V6.1's release/default dates, the `--v` version selector, required parameter placement, and the current Version page's V6-family compatibility chart.
+| Parameter | Short form | Values in V6 | Default | What it does |
+| --- | --- | --- | --- | --- |
+| Version | `--v 6` / `--v 6.1` | `6`, `6.1` | V8.2 | Chooses the model for this prompt |
+| Raw | `--style raw` or `--raw` | on / off | off | Turns off Midjourney's automatic styling for a more literal, photo-like result |
+| Quality | `--q` | `0.5`, `1`, `2` | — | More GPU time on the first grid for more detail |
+| Stylize | `--s` | `0`–`1000` | `100` | How strongly Midjourney's own aesthetic is applied |
+| Chaos | `--c` | `0`–`100` | `0` | How different the four images in a grid are from each other |
+| Weird | `--w` | `0`–`3000` | `0` | Unusual, offbeat aesthetics (experimental) |
+| Aspect ratio | `--ar` | e.g. `16:9`, `2:3`, up to `14:1` | `1:1` | Image shape |
+| No | `--no` | words | — | Removes elements; same as weighting them `::-0.5` |
+| Seed | `--seed` | whole number | random | Repeats the starting noise for closer re-runs |
+| Tile | `--tile` | on / off | off | Seamless, repeating pattern |
+| Image weight | `--iw` | `0`–`3` | `1` | How much an image prompt counts against the text |
+| Style reference | `--sref` | image URL or code | — | Copies the style of a reference image |
+| Personalization | `--p` | profile code | — | Applies your personalization profile (V6 and later) |
+| Niji 6 | `--niji 6` | — | — | The anime model of the V6 generation |
 
-**Locally checked:** the text-only parser example and migration worksheet were checked for spacing, ordering, and exact version text on 2026-07-16.
+The values come from Midjourney's Version comparison chart and Legacy Features table (links at the end). Quality `0.5, 1, 2` is the V6 set: V7 uses `1, 2, 4`, and the Version chart does not list Quality for V8.1/V8.2.
 
-**Not tested:** no prompt was submitted and no output, parameter behavior, or cross-version image result was compared. No independent image-generation comparison was performed for this guide.
+## How to write the parameters
 
-## Select V6.1 explicitly
+Midjourney reads everything after the first `--` as parameters. The rules from the official Parameter List:
 
-The official Version page says to add the version parameter at the end of the prompt. For this legacy model, use:
-
-```text
---v 6.1
-```
-
-V8.1 is the platform default, but the official Version page also allows a user to choose an account-level default in settings. Unversioned prompts are state-dependent and nonportable. Pin `--v 6.1` whenever the record must reproduce the legacy model choice.
-
-## Prompt text versus parameters
-
-The current Parameter List defines a strict text format:
-
-- describe the requested content first;
-- put parameters at the end;
-- leave a space between prompt text and the two hyphens;
-- do not put punctuation inside a parameter;
-- do not resume prompt prose after parameters begin.
-
-### Reproducible text-only placement example
-
-```text
-quiet reading room, oak shelves, afternoon window light --v 6.1
-```
-
-This can be checked without generating anything:
-
-| Segment | Parsed role | Check |
-|---|---|---|
-| `quiet reading room, oak shelves, afternoon window light` | Prompt text | Appears before all parameters |
-| one space | Separator | Exists before the first `--` |
-| `--v 6.1` | Version parameter | Appears at the end and selects V6.1 |
-
-Incorrect placement examples:
+- Write the description first, parameters at the end.
+- Put a space before every `--`.
+- No commas or other punctuation inside parameters.
+- Do not continue the description after the parameters start.
 
 ```text
-quiet reading room--v 6.1
-quiet reading room --v 6.1, afternoon light
-quiet reading room - - v 6.1
+a lighthouse on a rocky coast at dusk, long exposure, soft fog --ar 16:9 --style raw --q 2 --v 6.1
 ```
 
-The first lacks the documented separator, the second returns to prompt text after a punctuated parameter, and the third splits the two hyphens.
+Common mistakes:
 
-## V6.1 compatibility table
+```text
+a lighthouse at dusk--v 6.1                 (no space before --)
+a lighthouse --v 6.1, soft fog              (text after the parameters)
+a lighthouse at dusk --ar 16:9, --q 2       (comma between parameters)
+a lighthouse at dusk —v 6.1                 (an em dash instead of two hyphens)
+```
 
-The only positively confirmed V6.1 parameter in this reference is `--v 6.1`. The supplied Version page labels its comparison column **V6**, not **V6.1**. The V6 chart is not reinterpreted as V6.1-specific documentation. The table therefore distinguishes the exact V6.1 selection shown by the documentation boundary from parameters that the current pages list only generally or under the V6 column.
+The last one happens on phones and Macs that turn `--` into a long dash automatically. If Midjourney ignores a parameter, check this first.
 
-| Parameter or feature | Exact V6.1 confirmation in the supplied pages | Treatment in this reference |
-|---|---|---|
-| `--v 6.1` | Yes: the Version page documents `--v #` and identifies V6.1 as an available historical version | Use to select the legacy model |
-| `--ar`, `--chaos`, `--no`, `--seed`, `--raw`, `--stylize`, `--tile`, `--weird` | No exact V6.1 label; the compatibility chart marks these in its **V6** column | Not assigned a V6.1 range or behavior here |
-| `--q` | No exact V6.1 label; the chart shows values `0.5, 1, 2` for its **V6** column | Do not present that family range as V6.1-specific confirmation |
-| `--hd` | No; the current Parameter List describes it for V8.1, and the Version chart does not mark HD images for V6 | Remove from a V6.1 record |
-| `--draft` | No; the current Parameter List describes Draft for V7 | Remove from a V6.1 record |
-| `--oref` | No; the Version chart does not mark Omni Reference for V6 | Remove from a V6.1 record |
-| `--exp` | No; the Version chart does not mark it for V6 | Remove from a V6.1 record |
+## --style raw vs --raw
 
-This narrow table is intentional. Parameter names on a current all-version list do not establish their accepted values or semantics in V6.1. Use a version-specific primary page before adding any additional range to a V6.1 production worksheet.
+Both forms appear in Midjourney's documentation. The Legacy Features table lists Style with the value `raw` for V5 and V6, so most V6-era prompts use `--style raw`. The current Raw page documents `--raw` and says it works on Midjourney 5.1 and later. You can also switch Raw on as a default in the settings panel.
 
-## Migration checklist
+Use Raw when Midjourney adds drama you did not ask for, or when you want a plain photographic look:
 
-Remove unsupported carryover before adding `--v 6.1`. Use this checklist when converting current prompt text into a deliberately legacy V6.1 record:
+```text
+candid photo of an elderly baker dusting flour off a counter, morning window light, 35mm --style raw --v 6.1
+```
 
-1. Copy only the descriptive prompt text.
-2. Remove current-version carryover that is not confirmed for V6.1, including `--hd`, `--draft`, `--oref`, and `--exp`.
-3. Remove any remembered range or default that came from a V8.1 page.
-4. Put `--v 6.1` at the end.
-5. Confirm there is a space before the two hyphens and no prompt prose after the parameter.
-6. If another parameter is required, find an official page that explicitly identifies V6.1 compatibility; otherwise leave it out of the reproducible record.
-7. Save the documentation snapshot date with the prompt.
+```text
+product shot of a matte black water bottle on white seamless background, soft box lighting --style raw --s 50 --v 6.1
+```
 
-### Text-only migration worksheet
+Raw with a low Stylize (`--s 50` or lower) gives the most literal reading of the prompt.
 
-| Input fragment | Keep, remove, or research | Reason |
-|---|---|---|
-| `quiet reading room, oak shelves` | Keep | Descriptive prompt text |
-| `--hd` | Remove | Current documentation assigns HD image generation to V8.1, not V6 |
-| `--draft` | Remove | Current Parameter List identifies Draft as V7 behavior |
-| remembered `--stylize` range | Research | No V8.1 or V6-family range is presented here as V6.1-specific |
-| `--v 6.1` | Keep at end | Exact legacy version selector |
+## --q 2 in V6
 
-## One-variable troubleshooting
+Quality changes how much GPU time goes into the first grid. In V6 the accepted values are `0.5`, `1` and `2`.
 
-1. Start with prompt text plus only `--v 6.1`.
-2. Check placement and spacing as text.
-3. If Midjourney rejects the prompt, remove any unverified carryover parameter before changing the prompt text.
-4. Add back at most one parameter whose V6.1 support is explicitly documented by a current official source.
-5. Record that source and its check date beside the parameter.
+- `--q 2` costs more GPU time and can add detail.
+- `--q 0.5` is faster and cheaper, which is handy for testing compositions.
+- Quality only affects the first four images. It does not change variations, Vary Region, Zoom Out or upscales.
 
-This procedure diagnoses syntax and provenance. It does not establish output behavior.
+```text
+macro photo of frost on a red maple leaf, fine ice crystals, overcast light --q 2 --v 6.1
+```
+
+```text
+rough composition test, knight on horseback crossing a river --q 0.5 --v 6.1
+```
+
+## Stylize, Chaos and Weird
+
+These three are easy to confuse:
+
+| You want... | Use | Try |
+| --- | --- | --- |
+| Less "Midjourney look", closer to the words | Lower Stylize | `--s 0` to `--s 50` |
+| More artistic, painterly polish | Higher Stylize | `--s 250` to `--s 750` |
+| Four very different ideas in one grid | Chaos | `--c 30` to `--c 60` |
+| Strange, unconventional images | Weird | `--w 250` to `--w 1000` |
+
+The settings presets map Stylize Low/Med/High/Very High to 50/100/250/750, which makes those values a good starting ladder.
+
+```text
+watercolor map of an imaginary island, hand-lettered labels, sea monsters in the margins --s 750 --v 6.1
+```
+
+```text
+a futuristic tea house --c 50 --ar 3:2 --v 6.1
+```
+
+```text
+portrait of a fox wearing a knitted scarf, studio lighting --w 500 --v 6.1
+```
+
+## Upscaling a V6 image
+
+V6 has no upscale parameter. You upscale after generating, with two buttons:
+
+- **Upscale (Subtle):** doubles the size and keeps the image as close to the original as possible.
+- **Upscale (Creative):** doubles the size and adds detail. It can fix small problems such as an awkward hand, and every re-run is slightly different.
+
+Each upscale uses GPU time. Midjourney's Upscalers page notes that V7 images also use the V6.1 upscalers, and the Zoom Out page says zooming still runs on V6.1 for V7 and V8.1 images.
+
+## Seed, Tile and --no
+
+Repeat a result as closely as possible by reusing its seed:
+
+```text
+isometric cozy bedroom, pastel colors, soft shadows --seed 12345 --v 6.1
+```
+
+Make a seamless pattern for fabric or a website background:
+
+```text
+hand-drawn lemons and leaves, flat illustration, cream background --tile --v 6.1
+```
+
+Remove something you keep getting:
+
+```text
+empty mountain road at sunrise, wide landscape --no cars, people, text --ar 16:9 --v 6.1
+```
+
+`--no cars` works like giving "cars" a weight of `-0.5`. For more on weights such as `cat::2`, see the [prompt weighting guide](/blog/2025-12-25-ai-prompt-weighting-guide).
+
+## Style references and the old Character Reference
+
+- `--sref` works with V6 and later. To use old style reference codes, Midjourney's Style Reference page says to add `--sv 4` or switch to V6.
+- `--cref` (Character Reference) is now a legacy feature. It was used with V6 and Niji 6. Newer versions replace it with Omni Reference (`--oref`), which does not work on V6.
+
+```text
+a girl reading in a train compartment, golden hour --sref https://example.com/style.png --v 6.1
+```
+
+Replace the URL with a link to your own reference image.
+
+## What does not work in V6
+
+The Version chart marks these as unavailable for V6. Remove them when you add `--v 6.1` to a prompt written for a newer version:
+
+| Parameter | Available from |
+| --- | --- |
+| `--oref`, `--ow` (Omni Reference) | V7 |
+| `--draft` (Draft mode) | V7 |
+| `--hd` | V8.1 |
+| `--exp` | V7 |
+
+## V6 vs V6.1 at a glance
+
+| | V6 | V6.1 |
+| --- | --- | --- |
+| Released | December 2023 | 30 July 2024 |
+| Default until | — | 16 June 2025 |
+| Notes | More accurate with longer prompts | More coherent images, finer detail and texture, about 25% faster than V6 |
+| Select with | `--v 6` | `--v 6.1` |
+
+## Build your prompt
+
+The [prompt generator](/#generator) builds the descriptive part of a prompt from your subject, style and lighting. Paste it into Midjourney and add the parameters from the table above. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [Version](https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version) — official current/default status, version selector, V6.1 dates, and the comparison chart; snapshot checked 2026-07-16.
-- [Parameter List](https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List) — official parameter placement rules and current all-version parameter index; snapshot checked 2026-07-16.
+- [Midjourney: Version](https://docs.midjourney.com/hc/en-us/articles/32199405667853-Version)
+- [Midjourney: Parameter List](https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List)
+- [Midjourney: Legacy Features](https://docs.midjourney.com/hc/en-us/articles/33329788681101-Legacy-Features)
+- [Midjourney: Raw](https://docs.midjourney.com/hc/en-us/articles/32634113811853-Raw)
+- [Midjourney: Quality](https://docs.midjourney.com/hc/en-us/articles/32176522101773-Quality)
+- [Midjourney: Stylize](https://docs.midjourney.com/hc/en-us/articles/32196176868109-Stylize)
+- [Midjourney: Chaos / Variety](https://docs.midjourney.com/hc/en-us/articles/32099348346765-Chaos-Variety)
+- [Midjourney: Weird](https://docs.midjourney.com/hc/en-us/articles/32390120435085-Weird)
+- [Midjourney: Aspect Ratio](https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio)
+- [Midjourney: No](https://docs.midjourney.com/hc/en-us/articles/32173351982093-No)
+- [Midjourney: Image Prompts](https://docs.midjourney.com/hc/en-us/articles/32040250122381-Image-Prompts)
+- [Midjourney: Style Reference](https://docs.midjourney.com/hc/en-us/articles/32180011136653-Style-Reference)
+- [Midjourney: Upscalers](https://docs.midjourney.com/hc/en-us/articles/32804058614669-Upscalers)
+- [Midjourney: Zoom Out](https://docs.midjourney.com/hc/en-us/articles/32595476770957-Zoom-Out)
+- [Midjourney: Omni Reference](https://docs.midjourney.com/hc/en-us/articles/36285124473997-Omni-Reference)
