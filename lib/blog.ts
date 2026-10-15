@@ -146,6 +146,8 @@ export function getPostBySlug(slug: string): BlogPost | null {
     return null;
   }
 
+  if (!/^[a-z0-9-]+$/.test(slug)) return null;
+
   // Önce MDX, sonra MD uzantısını dene
   let fullPath = path.join(postsDirectory, `${slug}.mdx`);
   if (!fs.existsSync(fullPath)) {

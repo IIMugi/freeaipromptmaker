@@ -16,6 +16,8 @@ const QUARANTINED_DESCRIPTION =
   'This preserved guide URL is withheld from publication while its claims, sources, and current tool version are reviewed.';
 
 // Static generation için tüm slug'ları al
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const slugs = getAllPostSlugs();
   return slugs.map((slug) => ({ slug }));

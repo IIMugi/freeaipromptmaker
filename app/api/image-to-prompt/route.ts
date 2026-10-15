@@ -210,6 +210,10 @@ export async function POST(request: Request) {
     return response;
   }
 
+  // Without a provider there is nothing to analyze, so never spend CPU decoding the upload.
+  const apiKey = getGeminiKey();
+  if (!apiKey) return json({ code: 'analysis_unavailable' }, 503, rateLimit);
+
   const requestBody = await readBoundedRequestBody(request);
   if (!requestBody) return json({ code: 'image_too_large' }, 400, rateLimit);
 
@@ -232,9 +236,6 @@ export async function POST(request: Request) {
   const bytes = new Uint8Array(await input.arrayBuffer());
   const validation = await validateImageBytes(bytes, input.type);
   if (!validation.ok) return json({ code: validation.code }, 400, rateLimit);
-
-  const apiKey = getGeminiKey();
-  if (!apiKey) return json({ code: 'analysis_unavailable' }, 503, rateLimit);
 
   try {
     const ai = new GoogleGenAI({ apiKey });

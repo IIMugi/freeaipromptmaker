@@ -18,6 +18,8 @@ function isValidModel(model: string): model is AIModel {
   return getAllModelSlugs().includes(model as AIModel);
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const models = getAllModelSlugs();
   const useCases = getAllPromptUseCaseSlugs();

@@ -62,6 +62,7 @@ export const securityHeaders = [
 const nextConfig: NextConfig = {
   // Self-hosted in Docker (see Dockerfile); emits a minimal server in .next/standalone.
   output: 'standalone',
+  poweredByHeader: false,
   turbopack: {
     root: process.cwd(),
   },

@@ -1,8 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { SITE } from '@/lib/site';
 
-export const runtime = 'edge';
-
 export const alt = `${SITE.name} social preview`;
 export const size = {
     width: 1200,

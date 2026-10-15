@@ -8,6 +8,8 @@ interface PageProps {
   params: Promise<{ useCase: string }>;
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return getAllPromptUseCaseSlugs().map((useCase) => ({ useCase }));
 }

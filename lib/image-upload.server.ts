@@ -7,6 +7,10 @@ import {
   type ImageMime,
 } from '@/lib/image-upload';
 
+// Self-hosted on a small shared box: keep untrusted decodes cheap and uncached.
+sharp.cache(false);
+sharp.concurrency(1);
+
 export type ImageValidationResult =
   | { ok: true; mimeType: ImageMime; width: number; height: number }
   | { ok: false; code: 'invalid_image_signature' | 'invalid_image_data' };
@@ -26,7 +30,7 @@ export async function validateImageBytes(
       limitInputPixels: MAX_IMAGE_PIXELS,
     });
     const metadata = await image.metadata();
-    const decodedType = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
+    const decodedType = metadata.format;
     if (`image/${decodedType}` !== detectedType || !validateImageGeometry(metadata)) {
       return { ok: false, code: 'invalid_image_data' };
     }

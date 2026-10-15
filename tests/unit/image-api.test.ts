@@ -73,7 +73,14 @@ describe('image analysis API', () => {
     expect(await response.json()).toEqual({ code: 'analysis_unavailable' });
   });
 
+  it('does not inspect the upload when analysis is not configured', async () => {
+    const response = await POST(imageRequest([1, 2, 3, 4]));
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ code: 'analysis_unavailable' });
+  });
+
   it('rejects bytes that do not match the declared image type', async () => {
+    process.env.GEMINI_API_KEY = 'test-key';
     const response = await POST(imageRequest([1, 2, 3, 4]));
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ code: 'invalid_image_signature' });
@@ -90,6 +97,7 @@ describe('image analysis API', () => {
   });
 
   it('rejects an oversized multipart request before parsing it', async () => {
+    process.env.GEMINI_API_KEY = 'test-key';
     const request = imageRequest(pngBytes);
     request.headers.set('content-length', String(MAX_IMAGE_FILE_SIZE + 1024 * 1024));
 
