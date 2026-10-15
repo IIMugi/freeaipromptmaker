@@ -1,176 +1,323 @@
 ---
-title: "Stable Diffusion Wildcards with Dynamic Prompts"
+title: "Stable Diffusion Wildcards: Syntax + Copy-Paste Wildcard Files"
 date: "2026-01-25"
-description: "A source-bounded guide to Dynamic Prompts variants, wildcard files, nested paths, weighting, and expansion arithmetic."
-tags: ["stable diffusion", "dynamic prompts", "wildcards", "automatic1111", "prompt variation"]
+description: "How wildcards work in Stable Diffusion (Dynamic Prompts, ComfyUI, SwarmUI), the full __wildcard__ and {a|b} syntax, and ready-made wildcard files to copy."
+tags: ["stable diffusion wildcards", "sdxl wildcards", "dynamic prompts", "wildcards collection", "comfyui wildcards", "swarmui wildcards"]
 author: "Eren Koray"
-readTime: "10 min read"
 category: "stable-diffusion"
+difficulty: "beginner"
+readTime: "9 min"
+pros:
+  - "One prompt produces many varied images: different hair, outfits, places, lighting"
+  - "Plain text files you can reuse, share and import into other tools"
+cons:
+  - "Syntax differs between AUTOMATIC1111, ComfyUI and SwarmUI"
+  - "The A1111 Dynamic Prompts extension has had no new commits since May 2024"
 ---
 
-# Stable Diffusion Wildcards with Dynamic Prompts
+A wildcard is a placeholder such as `__hair_color__` that is replaced by a random line from a text file each time you generate. Combined with `{red|blue|green}` choices, one prompt can produce hundreds of different images. This page covers the syntax, where the files go in each tool, and ready-made wildcard files you can copy.
 
-Dynamic Prompts expands a text template before the resulting prompt reaches Stable Diffusion. Its variant syntax handles short choices inline, while wildcard files keep larger or reusable choice lists outside the prompt.
+## Quick start (AUTOMATIC1111 + Dynamic Prompts)
 
-**Version boundary:** Dynamic Prompts upstream `main` commit `de056ff8d80e4ad120e13a90cf200f3383f427c6`, documented against AUTOMATIC1111 1.10.1. Documentation verified: 2026-07-16.
-
-No independent image-generation comparison was performed for this guide.
-
-## Pick the smallest construct that fits
-
-| Requirement | Construct | Text form | Expansion effect |
-| --- | --- | --- | --- |
-| A few visible alternatives | Variant | `{fog|rain|snow}` | Selects from the inline values |
-| A reusable list | Text wildcard | `__weather__` backed by `weather.txt` | Selects one line from the file |
-| A categorized collection | Nested path | `__places/coast__` | Resolves a file inside a folder hierarchy |
-| Unequal selection frequency | Weighted variant | `{3::fog|1::rain}` | Gives `fog` three relative units and `rain` one |
-| Every cross-product prompt | Combinatorial sampler | Two or more variants or wildcards | Enumerates the available combinations |
-
-Use ordinary variants while the alternatives still fit comfortably in the prompt. Move a list to a wildcard file when it needs reuse, review, or a directory structure.
-
-## Variant syntax: `{a|b}`
-
-Wrap choices in braces and separate them with `|`:
+1. Install **Dynamic Prompts** from the web UI's **Extensions** tab.
+2. Create a text file in `extensions/sd-dynamic-prompts/wildcards/`, for example `hair_color.txt`, with one option per line.
+3. Use the file name between double underscores in your prompt:
 
 ```text
-a {foggy|rainy|snowy} station platform
+portrait of a woman with __hair_color__ hair, {soft window light|golden hour|neon lights}, 85mm photo
 ```
 
-This template has three possible text expansions. A second independent variant multiplies the count:
+4. Set **Batch count** to 8 and generate. Each image gets a different hair color and lighting.
+
+## Syntax cheat sheet
+
+| Syntax | What it does | Example |
+| --- | --- | --- |
+| `{a\|b\|c}` | Picks one option | `{cat\|dog\|fox}` |
+| `{0.5::a\|0.2::b}` | Weighted pick (relative, missing = 1) | `{3::day\|1::night}` |
+| `{2$$a\|b\|c}` | Picks 2 different options | `{2$$red\|blue\|green}` → `red, blue` |
+| `{2$$ and $$a\|b\|c}` | Custom separator | → `red and blue` |
+| `{1-3$$a\|b\|c\|d}` | Picks 1 to 3 options | `{1-2$$hat\|scarf\|gloves}` |
+| `__name__` | Random line from `name.txt` | `__hair_color__` |
+| `__folder/name__` | File in a subfolder | `__clothes/winter__` |
+| `__colors*__` | All files starting with `colors` | `colors-warm.txt` + `colors-cold.txt` |
+| `__artists/**__` | Every file under a folder, at any depth | |
+| `{2$$__name__}` | 2 different lines from one file | `{2$$__accessories__}` |
+| `${v=!{a\|b}}` then `${v}` | Pick once, reuse the same value | Keep one season across the prompt |
+| `__file(var=x)__` | Pass a value into a template file | `__outfit(season=winter)__` |
+| `{@a\|b}` / `__@name__` | Cycle through options in order | Keep two lists in sync |
+| `#` | Comment (whole line in .txt files) | `# warm colors` |
+
+Values in `{2$$...}` are picked without replacement, so you do not get the same option twice. If you ask for more options than exist, you get all of them.
+
+## Copy-paste wildcard files
+
+Save each block as a `.txt` file with the name shown, one option per line. Lines starting with `#` are comments.
+
+### hair_color.txt
 
 ```text
-a {foggy|rainy|snowy} station platform at {dawn|night}
+# hair_color.txt
+black
+dark brown
+chestnut
+auburn
+copper red
+strawberry blonde
+golden blonde
+platinum blonde
+silver
+pastel pink
+lavender
+teal
 ```
 
-The expansion space is `3 weather choices x 2 time choices = 6` prompts. Random sampling may repeat a choice before every possible prompt appears; combinatorial sampling requests the cross-product instead.
-
-## Wildcard files: `__name__`
-
-The extension's tutorial records the default folder as:
+### hairstyle.txt
 
 ```text
-extensions/sd-dynamic-prompts/wildcards
+# hairstyle.txt
+long straight hair
+long wavy hair
+curly hair
+short bob
+pixie cut
+high ponytail
+twin braids
+messy bun
+side-swept bangs
+buzz cut
+afro
+undercut
 ```
 
-Create a plain text file with one value per line:
+### outfit.txt
 
 ```text
-# wildcards/materials.txt
-brick
-weathered wood
-painted steel
+# outfit.txt
+oversized knit sweater and jeans
+black leather jacket and white t-shirt
+flowing summer dress
+tailored grey suit
+denim overalls
+hooded raincoat
+traditional kimono
+cyberpunk techwear jacket
+medieval wool cloak
+lab coat
+school uniform
+astronaut suit
 ```
 
-Reference the filename without `.txt`, surrounded by double underscores:
+### location.txt
 
 ```text
-a small workshop built from __materials__
+# location.txt
+busy Tokyo street at night
+quiet library with tall shelves
+misty pine forest
+rooftop garden in the city
+desert canyon at sunset
+cozy cafe interior
+snowy mountain village
+abandoned greenhouse
+beach boardwalk
+neon-lit subway station
+old European market square
+spaceship corridor
 ```
 
-Lines beginning with `#` are comments. A basic text wildcard uses one entry per line; use the documented YAML or JSON formats when a structured hierarchy or multiline values are required.
-
-## Deterministic folder-resolution example
-
-This file tree makes the name-to-file mapping explicit:
+### lighting.txt
 
 ```text
-wildcards/
-  places/
-    coast.txt
-    forest.txt
-  weather.txt
+# lighting.txt
+soft window light
+golden hour sunlight
+overcast diffused light
+dramatic rim light
+neon lights
+candlelight
+studio softbox lighting
+harsh midday sun
+moonlight
+backlit silhouette
+foggy morning light
+volumetric light rays
 ```
+
+### shot.txt
 
 ```text
-# places/coast.txt
-shingle beach
-tidal flat
-rocky cove
+# shot.txt
+close-up portrait
+medium shot
+full body shot
+wide establishing shot
+low angle shot
+high angle shot
+over-the-shoulder shot
+dutch angle
+aerial view
+macro shot
 ```
 
-The prompt token `__places/coast__` resolves to `wildcards/places/coast.txt`; `__places/forest__` resolves to the sibling file. The path resolution is deterministic, but selection among a file's lines follows the active sampler.
-
-The syntax documentation also supports glob patterns. For example, `__places/*__` can draw from matching files in `places`, while a recursive `**` pattern can include deeper descendants. Start with an exact nested path so a folder or spelling error remains visible.
-
-## Weighted choices
-
-Place a relative weight and `::` before an option:
+### mood.txt
 
 ```text
-an exterior in {3::overcast light|1::hard sunlight}
+# mood.txt
+calm and peaceful
+joyful
+melancholic
+mysterious
+tense
+dreamy
+nostalgic
+playful
+lonely
+hopeful
 ```
 
-Weights are relative and do not need to sum to one. An omitted weight counts as one. A `3` versus `1` relationship changes sampling frequency; it does not create a probability claim about a small batch and does not guarantee a particular sequence.
+### art_medium.txt
 
-Standard text wildcard files do not attach weights directly to individual lines. The documented YAML form can contain weighted variant syntax when weighted reusable data is needed.
+```text
+# art_medium.txt
+oil painting
+watercolor
+ink sketch
+charcoal drawing
+gouache illustration
+digital painting
+pencil drawing
+3d render
+cel-shaded anime
+linocut print
+pastel drawing
+photograph on 35mm film
+```
 
-## Reproducible text-only expansion worksheet
-
-Create these two files:
+### weather.txt
 
 ```text
 # weather.txt
-fog
-rain
+light rain
+heavy rain
+snowfall
+thick fog
+clear blue sky
+storm clouds
+after the rain, wet streets
+autumn wind with falling leaves
+heat haze
+drizzle at dusk
 ```
+
+### Putting them together
 
 ```text
-# places/coast.txt
-tidal flat
-rocky cove
-shingle beach
+__shot__ of a person with __hair_color__ __hairstyle__, wearing __outfit__, __location__, __weather__, __lighting__, __mood__, __art_medium__
 ```
 
-Then use:
+With 10 shots, 12 hair colors, 12 hairstyles, 12 outfits, 12 locations, 10 weathers, 12 lightings, 10 moods and 12 media, this single prompt has almost three billion combinations (12⁶ × 10³), so random mode is the way to explore it.
+
+### One YAML file instead of many
+
+Dynamic Prompts also reads YAML. Nested keys become folders, and YAML is the way to put weights inside a wildcard file:
+
+```yaml
+# character.yaml
+character:
+  hair:
+    - black
+    - auburn
+    - platinum blonde
+  eyes:
+    - green
+    - brown
+    - grey
+  weighted_season:
+    - "{3::summer|1::winter|1::spring|1::autumn}"
+```
+
+Use it as `__character/hair__`, `__character/eyes__` and `__character/weighted_season__`.
+
+## Keep one random choice consistent
+
+By default, every `__name__` is picked separately, so `__season__ ... __season__` can give two different seasons. Use an immediate variable to pick once:
 
 ```text
-a {wide|close} view of a __places/coast__ in __weather__
+${season=!{spring|summer|autumn|winter}}
+a ${season} landscape, trees in ${season} colors, ${season} sky
 ```
 
-| Input | Count |
-| --- | ---: |
-| View variant | 2 |
-| Coast wildcard | 3 |
-| Weather wildcard | 2 |
-| Total cross-product | `2 x 3 x 2 = 12` |
+Without the `!`, the variable is re-evaluated each time it is used. That is handy for repeating a whole description with different results:
 
-Combinatorial mode has twelve prompt expansions for this worksheet. Image-generation work can be larger than the text count: batch settings, repeated seeds, high-resolution passes, or other scripts can add work. Calculate the prompt cross-product before enabling a combinatorial run.
+```text
+${person={blond|redhead|brunette}, {green|blue|brown} eyes}
+a ${person} man and a ${person} woman sitting at a cafe table
+```
 
-## Syntax and failure table
+## Random vs combinatorial
 
-| Symptom | Likely text-level cause | Single check |
-| --- | --- | --- |
-| Braces remain in the submitted prompt | Dynamic Prompts is disabled or the braces are malformed | Try `{red|blue}` by itself |
-| `__name__` remains unresolved | File name, folder path, or delimiter is wrong | Try an exact root-level wildcard |
-| A nested wildcard is empty | The referenced file has no selectable lines | Remove comments and blank lines from a temporary copy |
-| Weighted output appears uniform in a small batch | The batch is too small to describe relative frequency | Inspect template syntax without drawing a distribution conclusion |
-| The run expands far beyond the worksheet | A wildcard contains nested variants or combinatorial mode is active | Replace that wildcard with one literal value |
-| The same logical value changes when reused | The wildcard is evaluated at each occurrence | Use the documented variable syntax when one sampled value must be reused |
+- **Random** (default): each image gets a random pick. Good for exploring.
+- **Combinatorial generation** (checkbox in the extension): produces every possible combination once. Good for "one image per style in this list". Use the **Max generations** slider so you do not start thousands of images by accident.
+- **Fixed seed**: uses the same seed for every image, so only the wildcard changes. Use it to compare the effect of one list, such as lighting:
 
-## One-variable debugging sequence
+```text
+a lighthouse on a cliff at dusk, __lighting__
+```
 
-Hold the seed and unrelated WebUI settings fixed, then change only one item per step:
+A1111's Batch count slider stops at 100 by default; the README explains how to raise it in `ui-config.json` for large combinatorial runs.
 
-1. **Extension state:** replace the full template with `{red|blue}` and confirm expansion is enabled.
-2. **Root file:** create `probe.txt` containing a single literal line and call `__probe__`.
-3. **Path:** move that same file into one folder and change only the token to `__folder/probe__`.
-4. **Cardinality:** add one line to the file; do not add variants yet.
-5. **Variant:** add one inline `{a|b}` choice while retaining the single wildcard.
-6. **Weight:** add relative weights to that inline choice only.
-7. **Sampler:** switch from random to combinatorial only after the arithmetic matches the files.
+## Ready-made collections
 
-This order separates extension loading, delimiter syntax, file discovery, folder resolution, list size, weighting, and sampling mode. It does not test image quality or model adherence.
+Dynamic Prompts ships three collections you can copy into your wildcards folder from its **Wildcard Manager** tab:
 
-## Boundaries and related references
+- **jumbo**: a very large set covering aesthetics, appearance, artists, medium, style and time.
+- **parrotzone**: a smaller, more manageable set.
+- **devilkkw**: character building, clothes, gestures and food.
 
-Dynamic Prompts changes text selection; it does not assign text to canvas areas. Use the [Regional Prompter reference](/blog/2026-01-04-stable-diffusion-regional-prompting-guide) when each clause needs a spatial region.
+## Wildcards in ComfyUI and SwarmUI
 
-Review repository provenance and rollback steps in the [extension selection and installation guide](/blog/2026-02-13-best-stable-diffusion-extensions). Keep exclusions bounded with the [Stable Diffusion negative prompts reference](/blog/2025-11-29-stable-diffusion-negative-prompts-guide) instead of multiplying a long unreviewed negative prompt through every template.
+**ComfyUI** supports `{day|night}` directly in the text box: the front end picks one option each time you queue the prompt. To type real curly brackets, escape them as `\{` and `\}`. It also accepts `//` and `/* */` comments. For `__wildcard__` files, the Dynamic Prompts author publishes a separate ComfyUI node pack (`comfyui-dynamicprompts`).
+
+```text
+a {red|blue|black} sports car on a {mountain road|city street|race track}, {sunset|night|rain}
+```
+
+**SwarmUI** has its own syntax:
+
+| SwarmUI | Same as |
+| --- | --- |
+| `<random:red, blue, purple>` | `{red\|blue\|purple}` |
+| `<random:red\|blue\|purple>` | Use `\|` when options contain commas |
+| `<random:1-5>` | A random number from 1 to 5 |
+| `<wildcard:animals>` or `<wc:animals>` | `__animals__` |
+| `<wildcard[1-3]:animals>` | 1 to 3 picks from the file |
+
+SwarmUI wildcard files live in `Data/Wildcards` (you can drop in text files from other UIs) or can be edited in the Wildcards tab. Its randoms follow the main seed, so with a fixed seed they do not change unless you set **Wildcard Seed**.
+
+## Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| `__name__` stays as text in the prompt | The extension is not active, or the file is not in the wildcards folder |
+| "No values found for wildcard some/wildcard" | The file must be at `extensions/sd-dynamic-prompts/wildcards/some/wildcard.txt`; give the full path from the wildcards folder |
+| Every image looks the same | Fixed seed is on and the prompt has no wildcard, or (SwarmUI) Wildcard Seed is set |
+| `{a\|b}` clashes with another extension | Change the variant brackets in Settings → Dynamic Prompts |
+| Errors after updating the web UI | Update both the extension and the `dynamicprompts` library; the README gives the pip command |
+
+## Related guides
+
+To place different prompts in different parts of the image, combine wildcards with [Regional Prompter](/blog/2026-01-04-stable-diffusion-regional-prompting-guide). For weights such as `(word:1.2)` inside wildcard lines, see the [prompt weighting guide](/blog/2025-12-25-ai-prompt-weighting-guide). For SDXL prompt structure, see the [SDXL prompt guide](/blog/2026-05-17-master-sdxl-prompting-guide).
+
+## Build your prompt
+
+The [prompt generator](/#generator) builds a base prompt from subject, style and lighting choices. Swap any part for a `__wildcard__` to turn it into a template. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [Dynamic Prompts syntax documentation](https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md)
-- [Dynamic Prompts tutorial](https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/tutorial.md)
-- [Syntax snapshot at commit de056ff8d80e4ad120e13a90cf200f3383f427c6](https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/SYNTAX.md)
-- [Tutorial snapshot at commit de056ff8d80e4ad120e13a90cf200f3383f427c6](https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/tutorial.md)
-- [AUTOMATIC1111 1.10.1 release](https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1)
+- [Dynamic Prompts extension README (adieyal/sd-dynamic-prompts)](https://github.com/adieyal/sd-dynamic-prompts)
+- [Dynamic Prompts syntax guide](https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md)
+- [dynamicprompts library](https://github.com/adieyal/dynamicprompts)
+- [ComfyUI README: dynamic prompts](https://github.com/comfyanonymous/ComfyUI)
+- [comfyui-dynamicprompts nodes](https://github.com/adieyal/comfyui-dynamicprompts)
+- [SwarmUI docs: Prompt Syntax (Random, Wildcards)](https://github.com/mcmonkeyprojects/SwarmUI/blob/master/docs/Features/Prompt%20Syntax.md)

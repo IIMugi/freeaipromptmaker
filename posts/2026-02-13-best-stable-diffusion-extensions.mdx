@@ -1,163 +1,128 @@
 ---
-title: "A Safety-First Guide to Stable Diffusion WebUI Extensions"
+title: "Best Stable Diffusion Extensions for A1111 & Forge (2026)"
 date: "2026-02-13"
-description: "A source-bounded checklist for selecting, installing, pinning, and rolling back AUTOMATIC1111 extensions with a minimal stack."
-tags: ["stable diffusion", "automatic1111", "extensions", "extension security", "workflow maintenance"]
+description: "The Stable Diffusion extensions worth installing in 2026: ADetailer, ControlNet, Regional Prompter, Dynamic Prompts, Tiled Diffusion, Ultimate SD Upscale."
+tags: ["stable diffusion extensions", "best automatic1111 extensions", "forge extensions", "sd-forge", "adetailer", "controlnet"]
 author: "Eren Koray"
-readTime: "9 min read"
 category: "stable-diffusion"
+difficulty: "beginner"
+readTime: "9 min"
+pros:
+  - "A handful of extensions fixes the most common problems: bad faces, color bleed, low resolution"
+  - "Most install in one click from the Extensions tab"
+cons:
+  - "Several popular extensions have had no updates since 2024"
+  - "Extensions are code that runs on your machine; install only ones you trust"
 ---
 
-# A Safety-First Guide to Stable Diffusion WebUI Extensions
+Extensions add features to the Stable Diffusion web UI: automatic face fixing, pose control, per-region prompts, bigger images. This page lists the ones worth installing in 2026, what each one does, whether it still gets updates, and which ones Forge already includes.
 
-An AUTOMATIC1111 extension can add interface panels, scripts, callbacks, and dependencies. That flexibility also creates a security boundary: installing an extension permits third-party code to run in the WebUI process. Choose an extension for a defined workflow need, review its repository, and prepare a rollback before installation.
+## First: A1111 or Forge?
 
-**Version boundary:** AUTOMATIC1111 1.10.1, Extensions wiki revision `8d34abe419d089974d649893136544038d666cfa`, and Developing extensions wiki revision `721ba8fd97e333a641d60c970705200ebd63716d`. Documentation verified: 2026-07-16.
+Before picking extensions, know where your web UI stands (dates from each project's GitHub, checked 15 October 2026):
 
-No independent image-generation comparison was performed for this guide.
+| Web UI | Status |
+| --- | --- |
+| AUTOMATIC1111 | Last release 1.10.1; no commits on the main branch since July 2024 |
+| Forge (lllyasviel) | Built on A1111 1.10.1; last commit June 2025 |
+| Forge Neo (Haoming02) | Continuation of Forge, actively updated (last commit October 2026); aims to run the newest popular models |
+| reForge (Panchovix) | Another Forge continuation; last commit April 2026 |
 
-This is a selection and operations guide, not an output-quality ranking.
+All of them use the same extension system, so A1111 extensions install the same way. The big difference: **Forge, reForge and Forge Neo ship ControlNet and MultiDiffusion built in.** Do not install the separate ControlNet or Tiled Diffusion extensions there; use the built-in versions.
 
-## Start with the code-execution risk
+## The short list
 
-The official AUTOMATIC1111 extension documentation describes installation as a significant security risk equivalent to allowing arbitrary code execution. An extension can therefore affect more than a prompt field. Its code runs under the same operating-system account as the WebUI and may load Python packages or other resources.
+| Extension | What it does | Last commit | Forge |
+| --- | --- | --- | --- |
+| [ADetailer](https://github.com/Bing-su/adetailer) | Finds faces, hands or people and re-draws them automatically | Feb 2026 | — |
+| [ControlNet](https://github.com/Mikubill/sd-webui-controlnet) | Controls pose, depth, edges and composition from a reference image | Jul 2024 | Built in |
+| [Regional Prompter](https://github.com/hako-mikan/sd-webui-regional-prompter) | Different prompts for different parts of the image | Sep 2026 | Supported |
+| [Forge Couple](https://github.com/Haoming02/sd-forge-couple) | Region prompts made for Forge (Attention Couple) | May 2026 | Forge only |
+| [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts) | `{a\|b}` choices and `__wildcard__` files | May 2024 | — |
+| [Tiled Diffusion & VAE](https://github.com/pkuliyi2015/multidiffusion-upscaler-for-automatic1111) | Large images and upscaling on low VRAM | Aug 2024 | Built in (MultiDiffusion) |
+| [Ultimate SD Upscale](https://github.com/Coyote-A/ultimate-upscale-for-automatic1111) | Tile-by-tile img2img upscaling | Mar 2024 | — |
+| [Tag Autocomplete](https://github.com/DominikDoom/a1111-sd-webui-tagcomplete) | Booru-style tag suggestions while you type | Jul 2026 | — |
+| [LoRA Block Weight](https://github.com/hako-mikan/sd-webui-lora-block-weight) | Sets LoRA strength block by block | Sep 2026 | — |
+| [Infinite Image Browsing](https://github.com/zanllp/infinite-image-browsing) | Browse, search and sort your generated images | Oct 2026 | — |
 
-Before installation:
+"—" means the repository does not say either way; check its issues before installing on Forge.
 
-1. Read the repository URL character by character; forks and look-alike names are separate codebases.
-2. Open the installation instructions and identify scripts, dependencies, models, or external downloads.
-3. Record the exact commit to be installed.
-4. Back up the WebUI configuration and the current extension list.
-5. Restrict WebUI access while changing executable extensions.
+## Fix faces and hands: ADetailer
 
-These steps reduce uncertainty. They do not make unreviewed code safe.
+ADetailer detects a face, hand or person after the image is generated, masks it and inpaints it at higher detail. It is the usual answer to small, blurry or warped faces in full-body shots.
 
-## Available tab or repository URL?
+| Model | Detects |
+| --- | --- |
+| `face_yolov8n.pt` / `face_yolov8s.pt` | 2D and realistic faces |
+| `hand_yolov8n.pt` | 2D and realistic hands |
+| `person_yolov8n-seg.pt` / `person_yolov8s-seg.pt` | Whole people (with masks) |
+| `mediapipe_face_full` / `_short` / `_mesh` | Realistic faces |
 
-AUTOMATIC1111 provides an Extensions interface with an **Available** list and an installation path for a repository URL. Both paths install third-party code; the difference is how the repository is selected.
+You can give ADetailer its own prompt (for example `detailed face, green eyes`) so the fix matches the character. If you also have ControlNet installed, ADetailer can use inpaint, scribble, lineart, openpose, tile or depth ControlNet models during the fix.
 
-| Path | Use when | Verify before clicking install |
-| --- | --- | --- |
-| Available list | The intended project is present in the WebUI-provided index | Repository owner, repository URL, listed description, and project documentation |
-| Repository URL | The upstream project publishes a specific repository not selected from the list | Exact URL, owner, branch or commit, installation instructions, and source history |
-| No extension | The task is already covered by core WebUI behavior | Confirm that the extra code has a concrete operational benefit |
+## Control pose and composition: ControlNet
 
-Presence in a list is not a security review. A repository URL is also not evidence of maintenance or compatibility. Apply the same checklist to either route.
+ControlNet guides the image with a reference: an OpenPose skeleton, a depth map, edges, lineart or a tile of the image itself. The A1111 extension's v1.1.454 (July 2024) added ControlNet Union model support; the repository has had no commits since then. On Forge, reForge and Forge Neo use the built-in ControlNet instead.
 
-## Repository worksheet
+## Different prompts per region: Regional Prompter or Forge Couple
 
-Record the evidence rather than relying on a project name:
+Both stop colors and features bleeding between subjects (red hair on both characters, the shirt color leaking into the skirt).
 
-| Check | Question | Record |
-| --- | --- | --- |
-| Provenance | Is this the repository linked by the maintainer's own documentation? | Owner and canonical HTTPS URL |
-| Maintenance | Are issues, pull requests, and recent commits available for inspection? | Last relevant commit date and unresolved compatibility issue |
-| License | Does the repository state reuse and distribution terms? | License name and file path, or “not stated” |
-| Release history | Are releases or tags present, and do notes identify compatibility changes? | Selected tag or exact commit |
-| Install behavior | Does setup add Python packages, models, binaries, or network downloads? | Dependency and download list |
-| WebUI boundary | Does documentation name a supported AUTOMATIC1111 release? | Stated release and link |
-| Recovery | Can the extension be disabled or removed without losing required data? | Backup path and rollback steps |
+- **Regional Prompter** works in A1111, Forge and reForge, and its September 2026 update added Forge Neo models such as Z-Image, Krea2 and Anima. Full syntax and templates: [Regional Prompter guide](/blog/2026-01-04-stable-diffusion-regional-prompting-guide).
+- **Forge Couple** is built for Forge Classic and Forge Neo and targets different prompts at specific regions.
 
-An inactive repository is not automatically unsafe, and frequent commits are not proof of safety. The worksheet makes the decision traceable without converting repository activity into a rating.
+## Random variation: Dynamic Prompts
 
-## Minimal-stack matrix
+Turns `{red|blue|green}` and `__hair_color__` into a different prompt for every image, with combinatorial mode for "one image per option". The extension has not changed since May 2024 but still documents the syntax used by many tools. Syntax and ready-made wildcard files: [wildcards guide](/blog/2026-01-25-stable-diffusion-wildcards-guide).
 
-Install only what the workflow calls for:
+## Bigger images: Tiled Diffusion & VAE and Ultimate SD Upscale
 
-| Workflow requirement | Extension decision | Reference |
-| --- | --- | --- |
-| Different prompt clauses in rows, columns, or 2D regions | Consider Regional Prompter after repository review | [Regional prompting guide](/blog/2026-01-04-stable-diffusion-regional-prompting-guide) |
-| Inline variants, wildcard files, or combinatorial text expansion | Consider Dynamic Prompts after repository review | [Wildcards guide](/blog/2026-01-25-stable-diffusion-wildcards-guide) |
-| A bounded negative prompt | No extension required for the text method | [Negative prompts guide](/blog/2025-11-29-stable-diffusion-negative-prompts-guide) |
-| Core txt2img or img2img controls already satisfy the task | No extension | Document the core settings instead |
-| An extension duplicates an installed feature | Do not add it yet | Compare the two code paths and keep one active |
+- **Tiled Diffusion & VAE** generates or upscales large images (2K and above) with limited VRAM (6 GB or less) by working in tiles. **Tiled VAE** alone helps when decoding runs out of memory. It also has regional prompt control. Its license (CC BY-NC-SA) forbids selling the code; images you make are not restricted. Forge's built-in MultiDiffusion covers the same idea.
+- **Ultimate SD Upscale** upscales in tiles with img2img, which lets you use a higher denoise (0.3–0.5) without many artifacts. With a 512×512 tile it runs on any graphics card. It has had no commits since March 2024.
 
-This matrix makes no claim about generated-image quality. It answers whether a feature requires extra executable code.
+For more ways to save VRAM, see the [low VRAM guide](/blog/2026-06-06-stable-diffusion-low-vram-guide-optimize-performance).
 
-## Pin, back up, and roll back
+## Quality of life
 
-### Pin the known state
+- **Tag Autocomplete** suggests Booru-style tags as you type, which helps with anime models prompted in Danbooru tags.
+- **LoRA Block Weight** sets a LoRA's strength separately for each block of the model, useful when a LoRA changes the style more than you want. Regional Prompter's README suggests it for LoRA problems in Latent mode.
+- **Infinite Image Browsing** is a full image and video manager with search. It reads generation data from A1111, ComfyUI, Fooocus, NovelAI, SwarmUI and others, and runs as an extension or a standalone app.
 
-Record all three parts of the environment:
+## Older extensions to think twice about
 
-```text
-WebUI release: 1.10.1
-Extension repository: https://github.com/OWNER/REPOSITORY
-Extension commit: FULL_40_CHARACTER_COMMIT
-```
+- **AnimateDiff for WebUI**: no commits since September 2024, and its author added a non-commercial license.
+- Anything whose last commit is years old and has open issues about your web UI version.
 
-A branch name such as `main` moves over time. A full commit identifies the reviewed snapshot even if the working checkout is later updated.
+An old extension is not automatically broken, but if it fails after a web UI update, a fix is unlikely to come.
 
-### Back up before changing code
+## How to install safely
 
-At minimum, preserve:
+1. Open **Extensions → Available**, press **Load from**, find the extension and click **Install**. Or use **Install from URL** with the repository link above.
+2. Go to **Installed** and click **Apply and restart UI**.
+3. Install one extension at a time, so you know which one broke something.
 
-- WebUI launch arguments and local configuration files;
-- the extension repository URL and current commit;
-- extension-specific presets or data that are not stored in Git;
-- a list of other enabled extensions;
-- the Python environment or a reproducible dependency record, if the extension changes it.
+Extensions are Python code that runs on your computer with your permissions. Install them only from repositories you trust, like the ones linked above. If you run the web UI with `--listen` or `--share` so others can reach it, do not add `--enable-insecure-extension-access`: that flag turns the Extensions tab on regardless of those options.
 
-Generated images are not evidence that an environment can be restored. Recovery depends on recording code, configuration, and extension data.
+## Build your prompt
 
-### Roll back one layer at a time
-
-If the WebUI fails after a change:
-
-1. Stop remote access and stop the WebUI process.
-2. Disable the newly changed extension without updating other components.
-3. Restart on the recorded WebUI release.
-4. If core behavior returns, restore the extension's recorded commit.
-5. Re-enable other extensions one at a time.
-6. Restore extension data only after the code version is known.
-
-Do not update the WebUI, every extension, and the Python environment in the same troubleshooting step. Multiple simultaneous changes remove the ability to attribute the failure.
-
-## Remote-access restriction
-
-AUTOMATIC1111 blocks extension installation and other risky operations when command-line options such as `--share` or `--listen` make the WebUI reachable from another computer. The documented bypass is `--enable-insecure-extension-access`.
-
-Do not routinely use `--enable-insecure-extension-access`. The official documentation recommends against enabling it during regular use and says to disable it immediately when it is no longer required. A safer maintenance sequence is to stop remote exposure, perform the local extension change, inspect the resulting state, and then restore only the remote access that is required.
-
-Network controls still matter after installation. Bind to a trusted interface, apply authentication and firewall restrictions appropriate to the environment, and avoid exposing a maintenance session to an untrusted network.
-
-## One-variable compatibility check
-
-Use a text-only startup record rather than interpreting image output:
-
-1. Start AUTOMATIC1111 1.10.1 with no third-party extensions enabled and save the startup log.
-2. Enable one reviewed extension at its recorded commit.
-3. Restart and compare only startup errors, dependency changes, and the presence of the expected panel or script.
-4. Exercise a minimal text configuration from that extension's official documentation.
-5. Add the next extension only after the previous state is recorded.
-
-This procedure checks loading and interface availability. It is not an image comparison, security audit, or compatibility certification.
-
-## Decision record
-
-Before retaining an extension, the completed record should answer:
-
-```text
-Feature needed:
-Why core WebUI is insufficient:
-Canonical repository:
-License:
-WebUI release:
-Extension commit:
-Dependencies or downloads:
-Remote access disabled during install:
-Backup location:
-Rollback command or procedure:
-Known unresolved issue:
-Keep, disable, or remove:
-```
-
-If the feature need or rollback procedure is blank, postpone installation. The smallest extension stack is easier to attribute, update, and restore.
+The [prompt generator](/#generator) builds a prompt from subject, style and lighting choices that you can paste into any of these web UIs. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [AUTOMATIC1111 extension documentation](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions)
-- [AUTOMATIC1111 extension development documentation](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions)
-- [Extensions wiki snapshot at revision 8d34abe419d089974d649893136544038d666cfa](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions/8d34abe419d089974d649893136544038d666cfa)
-- [Developing extensions wiki snapshot at revision 721ba8fd97e333a641d60c970705200ebd63716d](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions/721ba8fd97e333a641d60c970705200ebd63716d)
-- [AUTOMATIC1111 1.10.1 release](https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1)
+- [AUTOMATIC1111 stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+- [AUTOMATIC1111 wiki: Extensions](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions)
+- [AUTOMATIC1111 wiki: Command Line Arguments and Settings](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings)
+- [Stable Diffusion WebUI Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge)
+- [Forge Neo / Forge Classic (Haoming02)](https://github.com/Haoming02/sd-webui-forge-classic)
+- [reForge (Panchovix)](https://github.com/Panchovix/stable-diffusion-webui-reForge)
+- [ADetailer](https://github.com/Bing-su/adetailer)
+- [ControlNet for WebUI](https://github.com/Mikubill/sd-webui-controlnet)
+- [Regional Prompter](https://github.com/hako-mikan/sd-webui-regional-prompter)
+- [Forge Couple](https://github.com/Haoming02/sd-forge-couple)
+- [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
+- [Tiled Diffusion & VAE](https://github.com/pkuliyi2015/multidiffusion-upscaler-for-automatic1111)
+- [Ultimate SD Upscale](https://github.com/Coyote-A/ultimate-upscale-for-automatic1111)
+- [Tag Autocomplete](https://github.com/DominikDoom/a1111-sd-webui-tagcomplete)
+- [LoRA Block Weight](https://github.com/hako-mikan/sd-webui-lora-block-weight)
+- [Infinite Image Browsing](https://github.com/zanllp/infinite-image-browsing)
+- [AnimateDiff for WebUI](https://github.com/continue-revolution/sd-webui-animatediff)

@@ -280,17 +280,18 @@
                                                              "state":  "needs-review"
                                                          },
     "2026-01-25-stable-diffusion-wildcards-guide":  {
-                                                        "state":  "verified",
-                                                        "lastVerified":  "2026-07-16",
-                                                        "testedVersion":  "Dynamic Prompts upstream main commit de056ff8d80e4ad120e13a90cf200f3383f427c6, documented against AUTOMATIC1111 1.10.1",
-                                                        "sources":  [
-                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md",
-                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/tutorial.md",
-                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/SYNTAX.md",
-                                                                        "https://github.com/adieyal/sd-dynamic-prompts/blob/de056ff8d80e4ad120e13a90cf200f3383f427c6/docs/tutorial.md",
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
-                                                                    ]
-                                                    },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "sd-dynamic-prompts main @ de056ff (2024-05-26), dynamicprompts library, ComfyUI README and SwarmUI Prompt Syntax docs as of 2026-10-15",
+    "sources": [
+      "https://github.com/adieyal/sd-dynamic-prompts",
+      "https://github.com/adieyal/sd-dynamic-prompts/blob/main/docs/SYNTAX.md",
+      "https://github.com/adieyal/dynamicprompts",
+      "https://github.com/comfyanonymous/ComfyUI",
+      "https://github.com/adieyal/comfyui-dynamicprompts",
+      "https://github.com/mcmonkeyprojects/SwarmUI/blob/master/docs/Features/Prompt%20Syntax.md"
+    ]
+  },
     "2026-01-26-master-ai-prompt-management-library":  {
                                                            "state":  "needs-review"
                                                        },
@@ -392,17 +393,29 @@
                                                      "state":  "needs-review"
                                                  },
     "2026-02-13-best-stable-diffusion-extensions":  {
-                                                        "state":  "verified",
-                                                        "lastVerified":  "2026-07-16",
-                                                        "testedVersion":  "AUTOMATIC1111 1.10.1 and official extension documentation snapshot verified 2026-07-16",
-                                                        "sources":  [
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions",
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions",
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions/8d34abe419d089974d649893136544038d666cfa",
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions/721ba8fd97e333a641d60c970705200ebd63716d",
-                                                                        "https://github.com/AUTOMATIC1111/stable-diffusion-webui/releases/tag/v1.10.1"
-                                                                    ]
-                                                    },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Extension and web UI repositories (last commits) and A1111 wiki as of 2026-10-15",
+    "sources": [
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Extensions",
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings",
+      "https://github.com/lllyasviel/stable-diffusion-webui-forge",
+      "https://github.com/Haoming02/sd-webui-forge-classic",
+      "https://github.com/Panchovix/stable-diffusion-webui-reForge",
+      "https://github.com/Bing-su/adetailer",
+      "https://github.com/Mikubill/sd-webui-controlnet",
+      "https://github.com/hako-mikan/sd-webui-regional-prompter",
+      "https://github.com/Haoming02/sd-forge-couple",
+      "https://github.com/adieyal/sd-dynamic-prompts",
+      "https://github.com/pkuliyi2015/multidiffusion-upscaler-for-automatic1111",
+      "https://github.com/Coyote-A/ultimate-upscale-for-automatic1111",
+      "https://github.com/DominikDoom/a1111-sd-webui-tagcomplete",
+      "https://github.com/hako-mikan/sd-webui-lora-block-weight",
+      "https://github.com/zanllp/infinite-image-browsing",
+      "https://github.com/continue-revolution/sd-webui-animatediff"
+    ]
+  },
     "2026-02-13-master-midjourney-niji-mode-anime-manga-art-guide":  {
                                                                          "state":  "needs-review"
                                                                      },
