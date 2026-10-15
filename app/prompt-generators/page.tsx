@@ -1,39 +1,26 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import {
-  getAllModelSlugs,
-  modelDisplayNames,
-  promptUseCases,
-} from '@/data/prompt-use-cases';
+import { promptUseCases } from '@/data/prompt-use-cases';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com';
 
 export const metadata: Metadata = {
   title: 'AI Prompt Generators by Use Case',
   description:
-    'Browse prompt generators by use case and model, including anime, logos, product photography, and cinematic portraits.',
-  keywords: [
-    'prompt generator by use case',
-    'ai prompt generator hub',
-    'anime prompt generator',
-    'logo prompt generator',
-    'product photography prompt generator',
-  ],
+    'Free AI prompt generators by use case: anime, logos, product photography, YouTube thumbnails, pixel art, game concepts, cinematic portraits and more.',
   alternates: {
     canonical: '/prompt-generators',
   },
   openGraph: {
     title: 'AI Prompt Generators by Use Case',
     description:
-      'Explore model-specific prompt generator pages for common visual workflows.',
+      'Free AI prompt generators for common image types, with example prompts.',
     url: `${siteUrl}/prompt-generators`,
   },
 };
 
 export default function PromptGeneratorsHubPage() {
-  const modelChips = getAllModelSlugs().slice(0, 6);
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <section className="section-shell rounded-2xl p-6 md:p-8">
@@ -45,8 +32,8 @@ export default function PromptGeneratorsHubPage() {
           Prompt generators for every visual workflow
         </h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-300 md:text-base">
-          Select a use case, then pick a model-specific generator page. Each page includes examples,
-          negative-prompt terms to test, and links to model-specific versions.
+          Pick what you want to make. Each page has example prompts and the terms that matter for
+          that kind of image.
         </p>
       </section>
 
@@ -55,35 +42,14 @@ export default function PromptGeneratorsHubPage() {
           <article key={useCase.slug} className="section-shell rounded-2xl p-5">
             <h2 className="text-lg font-semibold text-white">{useCase.title}</h2>
             <p className="mt-2 text-sm text-slate-300 line-clamp-3">{useCase.intent}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {useCase.keywords.slice(0, 2).map((keyword) => (
-                <span
-                  key={keyword}
-                  className="rounded-full border border-white/12 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-200"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
             <div className="mt-5 space-y-2">
               <Link
                 href={`/prompt-generator-for/${useCase.slug}`}
                 className="inline-flex w-full items-center justify-between rounded-xl border border-cyan-300/35 bg-cyan-300/12 px-3 py-2 text-sm text-cyan-100 hover:bg-cyan-300/18"
               >
-                Open generic generator
+                Open the generator
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <div className="flex flex-wrap gap-1.5">
-                {modelChips.map((model) => (
-                  <Link
-                    key={`${useCase.slug}-${model}`}
-                    href={`/${model}/prompt-generator-for/${useCase.slug}`}
-                    className="rounded-full border border-white/12 bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-200 hover:bg-white/[0.08]"
-                  >
-                    {modelDisplayNames[model]}
-                  </Link>
-                ))}
-              </div>
             </div>
           </article>
         ))}

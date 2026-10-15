@@ -1,15 +1,8 @@
 import Link from 'next/link';
-import type { AIModel } from '@/lib/prompt-builder';
-import {
-  getAllModelSlugs,
-  getRelatedPromptUseCases,
-  modelDisplayNames,
-  type PromptUseCase,
-} from '@/data/prompt-use-cases';
+import { getRelatedPromptUseCases, type PromptUseCase } from '@/data/prompt-use-cases';
 
 interface PromptLandingPageProps {
   useCase: PromptUseCase;
-  model?: AIModel;
 }
 
 const iterationRows = [
@@ -19,32 +12,19 @@ const iterationRows = [
   ['4', 'Model-specific controls', 'Seed, aspect ratio, strength, and interface settings used'],
 ] as const;
 
-export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
-  const modelName = model ? modelDisplayNames[model] : null;
+export function PromptLandingPage({ useCase }: PromptLandingPageProps) {
   const relatedUseCases = getRelatedPromptUseCases(useCase.slug, 4);
-  const modelChips = getAllModelSlugs().slice(0, 6);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14">
       <div className="section-shell rounded-2xl p-6 md:p-8">
-        <p className="text-xs uppercase tracking-[0.14em] text-cyan-200">
-          {modelName ? `${modelName} Prompt Generator` : 'AI Prompt Generator'}
-        </p>
+        <p className="text-xs uppercase tracking-[0.14em] text-cyan-200">AI Prompt Generator</p>
         <h1 className="mt-3 text-3xl font-semibold text-white md:text-4xl">
-          {modelName
-            ? `${modelName} Prompt Generator for ${useCase.title}`
-            : `Prompt Generator for ${useCase.title}`}
+          {`Prompt Generator for ${useCase.title}`}
         </h1>
         <p className="mt-4 text-slate-300">{useCase.intent}</p>
         <p className="mt-2 text-sm text-slate-400">{useCase.intro}</p>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {useCase.keywords.slice(0, 4).map((keyword) => (
-            <span key={keyword} className="rounded-full border border-white/12 bg-white/5 px-3 py-1 text-xs text-slate-200">
-              {keyword}
-            </span>
-          ))}
-        </div>
       </div>
 
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
@@ -80,9 +60,8 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
         <div className="section-shell rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-white">Model and interface notes</h2>
           <p className="mt-3 text-sm text-slate-300">
-            {modelName
-              ? `This page selects ${modelName}; check the provider's current interface or documentation for supported parameters.`
-              : 'This page does not rank models. Check each provider’s current interface or documentation for supported parameters.'}
+            This page does not rank models. Check each provider’s current interface or documentation for
+            supported parameters.
           </p>
           <div className="mt-5 space-y-2">
             <Link
@@ -99,28 +78,6 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
             </Link>
           </div>
 
-          <div className="mt-5">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Switch model</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {modelChips.map((chipModel) => {
-                const href = `/${chipModel}/prompt-generator-for/${useCase.slug}`;
-                const active = chipModel === model;
-                return (
-                  <Link
-                    key={chipModel}
-                    href={href}
-                    className={
-                      active
-                        ? 'rounded-full border border-cyan-300/40 bg-cyan-300/12 px-3 py-1 text-xs text-cyan-100'
-                        : 'rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-xs text-slate-200 hover:bg-white/[0.08]'
-                    }
-                  >
-                    {modelDisplayNames[chipModel]}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -168,20 +125,15 @@ export function PromptLandingPage({ useCase, model }: PromptLandingPageProps) {
       <section className="mt-8 section-shell rounded-2xl p-6 md:p-8">
         <h2 className="text-lg font-semibold text-white">Related prompt generators</h2>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {relatedUseCases.map((item) => {
-            const href = model
-              ? `/${model}/prompt-generator-for/${item.slug}`
-              : `/prompt-generator-for/${item.slug}`;
-            return (
-              <Link
-                key={item.slug}
-                href={href}
-                className="rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 hover:border-cyan-300/40 hover:bg-cyan-300/8"
-              >
-                {modelName ? `${modelName} for ${item.title}` : `Prompt Generator for ${item.title}`}
-              </Link>
-            );
-          })}
+          {relatedUseCases.map((item) => (
+            <Link
+              key={item.slug}
+              href={`/prompt-generator-for/${item.slug}`}
+              className="rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 hover:border-cyan-300/40 hover:bg-cyan-300/8"
+            >
+              {`Prompt Generator for ${item.title}`}
+            </Link>
+          ))}
         </div>
       </section>
     </div>

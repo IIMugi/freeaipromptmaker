@@ -1,5 +1,3 @@
-import type { AIModel } from '@/lib/prompt-builder';
-
 export interface PromptUseCase {
   slug: string;
   title: string;
@@ -193,20 +191,6 @@ export const promptUseCases: PromptUseCase[] = [
   },
 ];
 
-export const modelDisplayNames: Record<AIModel, string> = {
-  flux: 'Flux',
-  'flux-pro': 'Flux Pro',
-  'midjourney-v7': 'Midjourney v7',
-  midjourney: 'Midjourney v6',
-  'stable-diffusion': 'Stable Diffusion XL',
-  'dall-e': 'DALL-E 3',
-  'nano-banana': 'Nano Banana Pro',
-  firefly: 'Adobe Firefly 3',
-  ideogram: 'Ideogram 2.0',
-  leonardo: 'Leonardo.ai',
-  recraft: 'Recraft V3',
-  gpt4o: 'GPT-4o',
-};
 
 
 export function getPromptUseCase(slug: string) {
@@ -215,10 +199,6 @@ export function getPromptUseCase(slug: string) {
 
 export function getAllPromptUseCaseSlugs() {
   return promptUseCases.map((item) => item.slug);
-}
-
-export function getAllModelSlugs() {
-  return Object.keys(modelDisplayNames) as AIModel[];
 }
 
 export function getRelatedPromptUseCases(slug: string, limit = 4) {

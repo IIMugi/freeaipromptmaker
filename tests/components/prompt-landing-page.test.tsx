@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { PromptLandingPage } from '@/components/Seo/PromptLandingPage';
 import PromptGeneratorsHubPage from '@/app/prompt-generators/page';
 import { generateMetadata as generateGenericMetadata } from '@/app/prompt-generator-for/[useCase]/page';
-import { generateMetadata as generateModelMetadata } from '@/app/[model]/prompt-generator-for/[useCase]/page';
 import * as useCaseData from '@/data/prompt-use-cases';
 
 describe('prompt use-case publisher pages', () => {
@@ -45,18 +44,15 @@ describe('prompt use-case publisher pages', () => {
     const html = renderToStaticMarkup(PromptGeneratorsHubPage());
     expect(html).not.toMatch(/<main\b/i);
     expect(html).not.toMatch(/faster output quality|top creative workflows/i);
+    expect(html).not.toMatch(/href="\/[a-z0-9-]+\/prompt-generator-for\//);
+    expect(html).toContain('href="/prompt-generator-for/anime"');
   });
 
-  it('keeps generic and model-route metadata factual', async () => {
+  it('keeps use-case metadata factual', async () => {
     const generic = await generateGenericMetadata({
       params: Promise.resolve({ useCase: 'youtube-thumbnails' }),
     });
-    const model = await generateModelMetadata({
-      params: Promise.resolve({ model: 'flux', useCase: 'youtube-thumbnails' }),
-    });
-    const descriptions = [generic.description, model.description].join(' ');
 
-    expect(descriptions).not.toMatch(/ready-to-use|optimized|best|tested|model-specific guidance/i);
-    expect(model.robots).toEqual({ index: false, follow: true });
+    expect(generic.description).not.toMatch(/ready-to-use|optimized|best|tested|model-specific guidance/i);
   });
 });
