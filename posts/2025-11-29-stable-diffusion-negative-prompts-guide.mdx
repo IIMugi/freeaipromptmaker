@@ -1,126 +1,185 @@
 ---
-title: "Stable Diffusion Negative Prompts: A Practical Guide"
+title: "SDXL & Stable Diffusion Negative Prompts: Copy-Paste Lists (2026)"
 date: "2025-11-29"
-description: "Learn where negative prompts belong in Stable Diffusion interfaces, how to test a small exclusion list, and which syntax is interface-specific."
-tags: ["stable diffusion", "negative prompts", "sdxl", "image generation"]
+description: "Copy-paste negative prompts for SDXL, SD 1.5, Pony and Illustrious: realistic photos, anime, SFW and watermark lists, plus which models support them."
+tags: ["sdxl negative prompt", "stable diffusion", "negative prompts", "pony diffusion", "illustrious xl"]
 author: "Eren Koray"
 category: "stable-diffusion"
 difficulty: "beginner"
-readTime: "8 min"
+readTime: "9 min"
 pros:
-  - "Can exclude an unwanted concept or visual property"
-  - "Supported as a separate field by common Stable Diffusion interfaces"
+  - "Ready-to-paste lists for the most common Stable Diffusion problems"
+  - "Model-specific notes for SDXL, SD 1.5, Pony, Illustrious, FLUX and Midjourney"
 cons:
-  - "Effect depends on the model, checkpoint, sampler, and interface"
-  - "Long generic lists can make troubleshooting harder"
+  - "The same list behaves differently on different checkpoints"
+  - "A negative prompt is not a safety filter or a guaranteed fix"
 ---
 
-# Stable Diffusion Negative Prompts: A Practical Guide
+A negative prompt lists what Stable Diffusion should steer away from. Paste it into the **Negative prompt** field (or the `negative_prompt` API parameter), not into the main prompt.
 
-A negative prompt describes concepts that the image-generation system should avoid. It is normally entered in a separate field or API parameter—not appended to the positive prompt as a sentence.
+Every block below has a copy button. Start with the short list for your model, generate, then add terms only for problems you actually see.
 
-That separation is documented in several widely used Stable Diffusion surfaces:
-
-- Stability AI's Stable Image API exposes `negative_prompt` as an optional request field.
-- AUTOMATIC1111's Stable Diffusion Web UI provides a separate negative-prompt text field.
-- Hugging Face Diffusers pipelines accept a separate `negative_prompt` argument.
-
-The exact effect is not universal. A word that changes one checkpoint may have little effect on another. Treat every list below as a testable starting point, not a quality guarantee.
-
-## Where to enter a negative prompt
-
-### Stability AI API
-
-Send the exclusion text through the endpoint's `negative_prompt` field. Keep image settings such as aspect ratio and seed in their own parameters. Do not translate those settings into invented prompt syntax.
-
-### AUTOMATIC1111 Web UI
-
-Use the **Negative prompt** field below the positive prompt. AUTOMATIC1111 documents that this field supplies user text for unconditional conditioning during sampling.
-
-The Web UI also supports attention syntax such as `(term:1.2)`. That syntax belongs to AUTOMATIC1111 and compatible interfaces; it is not a portable Stable Diffusion standard. Start without weights and add a modest weight only when an unweighted term has a repeatable effect.
-
-### Diffusers code
-
-Pass negative text through the pipeline's `negative_prompt` argument. Some pipelines expose more than one text encoder or negative-prompt argument, so use the documentation for the exact pipeline version you run.
-
-## A controlled testing workflow
-
-1. Keep the positive prompt, model, seed, sampler, steps, guidance, and dimensions unchanged.
-2. Generate a baseline with an empty negative prompt.
-3. Identify one visible problem you want to reduce.
-4. Add one or two precise terms to the negative field.
-5. Generate again with the same settings and seed.
-6. Keep the change only if it improves the intended property without removing wanted details.
-
-Changing one variable at a time makes the comparison easier to interpret. A large copied list changes many concepts at once and hides which term affected the image.
-
-## Small starting templates
-
-These are compact exclusion lists for experimentation. They are not model benchmarks and should be shortened or changed for the selected checkpoint.
-
-### Unwanted text or marks
+## Quick answer: a starter SDXL negative prompt
 
 ```text
-watermark, signature, caption, logo
+lowres, blurry, jpeg artifacts, watermark, signature, text, deformed, bad anatomy, extra fingers, cropped, out of frame
 ```
 
-Use this only when those elements are not part of the desired composition. If the positive prompt asks for package design or signage, excluding all text may conflict with the request.
+SDXL needs far fewer quality tags than SD 1.5 did. If an image already looks clean, an empty negative field is a valid choice.
 
-### Technical softness and compression
+## Essential Negative Prompt Templates
+
+### SD 1.5 general list
+
+SD 1.5 checkpoints are more prone to anatomy and quality problems, so longer lists are common:
 
 ```text
-out of focus, motion blur, jpeg artifacts
+lowres, worst quality, low quality, normal quality, jpeg artifacts, blurry, bad anatomy, bad hands, extra fingers, missing fingers, fused fingers, extra limbs, deformed, disfigured, cropped, out of frame, watermark, signature, text, username
 ```
 
-Do not exclude blur when the positive prompt intentionally asks for depth of field, motion, fog, or a soft-focus style.
+Some SD 1.5 users also add negative embeddings such as EasyNegative. Those only work if the embedding file is installed in your interface; typed as plain text they do nothing.
 
-### Style boundary for an illustration
+### Realistic photos
+
+For photoreal SDXL or SD 1.5 checkpoints, exclude other media first, then the "AI look":
 
 ```text
-photograph, photorealistic, 3d render
+cartoon, anime, illustration, painting, drawing, 3d render, cgi, plastic skin, airbrushed, oversaturated, lowres, blurry, jpeg artifacts, watermark, text
 ```
 
-This can help test whether a checkpoint responds to medium exclusions. Some illustration checkpoints already encode a strong style and may not need these terms.
+Do not exclude `blurry` if you asked for shallow depth of field or motion blur. The two instructions will fight.
 
-### Empty environment
+### Anime and illustration
+
+For anime-style checkpoints trained on Danbooru-style tags:
 
 ```text
-people, vehicles, signs
+worst quality, low quality, lowres, bad anatomy, bad hands, extra digits, fewer digits, jpeg artifacts, signature, watermark, username, blurry, photorealistic, 3d
 ```
 
-Use content exclusions only when the scene should actually be empty. They can also remove small background details that would otherwise support scale.
+### Illustrious XL
 
-## Anatomy terms need caution
+The Illustrious XL model card gives this example negative prompt:
 
-Lists such as `extra fingers, fused fingers, malformed hands` are common, but their effectiveness varies. A negative prompt cannot repair every limitation in a checkpoint or composition. If a hand remains incorrect, also try changing the pose, crop, model, seed, resolution, or an interface-specific control such as inpainting.
+```text
+worst quality, comic, multiple views, bad quality, low quality, lowres, displeasing, very displeasing, bad anatomy, bad hands, scan artifacts, monochrome, greyscale, signature, twitter username, jpeg artifacts, 2koma, 4koma, guro, extra digits, fewer digits
+```
 
-Avoid claiming that a generic anatomy list “fixes hands.” It is an input to test, not a deterministic repair.
+The same card suggests Euler a, 20–28 steps and CFG 5–7.5. Remove `monochrome, greyscale` when you want a black-and-white image.
+
+### Pony Diffusion V6 XL
+
+Pony works differently. Its model card says it is designed to not need negative prompts in most cases. The quality control goes at the **start of the positive prompt**:
+
+```text
+score_9, score_8_up, score_7_up, score_6_up, score_5_up, score_4_up,
+```
+
+If you still want a negative field, a common community habit is to put the low score tags there. The model card does not recommend this, so treat it as optional:
+
+```text
+score_4, score_5, score_6
+```
+
+### Text, watermarks and logos
+
+```text
+text, watermark, signature, logo, caption, username, artist name, letters, words
+```
+
+Skip this list when the image should contain text, such as a poster, sign or product label.
+
+### SFW (safe-for-work) list
+
+```text
+nsfw, nude, naked, explicit, suggestive, cleavage, lingerie, underwear
+```
+
+This lowers the chance of unwanted content, but it is not a safety filter. If a workflow must never show explicit images, use the safety checker or moderation step your platform provides as well.
+
+## Category-Specific Negative Prompts
+
+### Portraits and hands
+
+```text
+asymmetrical eyes, cross-eyed, deformed iris, bad teeth, extra fingers, fused fingers, malformed hands, bad anatomy, double face, plastic skin, airbrushed
+```
+
+Hand terms reduce mistakes but do not reliably fix them. If hands are still wrong, change the pose, crop closer, try a new seed, or use inpainting on the hand.
+
+### Landscapes and architecture
+
+```text
+people, person, crowd, cars, power lines, signs, text, tilted horizon, distorted perspective, warped lines, oversaturated, lowres
+```
+
+Excluding people and cars empties the scene. Leave them out of the list if you want a sense of scale.
+
+### Product photography
+
+```text
+cluttered background, dust, scratches, fingerprints, harsh reflections, distorted label, misspelled text, watermark, lowres, blurry
+```
+
+### Logos and flat graphics
+
+```text
+photograph, photorealistic, 3d render, gradient, shadow, texture, noise, cluttered, extra text, misspelled text, watermark
+```
+
+## Which models support negative prompts?
+
+| Model or tool | Negative prompt | What to do |
+| --- | --- | --- |
+| SD 1.5, SDXL | Yes, separate field | Use the lists above |
+| SD 3.5 (Diffusers) | Yes, `negative_prompt` argument | Keep it short and specific |
+| Pony Diffusion V6 XL | Supported, usually not needed | Put the score string in the positive prompt |
+| Illustrious XL | Yes | Start from the model card list |
+| FLUX.1 [dev] | Ignored unless `true_cfg_scale` is above 1 in Diffusers | Describe what you want instead of what to avoid |
+| FLUX.1 [schnell] | Not documented; Diffusers requires `guidance_scale` 0 | Rephrase positively |
+| Midjourney | `--no` parameter | `--no text, watermark` |
+
+Two details from the Midjourney docs: `--no` is the same as giving that word a −0.5 weight, and each word after `--no` is read separately, so `--no modern clothing` excludes "modern" and "clothing". For Leonardo, see the [Leonardo negative prompt guide](/blog/2026-02-22-master-leonardo-ai-negative-prompts).
+
+FLUX.1 [dev] is guidance-distilled. In Diffusers, `negative_prompt` is ignored until you raise `true_cfg_scale` above 1, which also makes each image slower. For most FLUX work, write the positive prompt more precisely instead ("clean white background" rather than a negative "clutter").
+
+## Making a term stronger
+
+AUTOMATIC1111 and compatible interfaces support attention weights in both fields:
+
+```text
+(watermark:1.3), (extra fingers:1.2), blurry
+```
+
+Start without weights. Add a modest weight (1.1–1.3) only to a term that still appears after a few seeds. Very high weights can distort the whole image. This syntax does not work in APIs such as Stability's, which take plain text.
+
+## How to tell if a term helps
+
+1. Fix the seed, sampler, steps, CFG and size.
+2. Generate once with your current negative prompt.
+3. Add or remove one or two terms.
+4. Generate again with the same seed and compare.
+
+A long copied list changes many things at once. Testing in small steps shows which terms actually matter for your checkpoint.
 
 ## Common mistakes
 
-### Contradicting the positive prompt
+- **Contradicting the prompt.** Asking for a foggy night street while excluding `dark, fog` cancels your own request.
+- **Using one list everywhere.** Danbooru tags such as `2koma` mean nothing to a photoreal checkpoint, and SD 1.5 lists are overkill on SDXL.
+- **Writing "no" in the main prompt.** "A beach with no people" can add people, because the model still sees the word "people". Move it to the negative field.
+- **Expecting a fix for everything.** If a problem survives a good negative prompt, change the seed, pose, resolution or model.
 
-If the positive prompt asks for a dark, foggy street, excluding `dark, fog` creates competing instructions. Check both fields together before adding more terms.
+## Build your prompt
 
-### Copying a model-specific list everywhere
-
-Tags used by an anime checkpoint may not map cleanly to a photographic SDXL or SD3 workflow. Begin with the problem visible in the current output instead of a long “universal” block.
-
-### Mixing UI syntax with prompt meaning
-
-Parentheses, numeric attention, embeddings, LoRA triggers, and extension keywords are interface-specific. Confirm that the destination UI supports them. Stability API parameters and Diffusers function arguments should remain structured fields.
-
-### Changing too many settings at once
-
-When the seed, sampler, prompt, and negative prompt all change, the comparison cannot isolate the negative prompt's effect. Keep a reproducible baseline while troubleshooting.
-
-## Use the local formatter
-
-The [prompt generator](/#generator) can keep a positive draft and supported negative field together for copying. It formats text locally; it does not run Stable Diffusion or predict the generated image.
+The [prompt generator](/#generator) keeps the positive prompt and the negative field together so you can copy both at once. It runs in your browser and does not generate images.
 
 ## Primary sources
 
 - [Stability AI Developer Platform: Stable Image API](https://platform.stability.ai/docs/api-reference)
-- [AUTOMATIC1111 Stable Diffusion Web UI features](https://github.com/AUTOMATIC1111/stable-diffusion-webui#features)
-- [AUTOMATIC1111 Web UI negative-prompt documentation](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Negative-prompt)
+- [AUTOMATIC1111 Web UI: negative prompt](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Negative-prompt)
+- [AUTOMATIC1111 Web UI features (attention syntax)](https://github.com/AUTOMATIC1111/stable-diffusion-webui#features)
 - [Hugging Face Diffusers: Stable Diffusion 3 pipeline](https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/stable_diffusion_3)
+- [Hugging Face Diffusers: FLUX pipeline](https://huggingface.co/docs/diffusers/api/pipelines/flux)
+- [Pony Diffusion V6 XL model card](https://civitai.com/models/257749/pony-diffusion-v6-xl)
+- [Illustrious XL model card](https://huggingface.co/OnomaAIResearch/Illustrious-xl-early-release-v0)
+- [Midjourney docs: No parameter](https://docs.midjourney.com/hc/en-us/articles/32173351982093-No)
