@@ -360,15 +360,22 @@
                                                             "state":  "needs-review"
                                                         },
     "2026-02-09-master-leonardo-ai-models":  {
-                                                 "state":  "verified",
-                                                 "lastVerified":  "2026-07-16",
-                                                 "testedVersion":  "Leonardo web image-creation interface documented 2026-02-17; model catalog snapshot verified 2026-07-16",
-                                                 "sources":  [
-                                                                 "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
-                                                                 "https://docs.leonardo.ai/me/docs/list-of-models",
-                                                                 "https://leonardo.ai/news/ai-image-models"
-                                                             ]
-                                             },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Leonardo web app model lineup, help center and API docs as of 2026-10-15",
+    "sources": [
+      "https://intercom.help/leonardo-ai/en/articles/11890238-lucid-origin",
+      "https://intercom.help/leonardo-ai/en/articles/9698289-leonardo-phoenix-leonardo-ai-s-foundational-model",
+      "https://intercom.help/leonardo-ai/en/articles/9115908-lightning-xl-models",
+      "https://intercom.help/leonardo-ai/en/articles/12143945-nano-banana-gemini-2-5-flash-image",
+      "https://intercom.help/leonardo-ai/en/articles/11483692-using-omni-models-and-the-inline-editor",
+      "https://intercom.help/leonardo-ai/en/articles/9044700-tokens-frequently-asked-questions",
+      "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
+      "https://leonardo.ai/news/ai-image-models",
+      "https://docs.leonardo.ai/llms.txt",
+      "https://docs.leonardo.ai/reference/creategeneration"
+    ]
+  },
     "2026-02-09-master-stained-glass-ai-art-prompts":  {
                                                            "state":  "needs-review"
                                                        },

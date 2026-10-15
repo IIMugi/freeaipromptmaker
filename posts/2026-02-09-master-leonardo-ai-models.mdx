@@ -1,87 +1,134 @@
 ---
-title: "Leonardo AI Model Selection Reference (2026 Interface)"
+title: "Leonardo AI Models Explained: Which Model to Use (2026)"
 date: "2026-02-09"
-description: "A source-bounded workflow for choosing automatic or explicit model selection in Leonardo AI's documented 2026 image interface."
-tags: ["Leonardo AI models", "model selection", "Lucid Origin", "Lucid Realism", "Phoenix 1.0"]
+description: "Leonardo AI image models compared: Lucid Origin, Lucid Realism, Phoenix, Anime XL, FLUX, Nano Banana, GPT Image, Ideogram. Best uses, free-plan notes, prompts."
+tags: ["leonardo ai models", "leonardo ai anime model", "lucid origin", "leonardo phoenix", "leonardo ai free plan"]
 author: "Eren Koray"
-readTime: "10 min read"
 category: "leonardo"
+difficulty: "beginner"
+readTime: "8 min"
+pros:
+  - "One account gives access to Leonardo's own models plus FLUX, GPT Image, Nano Banana, Ideogram and Seedream"
+  - "Free plan includes 150 tokens a day, and models such as Phoenix and Nano Banana are open to free users"
+cons:
+  - "Every model has its own token cost, so 150 daily tokens go further on some models than others"
+  - "The settings in the side bar change from model to model"
 ---
 
-# Leonardo AI Model Selection Reference (2026 Interface)
+Leonardo now offers more than twenty image models: its own (Lucid, Phoenix and older presets such as Kino XL and Anime XL) plus partner models such as FLUX, GPT Image, Nano Banana, Ideogram and Seedream. This page tells you which one to pick for each job, what free users can use, and gives a prompt to start with for each.
 
-Leonardo's documented web flow offers two distinct choices: enter a prompt on the home page and let Leonardo select a model, or open Image Creation and select a model explicitly. This reference helps make that choice without treating a model name as a promise about an image.
+## Quick pick
 
-**Interface documentation dated: 2026-02-17.** The official image-creation help article carries that modification date. **Catalog snapshot checked: 2026-07-16.** The catalog names below were present in Leonardo's official Commonly Used Models page on that date.
+| You want... | Use | Why (from Leonardo's docs) |
+| --- | --- | --- |
+| A good default for almost anything | **Lucid Origin** | Leonardo's most adaptable, prompt-responsive model; Full HD output; wide range of styles |
+| Cinematic photos, frames for video | **Lucid Realism** | Built for cinematic image-to-video input: natural lighting, subtle expressions, mood |
+| Long, detailed prompts followed closely; text in images | **Phoenix 1.0** | Strong prompt adherence, coherent text even in sentences; on the Free plan |
+| Anime and stylized art | **Lucid Origin** with "anime" in the prompt, or **Anime XL** | Leonardo's guide recommends Lucid Origin for anime; Anime XL is the stylized Lightning model |
+| Studio Ghibli-like images | **GPT Image** | Leonardo's model guide recommends a GPT Image model for Ghibli-style images |
+| Posters, logos, T-shirts, book covers | **Ideogram** | Leonardo's guide calls it the typography specialist |
+| Editing a photo with words, combining reference images | **Nano Banana**, **GPT Image**, **FLUX.1 Kontext**, **Seedream** | "Omni" models: up to 6 reference images and the Inline Editor |
+| Fast sketches and drafts | **FLUX Schnell** or **Leonardo Lightning** | Fast; Leonardo says Schnell is not meant for final renders |
+| Training your own character or style | **FLUX Dev** | Leonardo's guide names it for custom characters and styles |
 
-**Documented:** the home-page automatic route, the explicit Models menu in Image Creation, the Fast and Ultra generation-mode labels, the model-dependent settings caveat, and the provider/model names in the catalog.
+## Leonardo's own models
 
-**Locally checked:** source URLs, catalog spellings, table entries, and the text-only worksheet were checked for internal consistency on 2026-07-16.
+### Lucid Origin
 
-**Not tested:** no signed-in interface session, image generation, model comparison, or output assessment was performed. No independent image-generation comparison was performed for this guide.
+Leonardo's help center describes Lucid Origin as its most adaptable and prompt-responsive model: vibrant color, diverse characters, accurate text and native Full HD. Its tips: short prompts work, but add cues for the look you want. For photos, describe lighting, lens and mood; for design, give clear typography directions; for illustration, name the medium.
 
-## Choose automatic or explicit selection first
+```text
+cinematic photo of a street food vendor at night, steam rising from the grill, neon reflections on wet pavement, 35mm lens, shallow depth of field
+```
 
-The official image-creation article describes both paths:
+```text
+poster design, bold sans serif headline "NIGHT MARKET" centered at the top, minimal palette of orange and deep blue, flat illustration of lanterns below
+```
 
-1. **Automatic selection:** enter a prompt in the home-page prompt box and choose Generate. Leonardo says it selects a model based on that prompt.
-2. **Explicit selection:** expand the prompt box to expose more controls or enter Image Creation from the Image option. In Image Creation, use the **Models** menu to choose an image model.
+Leonardo's model guide notes it can look overly polished; add words such as "film grain" or "analog photo" if you want a rougher look.
 
-Use automatic selection when the model identity is not part of the record you need to keep. Use explicit selection when a workflow, handoff, or troubleshooting note must name the model. That is a reproducibility distinction, not a quality ranking.
+### Lucid Realism
 
-The Image Creation sidebar also documents **Fast** and **Ultra** as generation modes. This guide records only that those two labels are documented. It does not make price, token, speed, fidelity, or output comparisons between them.
+Built for cinematic image-to-video input. It is strongest at natural lighting, subtle expressions, mood and atmosphere, so use it when the image will become the first frame of a video, or when you want a quiet, filmic photo.
 
-## Task-to-model catalog worksheet
+```text
+close-up of an elderly fisherman looking out at the sea, soft overcast light, subtle smile, wind in his hair, cinematic, muted colors
+```
 
-The catalog calls itself a snapshot of commonly used models and warns that it is not comprehensive. Leonardo's official AI Image Models article supplies the application wording below. The table reframes those applications as intents to investigate, not as rankings or outcome claims.
+### Phoenix 1.0 and 0.9
 
-| Intent to document | Model entry to inspect | Vendor-documented application | Record before generating |
-|---|---|---|---|
-| Develop an early visual direction | Leonardo Lucid Origin | Concept art, social media visuals | Exact prompt, selected model label, dimensions, and mode |
-| Prepare a product or portrait study | Leonardo Lucid Realism | High-end product mockups, cinematic portraits | Product/subject description and every visible control |
-| Plan a stylized graphic or placement-sensitive layout | Leonardo Phoenix 1.0 | Stylized illustrations, vector-style stickers | Required elements and their intended positions in the positive prompt |
-| Prepare a custom training workflow | Flux Dev | Creating custom LoRAs | Black Forest Labs provider label and the training subject to be documented |
-| Structure an information-dense graphic | Nano Banana Pro | Detailed infographics | Google provider label, exact text requirements, and aspect ratio |
+Leonardo's foundational model. It follows long, detailed instructions closely and renders coherent text, even full sentences. Leonardo's model guide suggests Quality mode rather than Fast for best results, and finds it good for stylized assets and sticker-style vector art. Phoenix is available on every web plan, including Free, and it is one of the models that accepts a negative prompt.
 
-The Commonly Used Models catalog confirms Flux Dev under Black Forest Labs and Nano Banana Pro under Google. It also confirms all three Leonardo.Ai entries above. Other current or legacy models may exist; absence from this shortlist is not an availability claim. The application wording identifies a candidate to inspect, while the worksheet below controls the actual comparison.
+```text
+die-cut sticker of a cheerful red panda holding a coffee cup, thick white border, flat vector style, the words "MONDAY MODE" in rounded letters underneath
+```
 
-## Settings vary by model
+### Leonardo Lightning and Anime XL
 
-Leonardo's Image Creation article explicitly warns that available settings vary from model to model. Treat a model change as a settings-schema change:
+The Lightning XL family is built for speed: up to 2–3× faster generations at a lower token cost. There are two models: **Leonardo Lightning XL** for photorealistic images and **Leonardo Anime XL** for stylized images. You cannot change the scheduler or guidance scale on them. For best results Leonardo recommends at least 1024 px on one side and Alchemy V2 on.
 
-- re-read the visible controls after changing the model;
-- do not copy a hidden or unavailable setting from a previous model into the new run notes;
-- record the chosen model before recording dimensions, generation mode, style, or reference-image controls;
-- if a control disappears, describe it as unavailable in that observed interface state rather than unsupported everywhere.
+```text
+anime illustration of a girl with short silver hair on a rooftop at sunset, school uniform, wind blowing cherry blossoms, vibrant colors, detailed background
+```
 
-This prevents a worksheet from implying that every catalog model accepts the same controls.
+### Other Leonardo presets
 
-## Prompt-control worksheet
+Cinematic Kino, Concept Art, Graphic Design, Illustrative Albedo, Lifelike Vision, Portrait Perfect and Stock Photography are older Leonardo presets. They are still available, accept negative prompts, and run under Unlimited generations on Premium and Ultimate plans.
 
-Complete one row before changing the model. The final column identifies the single field allowed to change in the next comparison.
+## Partner models on Leonardo
 
-| Run label | Selection route | Exact model label | Prompt text | Dimensions | Mode label | Style/reference state | Next variable |
-|---|---|---|---|---|---|---|---|
-| A | Explicit | Leonardo Lucid Origin | quiet reading room, oak shelves, afternoon window light | record visible value | Fast | record visible state | Model only |
-| B | Explicit | Leonardo Lucid Realism | quiet reading room, oak shelves, afternoon window light | same as A | Fast | same as A | Review |
+| Model | Good for |
+| --- | --- |
+| **Nano Banana** (Gemini 2.5 Flash Image), **Nano Banana Pro** (newer: Nano Banana 2) | Precise edits to parts of an image, photo restoration, colorizing drawings and manga panels, up to 6 reference images |
+| **GPT Image 1.5 / 2 / 2.5** | Omni model for generation and edits with references; Ghibli-style images per Leonardo's guide |
+| **FLUX.1 Kontext, FLUX.2 Pro** | Editing and combining reference images (Omni models) |
+| **FLUX Dev / FLUX Schnell** | Custom style and character training / fast drafts |
+| **Ideogram 3.0, 4.5** | Typography: posters, logos, T-shirts, covers |
+| **Seedream 4.0 / 4.5** (newer: 5.0 Pro, 5.0 Flash) | Omni-model generation and editing with references |
+| **Krea 2, Recraft V4** | Newer additions; check the model's page in the app for details |
 
-The table is reproducible without generating an image: compare the two rows character by character. Prompt, dimensions, mode, and style/reference state remain fixed; only the exact model label changes.
+"Omni" models are Leonardo's name for models with stronger understanding of both image and text inputs. You can use them to generate from scratch or to edit with the **Inline Editor**: click an image, describe the change, and add references.
 
-For a live run, replace “record visible value” with what the interface actually shows. If switching the model changes which settings are available, stop and annotate that difference before continuing. Do not silently fill a missing control with the previous model's value.
+```text
+Nano Banana edit: replace the grey sky with a warm sunset, keep the people and the building exactly the same
+```
 
-## One-variable troubleshooting
+```text
+GPT Image: a cozy countryside bakery in a soft hand-painted animated film style, warm afternoon light, a cat sleeping on the windowsill
+```
 
-1. Copy the current row and give it a new run label.
-2. Keep the prompt text unchanged.
-3. Change only automatic/explicit selection or the exact model label.
-4. Re-check the sidebar because controls may vary by model.
-5. Record any settings-schema difference before changing dimensions, mode, or style.
-6. If the issue concerns an unwanted element, hold the model steady and move to the [Leonardo negative-prompt troubleshooting reference](/blog/2026-02-22-master-leonardo-ai-negative-prompts).
+## Free plan: what you can use
 
-This sequence isolates selection from prompt wording. It cannot establish which model is preferable; that would require owned comparison evidence outside this guide's boundary.
+- Free accounts get **150 tokens a day**. Unused tokens do not carry over to the next day.
+- Every model has its own cost, shown on the Generate button before you click. Image size, number of images, mode (Fast/Ultra) and reference images change it.
+- **Phoenix** is available on the Free plan.
+- **Nano Banana** is open to free users at 40 tokens per image (with 1 reference image instead of 6), so 150 tokens cover 3 images a day.
+- **Lucid Origin** is available with a Leonardo account; its cost depends on mode and image size.
+- Paid plans add premium models and features, monthly tokens with a rollover bank, and top-ups.
+
+### Unlimited generations (paid plans)
+
+Premium plans can keep generating images, and Ultimate plans images and videos, after tokens run out, at slower speed. Supported image models: Lucid Origin, Lucid Realism, Phoenix 1.0, Phoenix 0.9, FLUX Dev, FLUX Schnell, Anime, Cinematic Kino, Concept Art, Graphic Design, Illustrative Albedo, Lifelike Vision, Leonardo Lightning, Portrait Perfect and Stock Photography.
+
+## Model settings and negative prompts
+
+The side bar settings vary by model. Negative prompts in particular are only available on some models: Phoenix, Ideogram 3.0 and the older presets such as Kino XL and Anime XL have one; Lucid, FLUX, GPT Image, Nano Banana and Seedream do not. The full table and copy-paste lists are in the [Leonardo negative prompts guide](/blog/2026-02-22-master-leonardo-ai-negative-prompts).
+
+For keeping the same character across images, see the [Leonardo consistent characters guide](/blog/2026-01-06-master-consistent-characters-leonardo-ai). For Ghibli-style prompt wording, see the [Studio Ghibli prompts guide](/blog/2026-07-01-master-studio-ghibli-ai-art-prompts).
+
+## Build your prompt
+
+The [prompt generator](/#generator) builds a prompt from subject, style and lighting choices. Paste it into the model you picked above. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [How to Generate Images with Leonardo.Ai](https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai) — official help article, modified 2026-02-17; automatic and explicit selection, Image Creation controls, generation-mode labels, and the settings-vary-by-model warning.
-- [Commonly Used Models](https://docs.leonardo.ai/me/docs/list-of-models) — official provider/model catalog snapshot checked 2026-07-16.
-- [AI Image Models](https://leonardo.ai/news/ai-image-models) — official Leonardo model-family overview supplying the documented application examples used in the task table; its ranking-style labels are not repeated here.
+- [Leonardo help center: Lucid Origin](https://intercom.help/leonardo-ai/en/articles/11890238-lucid-origin)
+- [Leonardo help center: Leonardo Phoenix](https://intercom.help/leonardo-ai/en/articles/9698289-leonardo-phoenix-leonardo-ai-s-foundational-model)
+- [Leonardo help center: Lightning XL Models](https://intercom.help/leonardo-ai/en/articles/9115908-lightning-xl-models)
+- [Leonardo help center: Nano Banana](https://intercom.help/leonardo-ai/en/articles/12143945-nano-banana-gemini-2-5-flash-image)
+- [Leonardo help center: Using Omni Models and the Inline Editor](https://intercom.help/leonardo-ai/en/articles/11483692-using-omni-models-and-the-inline-editor)
+- [Leonardo help center: Tokens FAQ](https://intercom.help/leonardo-ai/en/articles/9044700-tokens-frequently-asked-questions)
+- [Leonardo help center: How to Generate Images with Leonardo.Ai](https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai)
+- [Leonardo: AI Image Models, a guide to choosing the right model](https://leonardo.ai/news/ai-image-models)
+- [Leonardo API docs index (model list)](https://docs.leonardo.ai/llms.txt)
+- [Leonardo API reference: Create Async Generation](https://docs.leonardo.ai/reference/creategeneration)
