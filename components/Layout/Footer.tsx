@@ -4,6 +4,7 @@ import { SITE } from '@/lib/site';
 
 const productLinks = [
   { href: '/#generator', label: 'Prompt generator' },
+  { href: '/negative-prompt-generator', label: 'Negative prompt generator' },
   { href: '/prompt-generators', label: 'Prompt hub' },
   { href: '/tools', label: 'Tool directory' },
   { href: '/blog', label: 'Prompt guides' },

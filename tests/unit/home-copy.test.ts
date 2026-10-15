@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import sitemap from '@/app/sitemap';
 import { metadata as homeMetadata } from '@/app/page';
 import { metadata as imageToPromptMetadata } from '@/app/image-to-prompt/page';
+import { metadata as negativeMetadata } from '@/app/negative-prompt-generator/page';
 
 const read = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
 
@@ -40,6 +41,23 @@ describe('home page copy', () => {
     for (const file of userFacingFiles) {
       expect(read(file), file).not.toMatch(/readiness|trust boundaries|fails? closed/i);
     }
+  });
+});
+
+describe('negative prompt generator page', () => {
+  it('has search-sized title and description', () => {
+    const { title } = negativeMetadata;
+    const text = typeof title === 'object' && title && 'absolute' in title ? title.absolute : String(title);
+    expect(text).toMatch(/negative prompt generator/i);
+    expect(text.length).toBeLessThanOrEqual(65);
+    const description = String(negativeMetadata.description);
+    expect(description.length).toBeGreaterThanOrEqual(110);
+    expect(description.length).toBeLessThanOrEqual(160);
+  });
+
+  it('is in the sitemap and linked from the footer', () => {
+    expect(sitemap().map(({ url }) => url)).toContain('https://freeaipromptmaker.com/negative-prompt-generator');
+    expect(read('components/Layout/Footer.tsx')).toContain('/negative-prompt-generator');
   });
 });
 

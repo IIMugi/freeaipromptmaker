@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: canonicalUrl('/'), changeFrequency: 'weekly', priority: 1 },
     { url: canonicalUrl('/blog'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: canonicalUrl('/negative-prompt-generator'), changeFrequency: 'monthly', priority: 0.9 },
     { url: canonicalUrl('/tools'), changeFrequency: 'monthly', priority: 0.7 },
     { url: canonicalUrl('/prompt-generators'), changeFrequency: 'monthly', priority: 0.8 },
     { url: canonicalUrl('/about'), changeFrequency: 'monthly', priority: 0.6 },
