@@ -1,107 +1,165 @@
 ---
-title: "Leonardo AI Negative Prompts: A Bounded Troubleshooting Reference"
+title: "Leonardo AI Negative Prompts: Supported Models + Copy Lists"
 date: "2026-02-22"
-description: "A source-bounded Leonardo negative-prompt workflow that isolates one variable and escalates unresolved elements to Canvas."
-tags: ["Leonardo AI negative prompts", "prompt troubleshooting", "Canvas Editor", "unwanted elements"]
+description: "Where the Leonardo AI negative prompt field is, which models support it (Phoenix, Ideogram 3.0, Kino XL), which do not, and copy-paste negative prompt lists."
+tags: ["leonardo ai negative prompt", "leonardo ai", "negative prompts", "leonardo phoenix", "ideogram 3.0"]
 author: "Eren Koray"
-readTime: "10 min read"
 category: "leonardo"
+difficulty: "beginner"
+readTime: "7 min"
+pros:
+  - "Quick first fix for unwanted details such as extra fingers, text or watermarks"
+  - "Available on Phoenix, Ideogram 3.0 and the SDXL-based Leonardo models"
+cons:
+  - "Not available on many newer models such as Lucid Origin, FLUX, GPT Image or Nano Banana"
+  - "A soft constraint: it makes things less likely, it does not guarantee they disappear"
 ---
 
-# Leonardo AI Negative Prompts: A Bounded Troubleshooting Reference
+A negative prompt tells Leonardo what you do not want in the image. Leonardo's help center calls it "a great first defence" against unwanted details such as extra limbs or digits. The catch in 2026: many of the newer models on Leonardo have no negative prompt at all. This page shows where the field is, which models have it, and lists you can paste in.
 
-A negative prompt is a list of concepts the selected image model should make less likely. Leonardo's prompting help calls it a first defence against unwanted details and then lists changing the model, aspect ratio, or—with Alchemy—style when an element persists. It also points to Canvas for manual removal.
+## Where to find the negative prompt field
 
-**Input-location documentation checked: 2026-07-16.** The supplied prompting article documents the negative-prompt feature but was modified on 2023-06-30. The current Image Creation article was modified on 2026-02-17, yet its text does not identify a stable negative-prompt field location. The live label or placement must therefore be confirmed in the current signed-in interface; this guide does not invent a permanent click path.
+In the web app's image creation page:
 
-**Documented:** negative prompts accept unwanted details; the source lists changing the model, aspect ratio, or—with Alchemy—the style as alternatives; and Canvas provides mask/erase editing for a selected area.
+1. Pick a model that supports negative prompts (see the table below).
+2. Open **Advanced Settings** in the side bar.
+3. Toggle on **Negative Prompt**. A second text field appears under the main prompt.
 
-**Locally checked:** the diagnosis table, term lists, and worksheet below were checked as text-only procedures against the supplied official articles on 2026-07-16.
+Leonardo's own prompting guide shows these steps with Ideogram 3.0. If you do not see the toggle, the selected model does not take a negative prompt; switch model or use the tips in [models without a negative prompt](#models-without-a-negative-prompt).
 
-**Not tested:** no live field-location check, generation, visual comparison, or Canvas edit was performed. No independent image-generation comparison was performed for this guide.
+In the API, the field is `negative_prompt` inside `parameters`:
 
-## Write terms, not negated sentences
-
-If a negative-prompt field is present in the signed-in interface, this worksheet uses a deliberately narrow writing convention.
-
-**Editorial convention, not vendor syntax:** record comma-separated bare terms as starting hypotheses. Prefer:
-
-```text
-extra fingers, duplicate limbs, background text
+```json
+{
+  "model": "phoenix-v1.0",
+  "parameters": {
+    "prompt": "portrait of a lighthouse keeper, weathered face, overcast coastal light",
+    "negative_prompt": "blurry, extra fingers, text, watermark"
+  },
+  "public": false
+}
 ```
 
-Avoid sentences built around “no” or “without,” such as `no extra fingers` or `portrait without text`. Bare terms make this editorial worksheet easier to inspect; the official source does not prescribe this syntax.
+## Which models support negative prompts
 
-Keep the positive prompt focused on what the scene should contain. Do not place the same concept in both inputs. If `red umbrella` appears in the positive prompt and `umbrella` appears in the negative input, the instructions conflict and the worksheet cannot isolate the cause.
+From Leonardo's API reference for creating a generation (schema updated 1 September 2026):
 
-**Boundary:** explicit negative prompts do not guarantee removal. They change a model input; they are not a deletion command.
+| Accepts a negative prompt | Model ID |
+| --- | --- |
+| Phoenix 1.0, Phoenix 0.9 | `phoenix-v1.0`, `phoenix-v0.9` |
+| Ideogram 3.0 | `ideogram-v3.0` |
+| Kino XL (Cinematic Kino) | `kino-xl` |
+| Anime XL | `anime-xl` |
+| Leonardo Lightning | `lightning-xl` |
+| Lifelike Vision | `lifelike-vision` |
+| Illustrative Albedo | `illustrative-albedo` |
+| Concept Art, Graphic Design, Portrait Perfect, Stock Photography | `concept-art`, `graphic-design`, `portrait-perfect`, `stock-photography` |
+| Video: Motion 2.0, Veo 3.1, Wan 2.6 | `motion_2.0`, `veo-3.1-generate-001`, `wan-2.6` |
 
-## Unwanted-element diagnosis table
+| No negative prompt parameter |
+| --- |
+| Lucid Origin, Lucid Realism |
+| FLUX Dev, FLUX Schnell, FLUX.1 Kontext, FLUX.2 Pro, FLUX 3 |
+| GPT Image 1.5, GPT Image 2, GPT Image 2.5 |
+| Nano Banana, Nano Banana 2, Nano Banana Pro |
+| Ideogram 4.0, Ideogram 4.5 |
+| Seedream 4.0, 4.5, 5.0 |
+| Krea 2, Recraft V4 |
 
-Both the issue-to-term and issue-to-next-variable mappings are editorial starting hypotheses.
+Leonardo adds and retires models often, so check the toggle in the app or the API reference if a model is not listed.
 
-| Observed issue | Editorial term hypothesis | What stays fixed | Editorial next-variable hypothesis |
-|---|---|---|---|
-| Extra hand or digit | `extra fingers, duplicate hands` | Positive prompt, model, dimensions, style | Model |
-| Duplicate subject | `duplicate person, cloned subject` | Positive prompt, model, dimensions, style | Aspect ratio |
-| Unrequested lettering | `letters, captions, watermark` | Positive prompt, model, dimensions, style | Style |
-| Background object | Name the object directly, such as `street sign` | Positive prompt, model, dimensions, style | Canvas mask or erase |
-| Soft or noisy region | `blur, noise` | Positive prompt, model, dimensions, style | Model |
+## Copy-paste negative prompt lists
 
-The terms are diagnostic inputs, not claims about expected output. Record the observed issue in plain language before choosing a term. Broad lists make it harder to know which concept affected the next run.
+Write a negative prompt as a list of things, not as a sentence. Do not write "no" or "without" in the negative field: the field already means "not this".
 
-## Starting hypotheses by category
-
-These deliberately small lists are **starting hypotheses**, not universal presets.
-
-- **Anatomy:** `extra fingers`, `duplicate limbs`, `asymmetrical eyes`
-- **Composition:** `cropped subject`, `duplicate person`, `cluttered background`
-- **Surface artifacts:** `watermark`, `letters`, `compression artifacts`
-- **Focus:** `blur`, `soft focus`, `motion streaks`
-
-Start with one or two terms that name the observed problem. Add another term only after recording what changed. A category label such as “bad quality” is less diagnosable than the visible element `compression artifacts`.
-
-## One-variable troubleshooting sequence
-
-This sequence is an editorial experiment design created for reproducibility. The prompting source lists model, aspect ratio, and—with Alchemy—style as unordered alternatives when an unwanted element persists; it does not prescribe a sequence. The worksheet imposes the following progression so only one recorded variable changes at a time:
-
-1. **Negative prompt:** add one precise unwanted term. Keep the positive prompt, model, aspect ratio, and style fixed.
-2. **Model:** if the element persists, restore the previous negative input and change only the exact model selection. Use the [Leonardo model-selection reference](/blog/2026-02-09-master-leonardo-ai-models) to record the model and remember that settings vary by model.
-3. **Aspect ratio:** return to the recorded model state and change only the visible aspect-ratio control.
-4. **Style:** return to the recorded aspect ratio and, with Alchemy and when the selected model exposes the control, change only the style. Otherwise record this step as not applicable.
-5. **Canvas:** if the unwanted element remains localized, open Canvas, place the generation frame over the area, then choose Draw Mask for a change that retains underlying information or Erase for removal before replacement.
-
-Do not change all five variables in one attempt. A multi-variable change cannot show which control was associated with the difference.
-
-## Text-only troubleshooting worksheet
-
-The following example is reproducible as a record review; it does not require an image run.
-
-**Positive prompt**
+### General cleanup
 
 ```text
-studio portrait of one violinist, plain grey background, waist-up framing
+blurry, low quality, lowres, jpeg artifacts, out of focus, overexposed, underexposed, watermark, signature, text, logo
 ```
 
-| Step | Negative input | Model | Aspect ratio | Style | Canvas action | Interpretation |
-|---|---|---|---|---|---|---|
-| Baseline | empty | record exact label | record visible value | record visible state | none | Describe the unwanted element |
-| 1 | `duplicate hands` | same | same | same | none | Negative input is the only changed field |
-| 2 | same as step 1 | one recorded alternative | same | same | none | Model is the only changed field |
-| 3 | same as step 1 | restore baseline | one alternative | same | none | Aspect ratio is the only changed field |
-| 4 | same as step 1 | baseline | baseline | one Alchemy style alternative, if applicable | none | Style is the only changed field |
-| 5 | unchanged | baseline | baseline | baseline | mask or erase named area | Local edit is separated from generation controls |
+### People and portraits
 
-Before using this worksheet, replace every “record” placeholder with the values visible in the signed-in interface. If the chosen model hides the style control, mark it `not shown for selected model` rather than carrying over a value.
+```text
+extra fingers, missing fingers, fused fingers, extra hands, extra arms, extra legs, deformed hands, distorted face, asymmetrical eyes, cross-eyed, bad anatomy, long neck
+```
 
-## Canvas boundary
+### Photorealistic images
 
-The Canvas article says the generation frame limits where Canvas generates while unlocked. **Draw Mask** paints an area to change while retaining some information beneath it. **Erase** removes the selected area before a prompted replacement. Those operations are local edits, not proof that a negative prompt failed generally.
+```text
+cartoon, anime, illustration, painting, drawing, 3d render, cgi, plastic skin, airbrushed, oversaturated
+```
 
-Use Canvas only after the generation-variable record is complete. Save the action as a separate worksheet row so the generated input and the manual edit are not conflated.
+### Anime and illustration
+
+```text
+photo, photorealistic, 3d, realistic skin texture, blurry lines, messy lineart, extra limbs, bad hands, text, watermark
+```
+
+### Product shots and graphic design
+
+```text
+text, letters, watermark, logo, cluttered background, harsh shadows, reflections, dust, scratches, cropped product
+```
+
+### Landscapes and architecture
+
+```text
+people, cars, power lines, text, watermark, tilted horizon, distorted buildings, blurry, overprocessed, hdr halos
+```
+
+### Safe-for-work filter
+
+The help center names nudity as a typical thing to keep out with a negative prompt:
+
+```text
+nudity, nsfw, gore, blood, revealing clothing
+```
+
+Combine lists as needed, but keep it short. Start with the 3–6 terms for the problem you actually see, then add more only if it stays.
+
+## Models without a negative prompt
+
+On Lucid, FLUX, GPT Image, Nano Banana and the other models without the field, put the fix in the main prompt instead. Leonardo's prompting guide also recommends trying a positive prompt first, because negative prompts are soft constraints.
+
+| Instead of a negative... | Write in the prompt |
+| --- | --- |
+| `text, watermark` | "clean image with no text or lettering" |
+| `people` | "an empty street at dawn" |
+| `blurry` | "sharp focus, crisp detail" |
+| `cluttered background` | "on a plain white seamless background" |
+| `cartoon` | "a realistic photograph, natural skin texture" |
+
+Describe the result you want ("an empty beach") rather than "a beach, no people": the second version still puts "people" in the prompt.
+
+## When something still shows up
+
+Leonardo's help center gives this order:
+
+1. Add the unwanted element to the negative prompt.
+2. If it still appears, change the **model**, the **aspect ratio**, or the **style** preset.
+3. If that does not work, remove it by hand in **Canvas**: mask the area and regenerate it with a new prompt.
+
+Two notes from the official docs:
+
+- Leonardo says PhotoReal's settings were optimized so that it does not need a negative prompt.
+- Negative prompts lower the weight of unwanted terms rather than blocking them, so they make an element less likely, not impossible.
+
+## Related guides
+
+For negative prompt lists for Stable Diffusion, SDXL, Pony and Illustrious, see the [Stable Diffusion negative prompts guide](/blog/2025-11-29-stable-diffusion-negative-prompts-guide). For keeping one character the same across images in Leonardo, see the [Leonardo consistent characters guide](/blog/2026-01-06-master-consistent-characters-leonardo-ai).
+
+## Build your prompt
+
+The [prompt generator](/#generator) builds the main prompt from subject, style and lighting choices. Add a negative list from this page in Leonardo's Negative Prompt field. It runs in your browser and does not generate images.
 
 ## Primary sources
 
-- [Prompting Tips & Tricks](https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks) — official prompting article, modified 2023-06-30; negative-prompt purpose; model, aspect-ratio, and—with Alchemy—style alternatives; and the Canvas fallback.
-- [How to Generate Images with Leonardo.Ai](https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai) — official current-interface article, modified 2026-02-17; Image Creation access and model-dependent controls.
-- [How To Use Canvas Editor Tool](https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool) — official Canvas article, modified 2026-02-18; generation frame, Draw Mask, Erase, and prompted regeneration.
+- [Leonardo help center: Prompting Tips & Tricks (Negative Prompts)](https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks)
+- [Leonardo: How to Write Effective AI Image Prompts (Negative Prompt toggle with Ideogram 3.0)](https://leonardo.ai/news/ai-image-prompts)
+- [Leonardo help center: How to Generate Images with Leonardo.Ai](https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai)
+- [Leonardo help center: PhotoReal](https://intercom.help/leonardo-ai/en/articles/8236978-photoreal)
+- [Leonardo help center: How To Use Canvas Editor Tool](https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool)
+- [Leonardo API reference: Create Async Generation](https://docs.leonardo.ai/reference/creategeneration)
+- [Leonardo API docs: Phoenix](https://docs.leonardo.ai/docs/phoenix)
+- [Leonardo API docs: Lucid Origin](https://docs.leonardo.ai/docs/lucid-origin)

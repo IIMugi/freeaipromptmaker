@@ -441,15 +441,20 @@
                                                                        "state":  "needs-review"
                                                                    },
     "2026-02-22-master-leonardo-ai-negative-prompts":  {
-                                                           "state":  "verified",
-                                                           "lastVerified":  "2026-07-16",
-                                                           "testedVersion":  "Leonardo prompting help and 2026 image-creation interface snapshot verified 2026-07-16",
-                                                           "sources":  [
-                                                                           "https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks",
-                                                                           "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
-                                                                           "https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool"
-                                                                       ]
-                                                       },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Leonardo web app and API (Create Generation schema updated 2026-09-01) as of 2026-10-15",
+    "sources": [
+      "https://intercom.help/leonardo-ai/en/articles/8067671-prompting-tips-tricks",
+      "https://leonardo.ai/news/ai-image-prompts",
+      "https://intercom.help/leonardo-ai/en/articles/8942360-how-to-generate-images-with-leonardo-ai",
+      "https://intercom.help/leonardo-ai/en/articles/8236978-photoreal",
+      "https://intercom.help/leonardo-ai/en/articles/8093145-how-to-use-canvas-editor-tool",
+      "https://docs.leonardo.ai/reference/creategeneration",
+      "https://docs.leonardo.ai/docs/phoenix",
+      "https://docs.leonardo.ai/docs/lucid-origin"
+    ]
+  },
     "2026-02-23-master-ai-art-emotion-prompts":  {
     "state": "verified",
     "lastVerified": "2026-10-15",
