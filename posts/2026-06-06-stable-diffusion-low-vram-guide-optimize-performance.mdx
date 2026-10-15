@@ -1,30 +1,152 @@
 ---
-title: "Stable Diffusion Low VRAM: Master High-Quality Art on Any GPU"
+title: "Stable Diffusion Low VRAM Guide: Flags & Settings That Work"
 date: "2026-06-06"
-description: "stable diffusion low vram, stable diffusion optimization, stable diffusion limited hardware - A comprehensive guide for AI artists"
-tags: ["stable diffusion low vram", "stable diffusion optimization", "stable diffusion limited hardware", "stable diffusion performance", "ai art low vram", "stable diffusion gpu", "stable diffusion settings"]
-author: "Free AI Prompt Maker"
-readTime: "2 min read"
+description: "Run Stable Diffusion and SDXL on a low-VRAM GPU: AUTOMATIC1111 flags (--medvram, --lowvram, xformers), ComfyUI memory handling and Diffusers offloading."
+tags: ["stable diffusion low vram", "medvram", "lowvram", "sdxl low vram", "stable diffusion out of memory", "stable diffusion optimization"]
+author: "Eren Koray"
 category: "stable-diffusion"
+difficulty: "intermediate"
+readTime: "8 min"
 pros:
-  - "Deep control with models, LoRAs, and ControlNet"
-  - "Can run locally for privacy and cost control"
-  - "Huge community resources and models"
+  - "Most out-of-memory errors can be fixed with one or two flags"
+  - "The fixes cost speed, not image quality"
 cons:
-  - "Setup and tuning take time"
-  - "Quality varies by model and settings"
-  - "Hardware needs for fast iteration"
-image: "https://images.unsplash.com/photo-1770170389700-eb0f9b910ed8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDI5NDh8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODA3Mzc3MDB8&ixlib=rb-4.1.0&q=80&w=1080"
-imageCredit: "Zach M"
-imageCreditUrl: "https://unsplash.com/@zachmmalin"
+  - "The strongest memory savers (--lowvram, sequential offload) are very slow"
+  - "Flags and defaults change between versions; check your tool's docs after updating"
 ---
 
-# Stable Diffusion Low VRAM: Master High-Quality Art on Any GPU
+"CUDA out of memory" usually has a short list of causes: the model is too big for your card, the image is too large, or you are generating several images at once. This guide starts with the quick fixes, then the flags for AUTOMATIC1111, ComfyUI and Diffusers.
 
-Hey there, fellow AI art adventurer! 👋
+## Quick fixes before any flags
 
-Ever felt that creative spark ignite, only to have it fizzle out when your Stable Diffusion setup throws a "CUDA out of memory" error? You're definitely not alone. The world of AI art is incredibly exciting, offering genuinely mind-blowing ways to bring your wildest visions to life. But for so many of us, the barrier to entry *seems* to be needing a beastly, VRAM-rich graphics card – a luxury not everyone can afford (and let's be honest, who wants to spend a fortune if they don't have to?). The good news? That's a myth we're about to totally bust.
+| Fix | Why it helps |
+| --- | --- |
+| Batch size 1 | Every extra image in a batch needs its own memory |
+| Generate at the model's native size | SD 1.5 was fine-tuned at 512×512, SDXL works around 1024×1024; larger first passes need far more memory |
+| Upscale in a second step | Hires fix or tiled upscaling uses less memory than generating big directly |
+| Turn off extras you don't need | Each ControlNet, refiner or extra model takes VRAM |
+| Close other GPU apps | Browsers, games and video players hold VRAM too |
+| Turn off live previews | The AUTOMATIC1111 wiki notes they cost speed when memory flags are on |
 
-Here at PromptMaster AI, we firmly believe everyone should have the power to create stunning AI art, regardless of their hardware specs. You absolutely don't need the latest NVIDIA powerhouse to generate breathtaking images. With the right know-how and a few clever tweaks, I've found you can achieve fantastic results even with **stable diffusion low VRAM** setups. Consider this your personal toolkit to unlocking incredible **stable diffusion performance** on what might feel like **stable diffusion limited hardware**.
+## AUTOMATIC1111 flags
 
-Get ready to supercharge your workflow, fine-tune your **stable diffusion settings**, and create high-quality art that truly rivals what you see generated on those monster machines. We're going to dive deep into the essential techniques, hidden gems, and practical strategies that will make your existing **stable
+Add flags to `COMMANDLINE_ARGS` in `webui-user.bat` on Windows:
+
+```bash
+set COMMANDLINE_ARGS=--medvram-sdxl --xformers
+```
+
+On Linux, edit `webui-user.sh` instead:
+
+```bash
+export COMMANDLINE_ARGS="--medvram-sdxl --xformers"
+```
+
+The examples below use the Windows form.
+
+| Flag | What it does | Cost |
+| --- | --- | --- |
+| `--xformers` | Memory-efficient attention through the xFormers library (NVIDIA only) | Usually faster, not slower |
+| `--opt-sdp-attention` | PyTorch 2 scaled dot product attention | May be faster than xFormers on some systems, uses more VRAM |
+| `--opt-sub-quad-attention` | Memory-efficient attention for when xFormers doesn't work, including macOS | Sometimes slightly slower |
+| `--medvram-sdxl` | Turns on `--medvram` for SDXL models only | Small speed loss on SDXL |
+| `--medvram` | Splits the model into three parts and keeps only one in VRAM at a time | "Only by a bit," per the wiki, unless live previews are on |
+| `--lowvram` | Splits the UNet into many modules for very low VRAM | The wiki calls the performance impact "devastating" |
+| `--upcast-sampling` | For cards forced to run with `--no-half`: similar results with better speed and less memory | — |
+
+### Which flags to try first
+
+```bash
+set COMMANDLINE_ARGS=--xformers
+```
+
+Start here on NVIDIA cards. In the wiki's benchmark on an RTX 3060, xFormers reached about 7.5 it/s against 4.6 it/s with no optimization, while also using less memory.
+
+```bash
+set COMMANDLINE_ARGS=--xformers --medvram-sdxl
+```
+
+Add this if SD 1.5 runs fine but SDXL runs out of memory.
+
+```bash
+set COMMANDLINE_ARGS=--xformers --medvram
+```
+
+Use this if every model runs out of memory.
+
+```bash
+set COMMANDLINE_ARGS=--lowvram
+```
+
+This is the last resort. It works on very small cards but is much slower.
+
+If xFormers will not install or your GPU is not NVIDIA, try `--opt-sub-quad-attention` instead.
+
+## ComfyUI
+
+ComfyUI manages memory automatically: its README describes smart VRAM and RAM management and model offloading, and says it can run the biggest open models on as little as 4 GB of VRAM with 8 GB of system RAM. In practice that means:
+
+- Start ComfyUI normally first; it offloads on its own when memory runs short.
+- If you still run out of memory, run `python main.py --help` to see the memory flags for your version (such as low-VRAM and CPU modes).
+- Use tiled VAE decode nodes for large images.
+- Load fewer models into one workflow; every checkpoint, ControlNet and upscaler adds up.
+
+## Diffusers (Python)
+
+The Diffusers memory guide lists these options, from cheapest to most drastic:
+
+```python
+import torch
+from diffusers import StableDiffusionXLPipeline
+
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0",
+    dtype=torch.float16,  # older Diffusers versions: torch_dtype=
+)
+pipe.enable_model_cpu_offload()   # keeps only the active model on the GPU
+pipe.vae.enable_slicing()         # decodes batch images one at a time
+pipe.vae.enable_tiling()          # decodes large images in tiles
+```
+
+| Method | Effect |
+| --- | --- |
+| `dtype=torch.float16` (or `bfloat16`) | Half-precision weights; roughly halves model memory |
+| `enable_model_cpu_offload()` | Moves whole models (text encoder, UNet, VAE) to the GPU only when needed; much faster than sequential offload, saves less |
+| `vae.enable_slicing()` | Saves memory when generating several images at once |
+| `vae.enable_tiling()` | Saves memory on large images; may cause slight tone variation between tiles |
+| `enable_group_offload(...)` | Offloads groups of layers; less memory than model offload, faster than sequential offload |
+| `enable_sequential_cpu_offload()` | Lowest memory, but the docs call it "extremely slow" |
+
+Do not move the pipeline to CUDA with `.to("cuda")` before calling `enable_sequential_cpu_offload()`; the Diffusers docs warn that the savings are then minimal.
+
+## SDXL on a small card
+
+SDXL is the most common reason people hit memory limits. In order:
+
+1. Generate at SDXL's native sizes (1024×1024 or the other native aspect ratios), batch size 1.
+2. Skip the refiner, or run it as a separate step.
+3. AUTOMATIC1111: `--xformers --medvram-sdxl`. Diffusers: fp16 plus `enable_model_cpu_offload()`.
+4. Use tiled VAE decoding for large outputs.
+
+The [SDXL prompt guide](/blog/2026-05-17-master-sdxl-prompting-guide) lists the native resolutions and settings.
+
+## Common errors
+
+| Message or symptom | What to try |
+| --- | --- |
+| `CUDA out of memory` during generation | Batch size 1, smaller first pass, then `--medvram` / `--medvram-sdxl` |
+| Out of memory at the very end (VAE decode) | Tiled VAE decoding, or `vae.enable_tiling()` in Diffusers |
+| VAE problems in half precision | `--no-half-vae` keeps the VAE in 32-bit floats (uses more memory) |
+| Very slow after adding flags | You may be on `--lowvram` or sequential offload; step back to `--medvram` |
+
+## Build your prompt
+
+Short, clear prompts don't use less VRAM, but they waste fewer generations. The [prompt generator](/#generator) builds one from your subject and style. It runs in your browser and does not generate images. For extensions that add tiled upscaling and other tools, see the [Stable Diffusion extensions guide](/blog/2026-02-13-best-stable-diffusion-extensions).
+
+## Primary sources
+
+- [AUTOMATIC1111 wiki: Optimizations](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Optimizations)
+- [AUTOMATIC1111 wiki: Command line arguments and settings](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings)
+- [ComfyUI README](https://github.com/comfyanonymous/ComfyUI)
+- [Hugging Face Diffusers: Reduce memory usage](https://huggingface.co/docs/diffusers/optimization/memory)
+- [Stable Diffusion v1-5 model card](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)

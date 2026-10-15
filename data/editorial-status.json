@@ -12,8 +12,13 @@
                                                                "state":  "needs-review"
                                                            },
     "2025-11-28-dall-e-3-photorealism-prompt-guide":  {
-                                                          "state":  "needs-review"
-                                                      },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "OpenAI deprecations page as of 2026-10-15 (dall-e-3 removed from API 2026-05-12); prompts are model-agnostic",
+    "sources": [
+      "https://developers.openai.com/api/docs/deprecations"
+    ]
+  },
     "2025-11-29-guide-consistent-characters-ai-art":  {
                                                           "state":  "needs-review"
                                                       },
@@ -98,8 +103,17 @@
                                                        "state":  "needs-review"
                                                    },
     "2025-12-25-ai-prompt-weighting-guide":  {
-                                                 "state":  "needs-review"
-                                             },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "AUTOMATIC1111 wiki Features, ComfyUI README, Compel README and Midjourney docs as of 2026-10-15",
+    "sources": [
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features",
+      "https://github.com/comfyanonymous/ComfyUI",
+      "https://github.com/damian0815/compel",
+      "https://docs.midjourney.com/hc/en-us/articles/32658968492557-Multi-Prompts-Weights",
+      "https://docs.midjourney.com/hc/en-us/articles/32173351982093-No"
+    ]
+  },
     "2025-12-25-master-anime-ai-art-prompts-styles":  {
                                                           "state":  "needs-review"
                                                       },
@@ -162,8 +176,14 @@
                                                              "state":  "needs-review"
                                                          },
     "2026-01-06-master-consistent-characters-leonardo-ai":  {
-                                                                "state":  "needs-review"
-                                                            },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Leonardo help center Image Guidance (updated 2026-08-25) and API docs as of 2026-10-15",
+    "sources": [
+      "https://intercom.help/leonardo-ai/en/articles/8497988-image-guidance",
+      "https://docs.leonardo.ai/docs/generate-images-using-image-guidance"
+    ]
+  },
     "2026-01-07-master-ai-art-camera-angles-cinematic-prompts-composition":  {
                                                                                  "state":  "needs-review"
                                                                              },
@@ -297,8 +317,13 @@
                                                             "state":  "needs-review"
                                                         },
     "2026-02-03-master-surreal-ai-art-prompts":  {
-                                                     "state":  "needs-review"
-                                                 },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Model-agnostic prompt list; movement facts checked against Tate glossary 2026-10-15",
+    "sources": [
+      "https://www.tate.org.uk/art/art-terms/s/surrealism"
+    ]
+  },
     "2026-02-04-master-ai-art-material-prompts-realistic-textures":  {
                                                                          "state":  "needs-review"
                                                                      },
@@ -638,8 +663,13 @@
                                                                        "state":  "needs-review"
                                                                    },
     "2026-05-01-master-ink-sketch-ai-art-prompts-pen-ink":  {
-                                                                "state":  "needs-review"
-                                                            },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Model-agnostic prompt list; medium facts checked against Tate glossary 2026-10-15",
+    "sources": [
+      "https://www.tate.org.uk/art/art-terms/i/ink"
+    ]
+  },
     "2026-05-02-master-ai-art-refinement-midjourney-sd-dall-e-3-leonardo":  {
                                                                                 "state":  "needs-review"
                                                                             },
@@ -749,8 +779,17 @@
                                                                 "state":  "needs-review"
                                                             },
     "2026-06-06-stable-diffusion-low-vram-guide-optimize-performance":  {
-                                                                            "state":  "needs-review"
-                                                                        },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "AUTOMATIC1111 wiki (Optimizations, Command-line arguments), ComfyUI README, Diffusers v0.41 memory guide as of 2026-10-15",
+    "sources": [
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Optimizations",
+      "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Command-Line-Arguments-and-Settings",
+      "https://github.com/comfyanonymous/ComfyUI",
+      "https://huggingface.co/docs/diffusers/optimization/memory",
+      "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5"
+    ]
+  },
     "2026-06-09-master-dall-e-3-diagrams-schematics":  {
                                                            "state":  "needs-review"
                                                        },
@@ -764,8 +803,14 @@
                                                            "state":  "needs-review"
                                                        },
     "2026-06-15-master-ukiyo-e-ai-art-prompts-styles":  {
-                                                            "state":  "needs-review"
-                                                        },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Model-agnostic prompt list; history checked against Library of Congress exhibition pages 2026-10-15",
+    "sources": [
+      "https://www.loc.gov/exhibits/ukiyo-e/intro.html",
+      "https://www.loc.gov/exhibits/ukiyo-e/major.html"
+    ]
+  },
     "2026-06-17-master-volumetric-lighting-ai-art":  {
                                                          "state":  "needs-review"
                                                      },
@@ -794,8 +839,13 @@
                                                                          "state":  "needs-review"
                                                                      },
     "2026-07-01-master-studio-ghibli-ai-art-prompts":  {
-                                                           "state":  "needs-review"
-                                                       },
+    "state": "verified",
+    "lastVerified": "2026-10-15",
+    "testedVersion": "Model-agnostic prompt list; film list and years checked against ghibli.jp works page 2026-10-15",
+    "sources": [
+      "https://www.ghibli.jp/works/"
+    ]
+  },
     "2026-07-02-master-miniature-macro-ai-art-prompts":  {
                                                              "state":  "needs-review"
                                                          },

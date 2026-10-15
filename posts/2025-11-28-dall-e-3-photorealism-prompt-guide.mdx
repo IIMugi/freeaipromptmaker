@@ -1,206 +1,133 @@
 ---
-title: "The Ultimate DALL-E 3 Photorealism Prompt Guide: Lenses, Lighting & Camera Angles"
+title: "Photorealistic DALL·E 3 Prompts, Updated for GPT Image (2026)"
 date: "2025-11-28"
-description: "Create stunning photorealistic images with DALL-E 3. Master camera lenses, lighting setups, and angles to generate AI photos that look completely real."
-tags: ["dall-e 3 photorealism", "photorealistic dall-e prompts", "dall-e 3 camera settings", "dall-e lighting prompts", "realistic ai photos"]
-author: "Free AI Prompt Maker"
-category: "dall-e"
-difficulty: "intermediate"
-readTime: "12 min"
+description: "DALL·E 3 left OpenAI's API in May 2026. These photorealistic prompts for portraits, products, food and places work in GPT Image and other generators."
+tags: ["dall-e 3 photorealism", "photorealistic prompts", "gpt image prompts", "realistic ai photo prompt", "dall-e 3 portrait prompt"]
+author: "Eren Koray"
+category: "prompt-techniques"
+difficulty: "beginner"
+readTime: "8 min"
 pros:
-  - "Strong natural language control for realism"
-  - "Great for clean brand safe imagery"
-  - "Consistent lighting with clear cues"
+  - "Sentence-style photo prompts carry over from DALL·E 3 to GPT Image and other models"
+  - "Camera, light and imperfection details do most of the work"
 cons:
-  - "Limited manual parameter controls"
-  - "Safety filters can block edge cases"
-  - "Paid access for heavy use"
-image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200"
-imageCredit: "Steve Johnson"
-imageCreditUrl: "https://unsplash.com/@steve_j"
+  - "DALL·E 3 itself is no longer available in OpenAI's API"
+  - "OpenAI's image model lineup keeps changing; check which model you are using"
 ---
 
-# My Ultimate Guide to Photorealism in DALL-E 3: Lenses, Lighting & Camera Angles
+**Status, October 2026:** OpenAI removed the `dall-e-2` and `dall-e-3` models from its API on May 12, 2026, after announcing it on November 14, 2025. OpenAI's deprecations page lists `gpt-image-2`, `gpt-image-1` and `gpt-image-1-mini` as replacements, and some GPT Image models have their own removal dates (for example `gpt-image-1` on October 23, 2026). Check that page before you build on a specific model.
 
-I've been there. Scrolling through my feed, I stop on an image that just floors me. It's so crisp, so full of emotion, that I have to zoom in and check the comments. Is it a real photograph? Or is it AI? Nine times out of ten these days, it's the magic of DALL-E 3. The line between a real photo and a few carefully chosen words is getting incredibly blurry.
+The prompts themselves still work. Full sentences that describe a photograph carry over from DALL·E 3 to GPT Image and to other modern generators. Every prompt below is written that way, with a copy button.
 
-But getting that jaw-dropping realism isn't just about getting lucky with a prompt. It’s about learning to *think* and *talk* like a photographer.
+## The photo prompt formula
 
-What I love about DALL-E 3 is that it cuts out a lot of the technical jargon you see with other models. You don't have to fiddle with parameters like `--style raw` or `--ar 16:9`. Instead, it wants you to describe a scene as if you were directing a photoshoot. You get to be the cinematographer, the lighting director, and the location scout, all with your keyboard.
-
-If you're ready to level up from "a photo of a cat" to creating images that genuinely feel like they were captured with a camera, you're in the right place. We're going to dive into the three things that, in my experience, make the biggest difference: lenses, lighting, and camera angles. Let's stop just *generating* images and start *crafting* them.
-
-### My Go-To Recipe for a Photorealistic Prompt
-
-Before we dive deep, let me share a simple framework that I almost always start with. Think of it less as a rigid rule and more like a recipe. A great DALL-E 3 prompt is like a blueprint you give the AI, and having a solid structure helps every time.
-
-In my experience, the best prompts cover these four bases:
-
-1.  **Image Type:** The first thing I always do is tell DALL-E 3 I want a *photograph*. You have to be specific here. Words like "Photo," "photograph," "candid shot," "DSLR photo," or "shot on film" instantly put the AI in the right mindset for realism.
-2.  **Subject & Scene:** This is your "who" and "where." The more vivid your description, the better the result. Don't just say "a man." Try "a weathered old fisherman with deep-set eyes and a thick white beard." Instead of "in a forest," try "in a misty redwood forest with light filtering through the canopy." See the difference?
-3.  **The "Magic" Details (Camera & Lighting):** Okay, this is where the real magic happens. This is what separates a pretty good image from a truly great one. I'm talking about specifying your lens, aperture, lighting, and camera angle. We'll spend most of our time on these details because they're that important.
-4.  **Atmosphere & Style:** What's the vibe? Is it peaceful, chaotic, nostalgic, or cyberpunk? You can even get specific with film stocks (I love using "Kodak Portra 400" for warm, rich colors) or photographic styles ("documentary style," "cinematic," "found-footage style").
-
-Put it all together, and the basic recipe looks something like this:
-
-`[Image Type] of a [Detailed Subject] in a [Detailed Scene], using a [Lens/Angle Detail], with [Specific Lighting], in a [Style/Mood].`
-
-This simple framework gives DALL-E 3 all the ingredients it needs to cook up something amazing. Now, let's get to the fun part.
-
-Need a hand building your prompts from scratch? [Try our Free AI Prompt Maker](/).
-
-### Mastering Your Virtual Camera: Lenses, Aperture, and Angles
-
-This is where we get to the good stuff. If you want to think like a photographer, you need to know your gear. For us, our words are the camera bag. Specifying lenses, aperture, and angles has a massive impact on how your final image looks and feels.
-
-#### Choosing Your Lens
-
-Different lenses can completely change a picture. Here’s a quick guide on how to ask for them:
-
-*   **Wide-Angle Lens (e.g., 24mm, 35mm):** These are my go-to for big, sweeping landscapes, architecture, or making an interior feel spacious. They pull you into the scene and can create a really cool sense of drama.
-
-```
-Wide-angle 24mm DSLR photo of a minimalist Scandinavian living room, large windows revealing a snowy forest outside, clean lines and neutral tones, morning light.
+```text
+A [shot type] photo of [subject doing something] in [place]. [Light]. Shot on [lens / camera feel], [depth of field]. [Color and film look]. [Small real-world details].
 ```
 
-*   **Standard / Prime Lens (e.g., 50mm, 85mm):** A 50mm lens is often called the "nifty fifty" because it sees the world much like our own eyes do. It's a fantastic all-rounder. The 85mm is a classic for portraits; it makes people look great and creates that beautiful separation from the background.
+| Part | Examples |
+| --- | --- |
+| Shot type | close-up portrait, candid street photo, overhead product shot, wide landscape photo |
+| Light | soft window light, overcast daylight, golden hour backlight, single bare bulb |
+| Lens | 35mm, 50mm, 85mm portrait lens, 100mm macro, 24mm wide-angle |
+| Depth of field | shallow depth of field, background softly blurred, everything in focus |
+| Color / film | natural colors, muted tones, slight film grain, Kodak Portra-like warmth |
+| Real details | visible skin texture, flyaway hairs, scuffs on the table, condensation on the glass |
 
-```
-An intimate portrait of a young woman with freckles, looking directly at the camera with a gentle smile. Shot with an 85mm prime lens, the background is softly blurred.
-```
+The last row matters most. Real photos are full of small imperfections; images without them look like renders.
 
-*   **Telephoto Lens (e.g., 135mm, 200mm):** These lenses are like binoculars for your camera, perfect for getting close to things that are far away. What I love is how they create "background compression," making the background feel closer and squashed up against the subject. It's a stunning effect for wildlife or even street photography.
+## Portraits
 
-```
-Telephoto lens photograph of a lone zebra on the Serengeti plains at sunset. The long lens compresses the scene, with the massive orange sun setting directly behind the zebra.
-```
-
-*   **Macro Lens:** Ready to explore the tiny world? Just use "macro photo" or "extreme close-up" to capture details you'd never see with your naked eye.
-
-```
-Extreme macro photo of a single snowflake resting on the sleeve of a red woolen mitten. Every intricate crystal of the snowflake is in sharp focus.
-```
-
-#### Controlling Aperture and Depth of Field
-
-Aperture (the f-stop number, like f/1.8 or f/16) is a game-changer. It controls how much light gets in, but more importantly for us, it controls the depth of field—basically, how much of your picture is in focus.
-
-*   **Shallow Depth of Field (e.g., f/1.4, f/1.8):** This is the secret to that pro-looking, dreamy shot where your subject is perfectly sharp and the background just melts away. I use phrases like "shallow depth of field," "blurry background," or my personal favorite, "beautiful bokeh." "Bokeh" is that gorgeous, soft quality of the blur, especially the little circles of light.
-
-```
-Candid photo of a street musician playing a violin in a bustling city square. Shot at f/1.8, the musician is in sharp focus while the crowd and buildings behind him are a beautiful bokeh blur of city lights.
+```text
+A close-up portrait photo of a 70-year-old fisherman with a weathered face and a grey beard, standing on a harbor at dawn. Soft overcast light. Shot on an 85mm lens, background softly blurred. Natural colors, visible skin texture and pores, a few water droplets on his jacket.
 ```
 
-*   **Deep Depth of Field (e.g., f/11, f/16):** Want everything from the flowers at your feet to the mountains miles away to be tack-sharp? This is what you need. It's perfect for those epic landscapes where every detail matters. Just ask for "deep depth of field," "everything in focus," or "shot at f/16."
-
-```
-A dramatic landscape photograph of the Scottish Highlands, shot at f/16 to keep everything in sharp focus, from the purple heather in the foreground to the majestic, cloud-covered mountains in the distance.
+```text
+A candid photo of a young woman laughing at a cafe table by a large window. Soft daylight from the side. 50mm lens, shallow depth of field. Muted warm tones, slight film grain, a half-finished cup of coffee in the foreground.
 ```
 
-#### Framing the Shot: Camera Angles
-
-Where you place your "camera" can completely change the story your image tells.
-
-*   **Low-Angle Shot:** Looking up at your subject makes them feel powerful, heroic, and larger than life. It’s a classic trick to add a sense of strength.
-
-```
-Low-angle shot of a female rock climber scaling a sheer granite cliff face, making her look powerful and determined against a brilliant blue sky.
+```text
+A professional headshot of a man in his forties wearing a navy blazer and white shirt, plain light grey background. Soft studio lighting from the front left. 85mm lens. Natural skin tones, no retouching look.
 ```
 
-*   **High-Angle Shot / Bird's-Eye View:** Looking down can make a subject seem small or vulnerable. It's also an amazing way to show the scale and layout of a scene.
-
-```
-High-angle photograph looking down on a yellow taxi cab navigating a rain-slicked New York City street at night, reflections of neon signs shimmering on the wet asphalt.
+```text
+An environmental portrait of a potter at her wheel in a cluttered studio. Light from a single high window. 35mm lens, clay dust in the air, clay on her hands and apron.
 ```
 
-*   **Dutch Angle (or Tilted Angle):** Tilting the camera creates this really cool, off-kilter feeling of tension or chaos. It’s a great stylistic choice when you want to signal that something isn't quite right.
+## Street and documentary
 
-```
-Dutch angle photo from inside a chaotic newsroom, journalists rushing around, papers flying, creating a sense of urgency and high stakes.
-```
-
-### Painting with Light: How to Prompt for Perfect Lighting
-
-If there's one secret weapon to creating incredible AI photos, it's learning how to describe light. Seriously. Light isn't just about making things visible; it's about creating a mood, telling a story, and adding texture.
-
-#### Natural Light: It's All About the Time of Day
-
-*   **Golden Hour:** That magical time right after sunrise or before sunset. The light is soft, warm, and golden, and it creates these long, gorgeous shadows. Honestly, it's hard to make something look bad during the golden hour. Keywords: "golden hour lighting," "warm sunset light," "low sun."
-
-```
-A photograph of an elderly couple holding hands on a wooden pier during golden hour. The warm, low sun casts long shadows and creates a nostalgic, romantic atmosphere.
+```text
+A candid street photo of a busy night market in the rain. Neon signs reflect on wet pavement, people with umbrellas pass by in motion blur. 35mm lens, high contrast, slight grain.
 ```
 
-*   **Blue Hour:** This is the quiet time just before the sun rises or just after it sets. The light has this beautiful, cool blue tone that feels incredibly peaceful. It's amazing for moody cityscapes or serene landscapes. Keywords: "blue hour," "twilight," "cool ambient light."
-
-*   **Harsh Midday Sun:** Most photographers run from this light, but I think it can be used to create some really bold, high-contrast images with dark, graphic shadows. Think of a stark desert scene or dramatic architectural shots. Keywords: "harsh midday sun," "direct overhead sunlight," "strong shadows."
-
-#### Quality and Direction of Light
-
-*   **Soft, Diffused Light:** Imagine a bright but overcast day. The light is even and wraps around your subject, getting rid of harsh shadows. It’s incredibly flattering for portraits. Keywords: "soft light," "diffused light," "overcast day lighting."
-
-*   **Hard Light / Direct Light:** This is the opposite—it creates sharp, defined shadows and a ton of contrast. It's perfect for adding drama and bringing out texture.
-
-*   **Rim Lighting / Backlighting:** This is one of my favorite effects. When you place the main light *behind* your subject, it creates this beautiful, bright outline around them. It really makes them pop from the background and can give them an almost magical glow.
-
-```
-Dramatic photo of a boxer in a dimly lit gym, backlit by a single bright light that creates a sharp rim light around his silhouette, sweat glistening in the air.
+```text
+A documentary-style photo of a train conductor leaning out of an old train window at a rural station. Late afternoon light. 35mm lens, faded colors, dust on the window frame.
 ```
 
-#### Cinematic and Artificial Lighting
+## Products
 
-Don't forget that the sun isn't your only option! Playing with man-made light is so much fun.
-
-*   **Neon Lighting:** A must-have for any cyberpunk, noir, or vibrant city night scene. I like to specify the colors to get exactly the look I'm going for. Keywords: "neon-lit alleyway," "glowing neon signs," "cyberpunk aesthetic."
-
-*   **Volumetric Lighting / God Rays:** You know that amazing effect when you can actually see the beams of light cutting through the air? That's volumetric lighting. It happens when light hits particles like dust, fog, or smoke, and it adds so much depth and atmosphere. Keywords: "volumetric lighting," "light rays," "crepuscular rays," "hazy atmosphere."
-
-```
-Cinematic photo of a detective in a trench coat standing in a dusty, abandoned library. Volumetric light rays stream through a high window, illuminating particles of dust in the air, creating a mysterious, noir atmosphere.
+```text
+A studio product photo of a matte black wireless headphone on a light grey surface. Soft box lighting from above, gentle shadow underneath. 100mm lens, everything in focus, clean minimal background.
 ```
 
-### Putting It All Together: 5 Advanced Prompts to Try Right Now
-
-Alright, let's put everything we've talked about into practice. I'm going to share five of my own prompts that combine these ideas. You'll see how layering in details about lenses, lighting, and mood really brings the scene to life for DALL-E 3.
-
-**1. The Intimate Golden Hour Portrait**
-
-This prompt uses a classic 85mm portrait lens and a wide f/1.8 aperture to blur the background, all bathed in that beautiful golden hour light for a warm, professional glow.
-
-```
-DSLR photograph of a laughing South Asian woman in her late 20s, with curly dark hair blowing in the wind. Shot on an 85mm f/1.8 lens during golden hour, creating a beautiful bokeh background of a sun-drenched meadow. The rim light catches the edges of her hair.
+```text
+A lifestyle product photo of a ceramic coffee mug on a wooden desk next to an open notebook. Morning window light, steam rising from the mug. 50mm lens, shallow depth of field.
 ```
 
-**2. The Majestic Blue Hour Landscape**
-
-Here, we're going for an epic feel. An ultra-wide lens and a deep depth of field (f/11) capture the massive scale, while the blue hour timing gives it that cool, moody vibe.
-
-```
-Ultra-wide 16mm landscape photograph of Iceland's Jökulsárlón glacier lagoon during blue hour. Shot at f/11 for deep depth of field, with massive blue icebergs floating in the still water and the snow-capped mountains sharp in the distance. Moody, tranquil, and epic.
+```text
+An overhead flat-lay photo of a leather wallet, keys, sunglasses and a watch on a linen cloth. Soft even daylight. Everything in focus, neutral colors.
 ```
 
-**3. The Gritty Street Photography Moment**
+## Food
 
-This one feels like it was snatched right off the street. A 35mm lens, harsh light for drama, and a low angle create a dynamic, candid scene that feels totally real.
-
-```
-Gritty, candid street photograph of a bicycle messenger weaving through traffic in Tokyo. Shot from a low angle with a 35mm lens. The harsh midday sun creates deep, graphic shadows on the pavement. A slight motion blur conveys speed and chaos. Shot in the style of a documentary.
+```text
+A close-up photo of a bowl of ramen with a soft-boiled egg, sliced pork and green onions. Steam rising, side light from a window. 50mm lens, shallow depth of field, dark wooden table, small drips of broth on the rim.
 ```
 
-**4. The Otherworldly Macro Shot**
-
-Let's dive into the tiny world. This prompt uses macro terms, soft light to be gentle on our subject, and a shallow depth of field to make that incredible detail the absolute star of the show.
-
-```
-Extreme macro DSLR photo of a praying mantis perched on a vibrant pink orchid. Soft, diffused lighting highlights the intricate details of the mantis's eyes and limbs. The background is a soft, out-of-focus wash of green and pink. Shallow depth of field, tack sharp focus on the subject.
+```text
+An overhead photo of a rustic breakfast table: sourdough toast, butter, berries and coffee. Soft morning light, crumbs on the table, natural colors.
 ```
 
-**5. The Cinematic Noir Scene**
+## Places
 
-This prompt is all about atmosphere. I've used specific lighting techniques, a mood, and even a type of film stock to create a scene that looks like it was pulled straight from a movie.
-
-```
-Cinematic film still from a modern noir thriller. A lone figure in a fedora stands in a rain-soaked, neon-lit alleyway in Seoul. The reflection of red and blue neon signs shimmers in the puddles. Volumetric lighting from a distant streetlamp cuts through the light rain. Shot on CineStill 800T film, moody and atmospheric.
+```text
+A wide landscape photo of a mountain lake at sunrise. Mist over the water, first light on the peaks. 24mm lens, everything in focus, natural colors, a small wooden dock in the foreground.
 ```
 
-The biggest shift for me was when I stopped *asking* DALL-E 3 for an image and started *directing* it like I was on a real photoshoot. When you learn to think and prompt like a photographer, you're giving the AI the expert instructions it craves to create something truly stunning. So, grab your "virtual camera bag," start playing with these ideas, and I can't wait to see how real your creations become.
+```text
+An interior photo of a small Scandinavian living room. Soft afternoon light through sheer curtains, a wool blanket on a grey sofa, plants by the window. 24mm lens at eye level, natural colors.
+```
+
+```text
+An architectural photo of a concrete brutalist building against a clear blue sky. Hard midday sunlight, strong shadows. 24mm lens, vertical lines kept straight.
+```
+
+## Animals
+
+```text
+A wildlife photo of a red fox sitting in fresh snow. Low winter sun from behind, glowing rim light on its fur. 400mm telephoto lens, background completely smooth.
+```
+
+```text
+A close-up photo of a sleeping tabby cat curled up in a patch of sunlight on a wooden floor. 50mm lens, shallow depth of field, individual whiskers visible.
+```
+
+## Tips for realism
+
+- **Describe a photo, not quality.** "Shot on a 50mm lens in soft window light" helps more than a pile of words like "ultra realistic, 8k, masterpiece".
+- **Add one or two imperfections.** Dust, scuffs, flyaway hairs, condensation, uneven light.
+- **Name the light source.** "Light from a single window on the left" is more realistic than "beautiful lighting".
+- **Write exclusions as sentences.** "No text or logos anywhere in the image" works in sentence-based models.
+- **Keep one lens and one light.** Mixed camera and lighting cues give flat, average images. The [lens prompt cheat sheet](/blog/2026-02-16-master-ai-art-lenses-prompts-guide) and the [weather and time-of-day prompts](/blog/2026-02-24-master-ai-art-weather-time-prompts) have more options.
+
+## Using these prompts elsewhere
+
+The same prompts work in Midjourney, FLUX and Stable Diffusion. In tools with a negative prompt field, add a short list such as `cartoon, 3d render, plastic skin, oversaturated` to push the result toward photography; see the [negative prompt lists](/blog/2025-11-29-stable-diffusion-negative-prompts-guide). For SDXL settings, see the [SDXL prompt guide](/blog/2026-05-17-master-sdxl-prompting-guide).
+
+## Build your prompt
+
+The [prompt generator](/#generator) helps you combine a subject with camera, lighting and style options. It runs in your browser and does not generate images.
+
+## Primary sources
+
+- [OpenAI API: Deprecations](https://developers.openai.com/api/docs/deprecations)
