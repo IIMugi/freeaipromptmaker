@@ -4,10 +4,11 @@ import { getEditorialRecords } from '@/lib/editorial';
 
 const blogPrefix = 'https://freeaipromptmaker.com/blog/';
 const records = getEditorialRecords();
+const entries = sitemap();
 
 describe('sitemap', () => {
   it('includes only guides that have been verified', () => {
-    const blogSlugs = sitemap()
+    const blogSlugs = entries
       .filter(({ url }) => url.startsWith(blogPrefix))
       .map(({ url }) => url.slice(blogPrefix.length));
     const verifiedSlugs = Object.entries(records)
@@ -18,7 +19,6 @@ describe('sitemap', () => {
   });
 
   it('does not invent build-time modification dates', () => {
-    const entries = sitemap();
     expect(entries.find(({ url }) => url === 'https://freeaipromptmaker.com/')?.lastModified).toBeUndefined();
     for (const { url, lastModified } of entries.filter(({ url }) => url.startsWith(blogPrefix))) {
       expect(lastModified).toBe(records[url.slice(blogPrefix.length)].lastVerified);

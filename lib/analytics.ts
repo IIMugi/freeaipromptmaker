@@ -13,6 +13,7 @@ export type ProductEventMap = {
     model: AnalyticsModel;
     variant: 'prompt' | 'with-negative' | 'json';
   };
+  guide_snippet_copied: Record<string, never>;
   image_upload_rejected: { reason: 'size' | 'type' | 'signature' };
   image_analysis_succeeded: Record<string, never>;
   image_analysis_failed: { reason: 'unavailable' | 'provider' | 'validation' };
@@ -73,6 +74,7 @@ function sanitizeEvent(name: keyof ProductEventMap, params: unknown): Record<str
       const reason = safeString(input.reason);
       return { reason: analysisReasons.has(reason) ? reason : 'provider' };
     }
+    case 'guide_snippet_copied':
     case 'image_analysis_succeeded':
       return {};
   }

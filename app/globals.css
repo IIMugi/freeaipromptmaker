@@ -537,6 +537,44 @@ body {
   margin: 1.1rem 0;
 }
 
+.prose-custom .markdown-content .code-block-wrapper {
+  position: relative;
+  margin: 1.1rem 0;
+}
+
+.prose-custom .markdown-content .code-block-wrapper > pre {
+  margin: 0;
+  padding-top: 2.4rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.prose-custom .markdown-content .code-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.prose-custom .markdown-content .code-copy-button:hover {
+  border-color: var(--border-strong);
+}
+
+.prose-custom .markdown-content .code-copy-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .prose-custom .markdown-content :is(code, .inline-code) {
   font-family: var(--font-mono);
 }

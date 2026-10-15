@@ -1,5 +1,5 @@
-import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { MarkdownRenderer } from '@/components/Blog/MarkdownRenderer';
 
 describe('MarkdownRenderer', () => {
@@ -95,5 +95,23 @@ describe('MarkdownRenderer', () => {
     expect(label).not.toContain(longHeader);
     expect(label).not.toContain(longCell);
     expect(label?.length).toBeLessThanOrEqual(230);
+  });
+
+  it('copies the exact code block text, highlighted or not', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+
+    render(
+      <MarkdownRenderer
+        content={'```text\nlowres, blurry, watermark\nextra fingers\n```\n\nInline `code` stays plain.'}
+      />,
+    );
+
+    const buttons = screen.getAllByRole('button', { name: 'Copy to clipboard' });
+    expect(buttons).toHaveLength(1);
+    fireEvent.click(buttons[0]);
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('lowres, blurry, watermark\nextra fingers'));
+    expect(await screen.findByRole('button', { name: 'Copied to clipboard' })).toBeVisible();
   });
 });
