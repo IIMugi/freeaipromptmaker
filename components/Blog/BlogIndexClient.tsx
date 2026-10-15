@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import type { BlogPostMeta } from '@/lib/blog';
 
-const POSTS_PER_PAGE = 12;
+// Pages after the first render client-side only, so crawlers see just page one. Keep every indexed guide on it.
+export const POSTS_PER_PAGE = 24;
 
 const categoryStyles: Record<string, { gradient: string }> = {
   midjourney: {

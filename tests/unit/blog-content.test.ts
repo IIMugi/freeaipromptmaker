@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { describe, expect, it } from 'vitest';
+import { POSTS_PER_PAGE } from '@/components/Blog/BlogIndexClient';
 import { getEditorialRecords } from '@/lib/editorial';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
@@ -32,6 +33,11 @@ describe('guide corpus', () => {
 
   it('indexes at least one verified guide', () => {
     expect(verifiedPosts.length).toBeGreaterThan(0);
+  });
+
+  it('keeps every verified guide on the server-rendered first hub page', () => {
+    // One featured post plus one page of the list.
+    expect(verifiedPosts.length).toBeLessThanOrEqual(POSTS_PER_PAGE + 1);
   });
 
   describe.each(verifiedPosts)('verified guide $slug', ({ slug, data, content }) => {
