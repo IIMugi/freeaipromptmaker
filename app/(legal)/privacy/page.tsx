@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { TextPage } from '@/components/Layout/TextPage';
+import { SITE } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -37,7 +38,8 @@ export default function PrivacyPage() {
         providers that serve the site. This policy does not claim that those providers keep nothing.
       </p>
       <p>
-        Questions or correction requests can be sent through the <Link href="/contact">contact page</Link>.
+        Privacy questions and correction requests can be sent to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Other
+        ways to reach us are on the <Link href="/contact">contact page</Link>.
       </p>
     </TextPage>
   );

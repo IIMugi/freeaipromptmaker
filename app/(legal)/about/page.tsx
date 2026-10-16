@@ -36,7 +36,8 @@ export default function AboutPage() {
         <a href={SITE.social.github} target="_blank" rel="noopener noreferrer">
           GitHub
         </a>
-        . Corrections and bug reports are welcome through the <Link href="/contact">contact page</Link>.
+        . Corrections and bug reports are welcome at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or through the{' '}
+        <Link href="/contact">contact page</Link>.
       </p>
     </TextPage>
   );

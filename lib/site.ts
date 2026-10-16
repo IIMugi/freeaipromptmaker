@@ -2,6 +2,7 @@ export const SITE = {
   name: 'Free AI Prompt Maker',
   origin: process.env.NEXT_PUBLIC_SITE_URL || 'https://freeaipromptmaker.com',
   description: 'Build and copy structured prompts for supported image-generation tools.',
+  email: 'info@freeaipromptmaker.com',
   social: {
     github: 'https://github.com/IIMugi/freeaipromptmaker',
   },
